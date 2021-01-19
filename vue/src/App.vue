@@ -1,18 +1,30 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <div id="app">
+    <layout>
+      <router-view></router-view>
+    </layout>
   </div>
-  <router-view />
 </template>
 
+<script>
+import layout from "./components/layout";
+export default {
+  components: {
+    layout,
+  },
+};
+</script>
+
 <style lang="scss">
+html,body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  min-width: 900px;
+  height: 100%;
 }
 
 #nav {
