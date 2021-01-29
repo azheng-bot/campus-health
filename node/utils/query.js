@@ -7,6 +7,7 @@ let query = (queryStr, params) => {
   return new Promise(function (resolve, reject) {
     // 发起请求
     db.query(queryStr, params || [], function (err, result) {
+      console.log('queryStr', queryStr)
       // reject返回报错
       if (err) reject(new Error(err))
       // resolve返回数据

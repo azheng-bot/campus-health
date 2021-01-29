@@ -11,8 +11,11 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 // 1.创建路由拦截器
 app.use(async (req, res, next) => {
-  // 如果是登录则直接去登录
+  // 以下情况可以直接放行
+  // 登录
   if (req.url == '/login') return next()
+  // 获取侧边栏信息
+  if (req.url == '/aside') return next()
   // 如果没有令牌则返回没有令牌
   if (!req.get("Authorization")) return res.json({
     code: 400,
