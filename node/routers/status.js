@@ -6,15 +6,15 @@ let query = require('../utils/query')
 
 // 1.获取卫生情况
 router.get("/", async (req, res) => {
-  console.log('req.params', req.query)
   let { time, area_id } = req.query
 
+  // 查询卫生情况
   let res1 = await query("SELECT * FROM STATUS WHERE TIME = ? AND AREA_ID = ?", [time, area_id])
+  // 返回正确信息
   res.send({
     code: 200,
     data: res1[0]
   })
-
 })
 
 // 2.添加卫生情况
