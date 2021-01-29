@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <layout>
+    <router-view v-if="$route.path == '/login'"></router-view>
+    <layout v-else>
       <router-view></router-view>
     </layout>
   </div>
@@ -16,7 +17,8 @@ export default {
 </script>
 
 <style lang="scss">
-html,body {
+html,
+body {
   height: 100%;
   padding: 0;
   margin: 0;
