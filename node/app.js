@@ -56,6 +56,8 @@ app.use("/status", statusRouter)
 let classRouter = require("./routers/class")
 app.use("/class", classRouter)
 // 2.5 负责人管理路由
+let principalRouter = require("./routers/principal")
+app.use("/principal", principalRouter)
 
 // 3. 挂载
 app.listen(3000, () => {
