@@ -52,4 +52,44 @@ router.post("/", async (req, res) => {
 
 })
 
+// 3.修改卫生情况
+router.patch('/', async (req, res) => {
+  // 获取body数据
+  let { id, class_id, class_name, area_id, area_name, time, status, principal_id, principal_name } = req.body;
+  // 当body数据中某一数据为空时，返回错误信息
+  if (!(id && class_id && class_name && area_id && area_name && time && status && principal_id && principal_name)) {
+    res.json({
+      code: 400,
+      msg: "请将数据填写完整"
+    })
+  }
+  // 数据库请求语句
+  let queryStr = "update status ";
+  queryStr += "set class_id = " + class_id + ",";
+  queryStr += "class_name = '" + class_name + "',";
+  queryStr += "area_id = " + area_id + ",";
+  queryStr += "area_name = '" + area_name + "',";
+  queryStr += "time = '" + time + "',";
+  queryStr += "status = " + status + ",";
+  queryStr += "principal_id = " + principal_id + ",";
+  queryStr += "principal_name = '" + principal_name + "'";
+  queryStr += " where id = " + id;
+  // 对数据库发起请求
+  let res1 = await query(queryStr)
+  // 判断是否响应
+  if (res1.affectedRows > 0) {
+    // 返回成功信息
+    res.json({
+      code: 200,
+      msg: "修改成功"
+    })
+  } else {
+    // 返回失败信息
+    res.json({
+      code: 400,
+      msg: "修改失败"
+    })
+  }
+})
+
 module.exports = router;
