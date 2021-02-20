@@ -2,7 +2,7 @@
 校园卫生分派可视化系统
 
 ### 接口文档地址
-[postman]:https://web.postman.co/workspace/62e48599-9fd0-4b17-8da1-3771eeedbb00/documentation/9105156-5d2982c7-c28e-434c-8021-3714014cd758
+https://web.postman.co/workspace/62e48599-9fd0-4b17-8da1-3771eeedbb00/documentation/9105156-5d2982c7-c28e-434c-8021-3714014cd758
 
 (谷歌浏览器打不开就用IE浏览器)
 
