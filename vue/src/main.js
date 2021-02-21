@@ -4,11 +4,9 @@ import App from "./App.vue";
 import router from "./router";
 // vuex
 import store from "./store";
-
 // Element-plus
-import ElementPlus from 'element-plus';
-import 'element-plus/lib/theme-chalk/index.css';
-
+import ElementPlus from "element-plus";
+import "element-plus/lib/theme-chalk/index.css";
 createApp(App)
   .use(store)
   .use(router)
