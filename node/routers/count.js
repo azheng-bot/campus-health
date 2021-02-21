@@ -4,93 +4,101 @@ let router = express.Router()
 // 引入mysql
 let query = require('../utils/query')
 
-// 1.获取班级
+// 1.获取统计信息
 router.get("/", async (req, res) => {
-  try {
-    // 执行添加语句
-    let res1 = await query("SELECT * FROM CLASS")
-    console.log('res1', res1)
-    // 返回成功信息
-    res.send({
-      code: 200,
-      data: res1
-    })
-  } catch {
-    // 出现报错时，返回失败信息
-    res.send({
-      code: 400,
-      msg: "获取失败"
-    })
+  // 总体卫生情况
+  let allClassStatus = await getAllStatus()
+  // 班级卫生优率、差率
+  let statusByRate = await getRate(allClassStatus)
+  console.log('statusByRate', statusByRate)
+  // 负责人出勤情况
+  let principalStatus = await getPrincipalStatus()
 
-  }
+  res.json({
+    code: 200,
+    data: {
+      allClassStatus,
+      principalStatus,
+      statusByGoodRate: statusByRate.statusByGoodRate,
+      statusByBadRate: statusByRate.statusByBadRate
+    }
+  })
 })
+// 1.1 总体卫生情况
+async function getAllStatus() {
+  // 获取所有情况和所有班级
+  let allStatus = await query("SELECT * FROM STATUS")
+  let allClass = await query("SELECT *FROM CLASS")
+  // 给每个班级添加上其各自的优、良、差的个数
+  allClass.forEach(item => {
+    item.good = 0;
+    item.normal = 0;
+    item.bad = 0;
+    item.total = 0;
+  })
+  // 在所有情况中根据id获取到当前班级的所有情况
+  allStatus.forEach(item => {
+    let currentClass = allClass.find(item2 => item2.id == item.class_id)
+    // 如果没有找到该班级，返回空值
+    if (!currentClass) return false;
+    currentClass.total++;
+    if (item.status == 1) {
+      currentClass.good++
+    } else if (item.status == 2) {
+      currentClass.normal++
+    } else if (item.status == 3) {
+      currentClass.bad++
+    }
+  })
+  return allClass
+}
+// 1.2 班级卫生优率、差率
+async function getRate(allClassStatus) {
+  // 返回对象
+  let returnObj = {}
+  allClassStatus.forEach(item => {
+    // 默认值
+    item.good_rate = 0;
+    item.bad_rate = 0
+    // 如果有卫生情况total，则计算优率、差率
+    if (item.total != 0) {
+      // 计算优率、差率
+      item.good_rate = Math.floor(item.good / item.total * 100)
+      item.bad_rate = Math.floor(item.bad / item.total * 100)
+    }
+  })
+  // 根据优率排序
+  let statusByGoodRate = allClassStatus.sort((a, b) => { return b.good_rate - a.good_rate })
+  returnObj.statusByGoodRate = statusByGoodRate.slice(0, 3)
+  // 根据差率排序
+  let statusByBadRate = allClassStatus.sort((a, b) => { return b.bad_rate - a.bad_rate })
+  returnObj.statusByBadRate = statusByBadRate.slice(0, 3)
 
+  // 返回
+  return returnObj
+}
 
-// 2.添加班级
-router.post("/", async (req, res) => {
-  console.log('req.body', req.body)
-  try {
-    // 执行添加语句
-    let res1 = await query("insert into class (class_name) values(?)", [req.body.class_name])
-    console.log('res1', res1)
-    // 返回成功信息
-    res.send({
-      code: 200,
-      msg: "添加成功"
-    })
-  } catch {
-    // 出现报错时，返回失败信息
-    res.send({
-      code: 400,
-      msg: "添加失败"
-    })
-  }
-})
-
-// 3.删除班级
-router.delete("/", async (req, res) => {
-  console.log('req.body', req.query)
-  try {
-    // 执行添加语句
-    let res1 = await query("delete from class where id = ?", [req.query.id])
-    console.log('res1', res1)
-    // 返回成功信息
-    res.send({
-      code: 200,
-      msg: "删除成功"
-    })
-  } catch {
-    // 出现报错时，返回失败信息
-    res.send({
-      code: 400,
-      msg: "删除失败"
-    })
-
-  }
-})
-
-// 4.修改班级
-router.patch("/", async (req, res) => {
-  console.log('req.body', req.query)
-  try {
-    // 执行添加语句
-    let res1 = await query("update class set class_name = ? where id = ?", [req.body.class_name, req.body.id])
-    console.log('res1', res1)
-    // 返回成功信息
-    res.send({
-      code: 200,
-      msg: "修改成功"
-    })
-  } catch {
-    // 出现报错时，返回失败信息
-    res.send({
-      code: 400,
-      msg: "修改失败"
-    })
-
-  }
-})
-
-
+// 1.3 负责人出勤情况
+async function getPrincipalStatus() {
+  // 获取所有情况和所有负责人
+  let allStatus = await query("SELECT * FROM STATUS")
+  let allPrincipal = await query("SELECT *FROM PRINCIPAL")
+  // 给每一个负责人添加初始默认值
+  allPrincipal.forEach(item => {
+    item.total_status = 0;
+    item.finished_status = 0;
+  })
+  // 遍历所有卫生情况，根据具体情况给负责人添加统计值
+  allStatus.forEach(item => {
+    let currentPrincipal = allPrincipal.find(item2 => item2.id == item.principal_id)
+    currentPrincipal.total_status++
+    // 如果具体情况不是“未检查”，则就是已完成
+    if (item.status != 0) {
+      currentPrincipal.finished_status++
+    }
+  })
+  console.log('allPrincipal', allPrincipal)
+  return allPrincipal.sort((a, b) => { return b.total_status - a.total_status })
+}
 
 module.exports = router;

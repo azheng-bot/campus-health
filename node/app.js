@@ -52,6 +52,8 @@ app.use('/aside', asideRouter)
 let statusRouter = require("./routers/status")
 app.use("/status", statusRouter)
 // 2.3 统计路由
+let countRouter = require("./routers/count")
+app.use("/count", countRouter)
 // 2.4 班级管理路由
 let classRouter = require("./routers/class")
 app.use("/class", classRouter)
