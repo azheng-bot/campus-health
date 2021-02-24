@@ -22,7 +22,6 @@ https://web.postman.co/workspace/62e48599-9fd0-4b17-8da1-3771eeedbb00/documentat
 2. https://www.zcool.com.cn/work/ZMTkzODYzNzI=.html?switchPage=on
 
 
-
 ---
 
 
@@ -61,6 +60,10 @@ https://web.postman.co/workspace/62e48599-9fd0-4b17-8da1-3771eeedbb00/documentat
 
 
 ### 项目草图
+
+全部草图：https://ae01.alicdn.com/kf/U9ea9e62223d3463b82e017346274dd849.jpg
+
+人员管理：https://ae01.alicdn.com/kf/Ub50a71d4c240455b8fed7e7975c47ee5o.jpg
 
 统计页1：https://ae01.alicdn.com/kf/Ubb17c2083e5d4d4db264e99ce76695af9.jpg
 
