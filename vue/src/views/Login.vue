@@ -74,7 +74,7 @@ export default {
                   message: "登录成功",
                   type: "success",
                 });
-                _this.$router.push("/home");
+                _this.$router.push("/index");
               } else {
                 ElMessage.error(response.data.message);
               }

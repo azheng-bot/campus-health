@@ -9,56 +9,27 @@
       <aside class="aside">
         <el-menu
           :uniqueOpened="true"
-          default-active="2"
+          default-active="1"
           class="el-menu-vertical-demo"
           background-color="#001f4e"
           text-color="#7394cd"
           active-text-color="#fff"
         >
-          <el-submenu index="1">
-            <template #title>
-              <i class="el-icon-location"></i>
-              <span>导航一</span>
-            </template>
-            <el-menu-item-group>
-              <template #title>分组一</template>
-              <el-menu-item index="1-1">选项1</el-menu-item>
-              <el-menu-item index="1-2">选项2</el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group title="分组2">
-              <el-menu-item index="1-3">选项3</el-menu-item>
-            </el-menu-item-group>
-            <el-submenu index="1-4">
-              <template #title>选项4</template>
-              <el-menu-item index="1-4-1">选项1</el-menu-item>
+          <span v-for="item in dataLayout">
+            <el-menu-item :index="item.id" v-if="!item.children">
+              <template #title>
+                <span @click="JumpClick(item.url)">{{ item.name }}</span>
+              </template>
+            </el-menu-item>
+            <el-submenu v-else :index="item.id">
+              <template #title>
+                <span>{{ item.name }}</span>
+              </template>
+              <el-menu-item v-for="item1 in item.children" :index="item1.id">
+                <span @click="JumpClick(item1.url)">{{ item.name }}</span>
+              </el-menu-item>
             </el-submenu>
-          </el-submenu>
-          <el-menu-item index="2">
-            <i class="el-icon-menu"></i>
-            <template #title>导航二</template>
-          </el-menu-item>
-          <el-menu-item index="3" disabled>
-            <i class="el-icon-document"></i>
-            <template #title>导航三</template>
-          </el-menu-item>
-          <el-menu-item index="4">
-            <i class="el-icon-setting"></i>
-            <template #title>导航四</template>
-          </el-menu-item>
-          <el-submenu index="5">
-            <template #title>
-              <i class="el-icon-location"></i>
-              <span>导航一</span>
-            </template>
-            <el-menu-item-group>
-              <template #title>分组一</template>
-              <el-menu-item index="5-1">选项1</el-menu-item>
-              <el-menu-item index="5-2">选项2</el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group title="分组2">
-              <el-menu-item index="5-3">选项3</el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
+          </span>
         </el-menu>
       </aside>
       <section class="content">
@@ -70,9 +41,37 @@
 
 <script>
 import dataTime from "./dateTime";
+import axios from "axios";
 export default {
+  data() {
+    return {
+      dataLayout: "",
+    };
+  },
+  created() {
+    this.layoutData();
+  },
   components: {
     dataTime,
+  },
+  methods: {
+    layoutData() {
+      axios({
+        method: "get",
+        url: "/api/aside",
+        headers: {
+          Authorization: window.sessionStorage.getItem("token"),
+        },
+      }).then((res) => {
+        if (res.data.code == 200) {
+          this.dataLayout = res.data.data;
+        }
+      });
+    },
+    JumpClick(url) {
+      // this.$router.push(url);
+      console.log(url);
+    },
   },
 };
 </script>

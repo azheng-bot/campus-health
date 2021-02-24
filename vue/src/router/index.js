@@ -16,8 +16,8 @@ const routes = [
   },
   //首页
   {
-    path: "/home",
-    name: "Home",
+    path: "/index",
+    name: "Index",
     component: () => import("../views/Home.vue"),
   },
 ];
