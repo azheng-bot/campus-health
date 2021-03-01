@@ -11,7 +11,7 @@
  Target Server Version : 50725
  File Encoding         : 65001
 
- Date: 29/01/2021 14:38:08
+ Date: 01/03/2021 13:15:59
 */
 
 SET NAMES utf8mb4;
@@ -30,11 +30,11 @@ CREATE TABLE `area`  (
 -- ----------------------------
 -- Records of area
 -- ----------------------------
-INSERT INTO `area` VALUES (1, '田径场');
-INSERT INTO `area` VALUES (2, '篮球场');
-INSERT INTO `area` VALUES (3, '教学楼');
-INSERT INTO `area` VALUES (4, '宿舍楼一');
-INSERT INTO `area` VALUES (5, '宿舍楼二');
+INSERT INTO `area` VALUES (1, '足球场');
+INSERT INTO `area` VALUES (2, '风雨操场');
+INSERT INTO `area` VALUES (3, '篮球场');
+INSERT INTO `area` VALUES (4, '教学楼A区');
+INSERT INTO `area` VALUES (5, '教学楼B区');
 
 -- ----------------------------
 -- Table structure for class
@@ -49,7 +49,7 @@ CREATE TABLE `class`  (
 -- ----------------------------
 -- Records of class
 -- ----------------------------
-INSERT INTO `class` VALUES (1, '19级全栈');
+INSERT INTO `class` VALUES (1, '2019级全栈1212');
 INSERT INTO `class` VALUES (2, '19级Java');
 INSERT INTO `class` VALUES (3, '19级python');
 INSERT INTO `class` VALUES (4, '19级数媒');
@@ -70,7 +70,7 @@ CREATE TABLE `principal`  (
 -- ----------------------------
 -- Records of principal
 -- ----------------------------
-INSERT INTO `principal` VALUES (1, '李闯闯');
+INSERT INTO `principal` VALUES (1, '李创创');
 INSERT INTO `principal` VALUES (2, '杨文林');
 INSERT INTO `principal` VALUES (3, '徐丹丹');
 INSERT INTO `principal` VALUES (4, '肖威');
@@ -91,7 +91,34 @@ CREATE TABLE `status`  (
   `principal_id` int(11) NOT NULL COMMENT '责任人id',
   `principal_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '责任人名',
   PRIMARY KEY (`id`, `principal_name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of status
+-- ----------------------------
+INSERT INTO `status` VALUES (1, 14, '20级全栈', 1, '操场', '2021-1-20', '1', 1, '李闯闯');
+INSERT INTO `status` VALUES (7, 1, '20级全栈', 1, '操场', '2021-1-21', '0', 2, '李闯闯');
+INSERT INTO `status` VALUES (8, 1, '20级全栈', 1, '操场', '2021-1-22', '1', 2, '李闯闯');
+INSERT INTO `status` VALUES (9, 1, '20级全栈', 1, '操场', '2021-1-23', '3', 2, '李闯闯');
+INSERT INTO `status` VALUES (10, 1, '20级全栈', 1, '操场', '2021-1-24', '2', 2, '李闯闯');
+INSERT INTO `status` VALUES (11, 1, '20级全栈', 1, '操场', '2021-1-25', '3', 2, '李闯闯');
+INSERT INTO `status` VALUES (12, 1, '20级全栈', 1, '操场', '2021-1-26', '1', 2, '李闯闯');
+INSERT INTO `status` VALUES (13, 2, '19级Java', 2, '风雨操场', '2021-1-22', '1', 2, '李闯闯');
+INSERT INTO `status` VALUES (14, 2, '19级Java', 2, '风雨操场', '2021-1-23', '1', 2, '李闯闯');
+INSERT INTO `status` VALUES (15, 2, '19级Java', 2, '风雨操场', '2021-1-24', '1', 2, '李闯闯');
+INSERT INTO `status` VALUES (16, 2, '19级Java', 2, '风雨操场', '2021-1-25', '1', 2, '李闯闯');
+INSERT INTO `status` VALUES (17, 2, '19级Java', 2, '风雨操场', '2021-1-26', '1', 2, '李闯闯');
+INSERT INTO `status` VALUES (18, 2, '19级Java', 2, '风雨操场', '2021-1-27', '2', 2, '李闯闯');
+INSERT INTO `status` VALUES (19, 3, '19级python', 3, '篮球场', '2021-1-22', '2', 2, '李闯闯');
+INSERT INTO `status` VALUES (20, 3, '19级python', 3, '篮球场', '2021-1-23', '2', 2, '李闯闯');
+INSERT INTO `status` VALUES (21, 3, '19级python', 3, '篮球场', '2021-1-24', '3', 2, '李闯闯');
+INSERT INTO `status` VALUES (22, 3, '19级python', 3, '篮球场', '2021-1-25', '3', 2, '李闯闯');
+INSERT INTO `status` VALUES (23, 3, '19级python', 3, '篮球场', '2021-1-26', '3', 2, '李闯闯');
+INSERT INTO `status` VALUES (24, 3, '19级python', 3, '篮球场', '2021-1-27', '3', 2, '李闯闯');
+INSERT INTO `status` VALUES (25, 4, '19级数媒', 4, '教学楼A区', '2021-1-22', '2', 2, '李闯闯');
+INSERT INTO `status` VALUES (26, 4, '19级数媒', 4, '教学楼A区', '2021-1-23', '1', 2, '李闯闯');
+INSERT INTO `status` VALUES (27, 4, '19级数媒', 4, '教学楼A区', '2021-1-24', '2', 2, '李闯闯');
+INSERT INTO `status` VALUES (28, 4, '19级数媒', 4, '教学楼A区', '2021-1-25', '3', 2, '李闯闯');
 
 -- ----------------------------
 -- Table structure for user
