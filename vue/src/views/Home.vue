@@ -3,7 +3,12 @@
     <el-container>
       <el-header>
         <!-- 时间选择 -->
-        <el-date-picker v-model="cleanTime" type="date" placeholder="选择日期">
+        <el-date-picker
+          v-model="cleanTime"
+          type="date"
+          placeholder="选择日期"
+          @blur="aaa"
+        >
         </el-date-picker>
       </el-header>
 
@@ -20,20 +25,12 @@
                   :span="10"
                   class="playground"
                   @click="switchRegion('playground')"
-                  >操场</el-col
+                  >足球场</el-col
                 >
-                <el-col :span="8">
-                  <div class="gym" @click="switchRegion('gym')">室内体育馆</div>
+                <el-col :span="14">
+                  <div class="gym" @click="switchRegion('gym')">风雨操场</div>
                   <div class="basketball" @click="switchRegion('basketball')">
                     篮球场
-                  </div>
-                </el-col>
-                <el-col :span="6">
-                  <div class="tennis" @click="switchRegion('tennis')">
-                    网球场
-                  </div>
-                  <div class="badminton" @click="switchRegion('badminton')">
-                    羽毛球场
                   </div>
                 </el-col>
               </el-row>
@@ -118,7 +115,8 @@
                   <template #header>
                     <span>班级</span>
                   </template>
-                  {{ region }}
+                  <span v-if="dataHygiene">{{ dataHygiene.class_name }}</span>
+                  <span v-else>无班级打扫</span>
                 </el-card>
               </el-col>
             </el-row>
@@ -127,8 +125,16 @@
               <el-col :span="24">
                 <el-card class="box-card">
                   <template #header>
-                    <span>情况</span>
+                    <span>打扫情况</span>
                   </template>
+                  <span v-if="dataHygiene">
+                    <span v-if="dataHygiene.status == 0">未检查</span>
+                    <span v-else-if="dataHygiene.status == 1">优</span>
+                    <span v-else-if="dataHygiene.status == 2">良</span>
+                    <span v-else-if="dataHygiene.status == 3">差</span>
+                  </span>
+                  <span v-else>无班级打扫</span>
+                  <!-- 打扫情况（0：未检查；1：优；2：良；3：差；） -->
                 </el-card></el-col
               >
             </el-row>
@@ -141,32 +147,40 @@
 
 <script>
 // @ is an alias to /src
-
+import axios from "axios";
 export default {
   name: "Home",
   data() {
     return {
       // 时间
-      cleanTime: new Date(),
+      cleanTime: "2021-1-22",
       // 选择的那块区域
-      region: "playground",
+      region: 1,
       // 各个区域背景颜色
       regionColor: {
-        playground: ["#d9f8c1", "#a9ee7b"],
-        gym: ["#b5e4f5", " #08b3f1"],
-        basketball: ["#f3ccb4", "#f87320"],
-        tennis: ["#fad1dd", " #f184a5"],
-        badminton: ["#f5bfb8", "#f2543f"],
-        floorLeft: ["#fdebb8", "#faca47"],
-        floorRight: ["#c0d2f7", "#4c85f8"],
+        playground: ["#d9f8c1", "#a9ee7b", 1],
+        gym: ["#b5e4f5", " #08b3f1", 2],
+        basketball: ["#f3ccb4", "#f87320", 3],
+        floorLeft: ["#fdebb8", "#faca47", 4],
+        floorRight: ["#c0d2f7", "#4c85f8", 5],
       },
+      dataHygiene: "",
     };
   },
+  created() {
+    this.hygieneData();
+  },
+
   methods: {
+    aaa() {
+      this.hygieneData();
+      this.cleanTime = this.cleanTime.toLocaleDateString().replaceAll("/", "-");
+    },
     // 点击区域的事件
     switchRegion(param) {
       let _this = this;
-      this.region = param;
+      this.region = this.regionColor[param][2];
+      this.hygieneData();
       Object.keys(this.regionColor).forEach(function (key) {
         // 恢复默认颜色
         document.getElementsByClassName(key)[0].style.backgroundColor =
@@ -175,6 +189,21 @@ export default {
           // 颜色加重
           document.getElementsByClassName(param)[0].style.backgroundColor =
             _this.regionColor[param][1];
+        }
+      });
+    },
+    hygieneData() {
+      axios({
+        method: "get",
+        // ?time=2021-1-20&area_id=1
+        url: "/api/status?" + `time=${this.cleanTime}&area_id=${this.region}`,
+        headers: {
+          Authorization: window.sessionStorage.getItem("token"),
+        },
+      }).then((res) => {
+        if (res.data.code == 200) {
+          this.dataHygiene = res.data.data;
+          console.log(res.data.data);
         }
       });
     },
@@ -201,7 +230,7 @@ export default {
   font-weight: 600;
 }
 .playground {
-  background-color: #d9f8c1;
+  background-color: #a9ee7b;
   height: 160px;
   border-radius: 80px;
   line-height: 160px;
@@ -307,4 +336,7 @@ export default {
     }
   }
 }
+// .box-card {
+
+// }
 </style>
