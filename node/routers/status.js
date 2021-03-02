@@ -6,14 +6,21 @@ let query = require('../utils/query')
 
 // 1.获取卫生情况
 router.get("/", async (req, res) => {
-  let { time, area_id } = req.query
-
+  let { time, area_id, class_id } = req.query
   // 查询卫生情况
-  let res1 = await query("SELECT * FROM STATUS WHERE TIME = ? AND AREA_ID = ?", [time, area_id])
+  // 查询语句
+  let sqlStr = "SELECT * FROM STATUS WHERE";
+  if (time) sqlStr += " TIME = '" + time + "' AND ";
+  if (area_id) sqlStr += " AREA_ID = " + area_id + " AND ";
+  if (class_id) sqlStr += " CLASS_ID = " + class_id + " AND ";
+  // 去掉末尾的AND
+  sqlStr = sqlStr.substr(0,sqlStr.length-5)
+  // 发起查询请求
+  let res1 = await query(sqlStr)
   // 返回正确信息
   res.send({
     code: 200,
-    data: res1[0]
+    data: res1
   })
 })
 
