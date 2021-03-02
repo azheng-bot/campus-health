@@ -26,7 +26,7 @@
                 <span>{{ item.name }}</span>
               </template>
               <el-menu-item v-for="item1 in item.children" :index="item1.id">
-                <span @click="JumpClick(item1.url)">{{ item.name }}</span>
+                <span @click="JumpClick(item1.url)">{{ item1.name }}</span>
               </el-menu-item>
             </el-submenu>
           </span>
@@ -65,6 +65,7 @@ export default {
       }).then((res) => {
         if (res.data.code == 200) {
           this.dataLayout = res.data.data;
+          console.log(res.data.data);
         }
       });
     },
