@@ -115,7 +115,9 @@
                   <template #header>
                     <span>班级</span>
                   </template>
-                  <span v-if="dataHygiene">{{ dataHygiene.class_name }}</span>
+                  <span v-if="dataHygiene[0]">{{
+                    dataHygiene[0].class_name
+                  }}</span>
                   <span v-else>无班级打扫</span>
                 </el-card>
               </el-col>
@@ -127,11 +129,11 @@
                   <template #header>
                     <span>打扫情况</span>
                   </template>
-                  <span v-if="dataHygiene">
-                    <span v-if="dataHygiene.status == 0">未检查</span>
-                    <span v-else-if="dataHygiene.status == 1">优</span>
-                    <span v-else-if="dataHygiene.status == 2">良</span>
-                    <span v-else-if="dataHygiene.status == 3">差</span>
+                  <span v-if="dataHygiene[0]">
+                    <span v-if="dataHygiene[0].status == 0">未检查</span>
+                    <span v-else-if="dataHygiene[0].status == 1">优</span>
+                    <span v-else-if="dataHygiene[0].status == 2">良</span>
+                    <span v-else-if="dataHygiene[0].status == 3">差</span>
                   </span>
                   <span v-else>无班级打扫</span>
                   <!-- 打扫情况（0：未检查；1：优；2：良；3：差；） -->
@@ -203,7 +205,6 @@ export default {
       }).then((res) => {
         if (res.data.code == 200) {
           this.dataHygiene = res.data.data;
-          console.log(res.data.data);
         }
       });
     },

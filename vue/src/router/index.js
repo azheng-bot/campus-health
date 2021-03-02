@@ -20,6 +20,37 @@ const routes = [
     name: "Index",
     component: () => import("../views/Home.vue"),
   },
+  // 卫生情况
+  // status
+  {
+    path: "/status",
+    name: "Status",
+    component: () => import("../views/Status.vue"),
+  },
+  // assign
+  {
+    path: "/assign",
+    name: "Assign",
+    component: () => import("../views/Assign.vue"),
+  },
+  // count
+  {
+    path: "/count",
+    name: "Count",
+    component: () => import("../views/Count.vue"),
+  },
+  // principal
+  {
+    path: "/principal",
+    name: "Principal",
+    component: () => import("../views/Principal.vue"),
+  },
+  // class
+  {
+    path: "/class",
+    name: "Class",
+    component: () => import("../views/Class.vue"),
+  },
 ];
 
 const router = createRouter({

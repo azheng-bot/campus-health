@@ -70,8 +70,8 @@ export default {
       });
     },
     JumpClick(url) {
-      // this.$router.push(url);
-      console.log(url);
+      this.$router.push(url);
+      // console.log(url);
     },
   },
 };
