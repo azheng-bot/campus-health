@@ -61,8 +61,58 @@
 
         <el-table-column prop="principal_name" label="负责人">
         </el-table-column>
-        <el-table-column label="操作"> 修改 </el-table-column>
+        <el-table-column label="操作">
+          <template #default="scope">
+            <el-button size="mini" type="warning" @click="handleEdit(scope.row)"
+              >编辑</el-button
+            >
+          </template>
+        </el-table-column>
       </el-table>
+      <el-dialog title="提示" v-model="dialogVisible" width="30%">
+        <el-form label-width="80px" :model="formLabelAlign">
+          <el-form-item label="时间">
+            <el-input :disabled="true" v-model="formLabelAlign.time"></el-input>
+          </el-form-item>
+          <el-form-item label="区域">
+            <el-input :disabled="true" v-model="formLabelAlign.area"></el-input>
+          </el-form-item>
+          <el-form-item label="班级">
+            <el-input
+              :disabled="true"
+              v-model="formLabelAlign.class"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="情况">
+            <el-select v-model="statusValue" placeholder="请选择">
+              <el-option
+                v-for="item in statusData"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="负责人">
+            <el-select v-model="principalValue" placeholder="请选择">
+              <el-option
+                v-for="item in principalData"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="handleOk">确 定</el-button>
+          </span>
+        </template>
+      </el-dialog>
     </el-main>
   </el-container>
 </template>
@@ -73,6 +123,12 @@ import { ElMessage } from "element-plus";
 export default {
   data() {
     return {
+      dialogVisible: false,
+      formLabelAlign: {
+        time: "",
+        class: "",
+        area: "",
+      },
       time: "",
       classData: [
         {
@@ -126,9 +182,53 @@ export default {
           label: "教学楼B区",
         },
       ],
+      principalData: [
+        {
+          value: ["1", "李闯闯"],
+          label: "李闯闯",
+        },
+        {
+          value: ["2", "杨文林"],
+          label: "杨文林",
+        },
+        {
+          value: ["3", "徐丹丹"],
+          label: "徐丹丹",
+        },
+        {
+          value: ["4", "肖威"],
+          label: "肖威",
+        },
+        {
+          value: ["5", "毛娇娇"],
+          label: "毛娇娇",
+        },
+      ],
+      statusData: [
+        {
+          value: "0",
+          label: "未检查",
+        },
+        {
+          value: "1",
+          label: "优",
+        },
+        {
+          value: "2",
+          label: "良",
+        },
+        {
+          value: "3",
+          label: "差",
+        },
+      ],
+      statusValue: "",
+      principalValue: [],
       classValue: "",
       regionValue: "",
       tableData: [],
+      id: "",
+      row: "",
     };
   },
   created() {
@@ -140,6 +240,42 @@ export default {
     },
     aaa() {
       this.time = this.time.toLocaleDateString().replaceAll("/", "-");
+    },
+    handleEdit(row) {
+      this.dialogVisible = true;
+      this.formLabelAlign.time = row.time;
+      this.formLabelAlign.class = row.class_name;
+      this.formLabelAlign.area = row.area_name;
+      this.statusValue = row.status;
+      this.row = row;
+    },
+    handleOk() {
+      let _this = this;
+      console.log(this.principalValue);
+      axios({
+        method: "patch",
+        url: "/api/status?" + `id=${_this.row.id}`,
+        headers: {
+          Authorization: window.sessionStorage.getItem("token"),
+        },
+        data: {
+          id: this.row.id,
+          status: this.statusValue,
+          principal_id: _this.principalValue[0] || this.row.principal_id,
+          time: this.row.time,
+          principal_name: _this.principalValue[1] || this.row.principal_name,
+          area_name: this.row.area_name,
+          area_id: this.row.area_id,
+          class_name: this.row.area_name,
+          class_id: this.row.class_id,
+        },
+      }).then((res) => {
+        if (res.data.code == 200) {
+          this.handeltableData();
+          this.principalValue = [];
+          this.dialogVisible = false;
+        }
+      });
     },
     handelReset() {
       this.time = "";
