@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
   if (area_id) sqlStr += " AREA_ID = " + area_id + " AND ";
   if (class_id) sqlStr += " CLASS_ID = " + class_id + " AND ";
   // 去掉末尾的AND
-  sqlStr = sqlStr.substr(0,sqlStr.length-5)
+  sqlStr = sqlStr.substr(0, sqlStr.length - 5)
   // 发起查询请求
   let res1 = await query(sqlStr)
   // 返回正确信息
@@ -27,6 +27,12 @@ router.get("/", async (req, res) => {
 // 2.添加卫生情况
 router.post("/", async (req, res) => {
   let { class_id, class_name, area_id, area_name, principal_id, principal_name, time, status } = req.body;
+  if (!(class_id && class_name && area_id && area_name && principal_id && principal_name && time && status)) {
+    return res.json({
+      code: 400,
+      msg: "请将数据填写完整"
+    })
+  }
 
   // 判断是否重复添加
   let res1 = await query(`SELECT * FROM STATUS WHERE TIME = ('${time}') AND AREA_ID = ('${area_id}')`)
