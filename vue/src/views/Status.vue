@@ -47,9 +47,9 @@
       <el-table :data="tableData" border style="width: 100%">
         <el-table-column prop="time" label="时间" width="180">
         </el-table-column>
+        <el-table-column prop="class_name" label="班级"> </el-table-column>
         <el-table-column prop="area_name" label="区域" width="180">
         </el-table-column>
-        <el-table-column prop="class_name" label="班级"> </el-table-column>
         <el-table-column label="情况">
           <template #default="scope">
             <el-tag class="status_tag" type="info" v-if="scope.row.status == 0">未<span>检查</span> </el-tag>
