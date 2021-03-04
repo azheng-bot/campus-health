@@ -15,9 +15,9 @@
           <el-select v-model="classValue" placeholder="请选择班级">
             <el-option
               v-for="item in classData"
-              :key="item.id"
-              :label="item.class_name"
-              :value="item.id"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             >
             </el-option>
           </el-select>
@@ -25,19 +25,19 @@
         <el-col :span="4">
           <el-select v-model="regionValue" placeholder="请选择区域">
             <el-option
-              v-for="item in areaData"
-              :key="item.id"
-              :label="item.area_name"
-              :value="item.id"
+              v-for="item in regionData"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             >
             </el-option>
           </el-select>
         </el-col>
         <el-col :span="6" :offset="3">
-          <el-button type="primary" icon="el-icon-search" @click="handleSearch"
+          <el-button type="primary" icon="el-icon-search" @click="handelSearch"
             >搜索</el-button
           >
-          <el-button type="info" icon="el-icon-delete" @click="handleReset"
+          <el-button type="info" icon="el-icon-delete" @click="handelReset"
             >重置</el-button
           ></el-col
         >
@@ -52,10 +52,10 @@
         <el-table-column prop="class_name" label="班级"> </el-table-column>
         <el-table-column label="情况">
           <template #default="scope">
-            <el-tag class="status_tag" type="info" v-if="scope.row.status == 0">未<span>检查</span> </el-tag>
-            <el-tag type="success"  v-else-if="scope.row.status == 1">优</el-tag>
-            <el-tag  v-else-if="scope.row.status == 2">良</el-tag>
-            <el-tag type="danger"  v-else-if="scope.row.status == 3">差</el-tag>
+            <span v-if="scope.row.status == 0">未检查</span>
+            <span v-else-if="scope.row.status == 1">优</span>
+            <span v-else-if="scope.row.status == 2">良</span>
+            <span v-else-if="scope.row.status == 3">差</span>
           </template>
         </el-table-column>
 
@@ -73,7 +73,7 @@
         title="编辑"
         v-model="dialogVisible"
         width="30%"
-        @close="handleClose"
+        @close="handelClose"
       >
         <el-form
           label-width="80px"
@@ -81,38 +81,35 @@
           :rules="rules"
           ref="ruleForm"
         >
-          <el-form-item label="区域" prop="area_id">
-            <el-select v-model="formLabelAlign.area_id" placeholder="请选择">
+          <el-form-item label="区域" prop="area">
+            <el-select v-model="formLabelAlign.area" placeholder="请选择">
               <el-option
                 v-for="item in areaData"
-                :key="item.id"
-                :label="item.area_name"
-                :value="item.id"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
               >
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="负责人" prop="principal_id">
-            <el-select
-              v-model="formLabelAlign.principal_id"
-              placeholder="请选择"
-            >
+          <el-form-item label="负责人" prop="principal">
+            <el-select v-model="formLabelAlign.principal" placeholder="请选择">
               <el-option
                 v-for="item in principalData"
-                :key="item.id"
-                :label="item.principal_name"
-                :value="item.id"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
               >
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="班级" prop="class_id">
-            <el-select v-model="formLabelAlign.class_id" placeholder="请选择">
+          <el-form-item label="班级" prop="class">
+            <el-select v-model="formLabelAlign.class" placeholder="请选择">
               <el-option
-                v-for="item in classData"
-                :key="item.id"
-                :label="item.class_name"
-                :value="item.id"
+                v-for="item in classDatas"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
               >
               </el-option>
             </el-select>
@@ -133,7 +130,7 @@
               v-model="formLabelAlign.time"
               type="date"
               placeholder="选择日期"
-              @change="aab"
+              @blur="aab"
             >
             </el-date-picker>
           </el-form-item>
@@ -159,10 +156,58 @@ export default {
     return {
       dialogVisible: false,
       time: "",
-      classData: [],
-      areaData: [],
-      principalData: [],
-      tableData: [],
+      classData: [
+        {
+          value: "1",
+          label: "2019级全栈1212",
+        },
+        {
+          value: "2",
+          label: "19级Java",
+        },
+        {
+          value: "3",
+          label: "19级python",
+        },
+        {
+          value: "4",
+          label: "19级数媒",
+        },
+        {
+          value: "5",
+          label: "20级全栈Python",
+        },
+        {
+          value: "6",
+          label: "20级Java",
+        },
+        {
+          value: "7",
+          label: "20级数媒",
+        },
+      ],
+      regionData: [
+        {
+          value: "1",
+          label: "足球场",
+        },
+        {
+          value: "2",
+          label: "风雨操场",
+        },
+        {
+          value: "3",
+          label: "篮球场",
+        },
+        {
+          value: "4",
+          label: "教学楼A区",
+        },
+        {
+          value: "5",
+          label: "教学楼B区",
+        },
+      ],
       formLabelAlign: {
         time: "",
         class: "",
@@ -181,6 +226,80 @@ export default {
           { required: true, message: "请输入活动名称", trigger: "blur" },
         ],
       },
+      classDatas: [
+        {
+          value: ["1", "2019级全栈1212"],
+          label: "2019级全栈1212",
+        },
+        {
+          value: ["2", "19级Java"],
+          label: "19级Java",
+        },
+        {
+          value: ["3", "19级python"],
+          label: "19级python",
+        },
+        {
+          value: ["4", "19级数媒"],
+          label: "19级数媒",
+        },
+        {
+          value: ["5", "20级全栈Python"],
+          label: "20级全栈Python",
+        },
+        {
+          value: ["6", "20级Java"],
+          label: "20级Java",
+        },
+        {
+          value: ["7", "20级数媒"],
+          label: "20级数媒",
+        },
+      ],
+      areaData: [
+        {
+          value: ["1", "足球场"],
+          label: "足球场",
+        },
+        {
+          value: ["2", "风雨操场"],
+          label: "风雨操场",
+        },
+        {
+          value: ["3", "篮球场"],
+          label: "篮球场",
+        },
+        {
+          value: ["4", "教学楼A区"],
+          label: "教学楼A区",
+        },
+        {
+          value: ["5", "教学楼B区"],
+          label: "教学楼B区",
+        },
+      ],
+      principalData: [
+        {
+          value: ["1", "李闯闯"],
+          label: "李闯闯",
+        },
+        {
+          value: ["2", "杨文林"],
+          label: "杨文林",
+        },
+        {
+          value: ["3", "徐丹丹"],
+          label: "徐丹丹",
+        },
+        {
+          value: ["4", "肖威"],
+          label: "肖威",
+        },
+        {
+          value: ["5", "毛娇娇"],
+          label: "毛娇娇",
+        },
+      ],
       statusData: [
         {
           value: "0",
@@ -201,92 +320,70 @@ export default {
       ],
       classValue: "",
       regionValue: "",
+      tableData: [],
+      id: "",
       row: "",
     };
   },
   created() {
-    this.init();
-    this.handletableData();
+    this.handeltableData();
   },
   methods: {
-    // 初始化获取基本信息
-    async init() {
-      // 获取区域信息
-      let res = await axios({
-        method: "get",
-        url: "/api/area",
-        headers: {
-          Authorization: window.sessionStorage.getItem("token"),
-        },
-      });
-      this.areaData = res.data.data;
-      // 获取班级信息
-      let res2 = await axios({
-        method: "get",
-        url: "/api/class",
-        headers: {
-          Authorization: window.sessionStorage.getItem("token"),
-        },
-      });
-      this.classData = res2.data.data;
-      // 获取负责人信息
-      let res3 = await axios({
-        method: "get",
-        url: "/api/principal",
-        headers: {
-          Authorization: window.sessionStorage.getItem("token"),
-        },
-      });
-      this.principalData = res3.data.data;
-      console.log(this.areaData)
-      console.log(this.classData)
-      console.log(this.principalData)
+    aab() {
+      this.formLabelAlign.time = this.formLabelAlign.time
+        .toLocaleDateString()
+        .replaceAll("/", "-");
     },
-    aab(time) {
-      this.formLabelAlign.time = time.getFullYear() + '-'+time.getMonth() + "-" + time.getDate()
+    handelSearch() {
+      this.handeltableData();
     },
-    handleSearch() {
-      this.handletableData();
-    },
-    handleClose() {
-      // this.formLabelAlign = {};
+    handelClose() {
+      this.formLabelAlign = {
+        time: "",
+        class: "",
+        area: "",
+        principal: "",
+        status: "",
+      };
       // location.reload();
     },
     aaa() {
       this.time = this.time.toLocaleDateString().replaceAll("/", "-");
     },
-    // 点击修改回显
     handleEdit(row) {
       this.dialogVisible = true;
-      console.log("object", Object(row));
-      // 深拷贝
-      this.formLabelAlign = JSON.parse(JSON.stringify(row));
+      this.formLabelAlign.time = row.time;
+      this.row = row;
     },
-    // 确认提交修改
     handleOk(formName) {
+      let _this = this;
+      console.log(_this.row.id);
       this.$refs[formName].validate((valid) => {
-        // 根据id确定各个参数的name
-        this.formLabelAlign.class_name = this.classData.find(item => item.id == this.formLabelAlign.class_id).class_name
-        this.formLabelAlign.area_name = this.areaData.find(item => item.id == this.formLabelAlign.area_id).area_name
-        this.formLabelAlign.principal_name = this.principalData.find(item => item.id == this.formLabelAlign.principal_id).principal_name
-        console.log('this.formLabelAlign', this.formLabelAlign)
-
         if (valid) {
           axios({
             method: "patch",
-            url: "/api/status",
+            url: "/api/status?" + `id=${_this.row.id}`,
             headers: {
               Authorization: window.sessionStorage.getItem("token"),
             },
-            data: this.formLabelAlign,
+            data: {
+              id: this.row.id,
+              status: this.formLabelAlign.status,
+              principal_id: this.formLabelAlign.principal[0],
+              principal_name: this.formLabelAlign.principal[1],
+              time: this.formLabelAlign.time,
+              area_name: this.formLabelAlign.area[1],
+              area_id: this.formLabelAlign.area[0],
+              class_name: this.formLabelAlign.class[1],
+              class_id: this.formLabelAlign.class[0],
+            },
           })
             .then((res) => {
               if (res.data.code == 200) {
-                this.handletableData();
+                console.log(res);
+                this.handeltableData();
                 this.principalValue = [];
                 this.dialogVisible = false;
-
-                this.$message.success("修改成功")
               }
             })
             .catch((err) => {
@@ -298,7 +395,7 @@ export default {
         }
       });
     },
-    handleReset() {
+    handelReset() {
       this.time = "";
       this.classValue = "";
       this.regionValue = "";
@@ -307,7 +404,7 @@ export default {
         type: "success",
       });
     },
-    handletableData() {
+    handeltableData() {
       axios({
         method: "get",
         url:
@@ -337,12 +434,5 @@ export default {
 <style>
 .top {
   margin-top: 20px;
-}
-
-.status_tag span{
-  display: none;
-}
-.status_tag:hover span{
-  display: inline-block;
 }
 </style>

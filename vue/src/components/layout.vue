@@ -86,7 +86,7 @@ export default {
 .header {
   position: relative;
   width: 100%;
-  height: 75px;
+  /* height: 75px; */
   line-height: 75px;
   font-size: 38px;
   font-weight: 549;
