@@ -60,6 +60,9 @@ app.use("/class", classRouter)
 // 2.5 负责人管理路由
 let principalRouter = require("./routers/principal")
 app.use("/principal", principalRouter)
+// 2.6 获取区域信息路由
+let areaRouter = require("./routers/area")
+app.use("/area", areaRouter)
 
 // 3. 挂载
 app.listen(3000, () => {

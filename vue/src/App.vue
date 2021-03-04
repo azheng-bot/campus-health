@@ -25,7 +25,7 @@ body {
 }
 
 #app {
-  min-width: 900px;
+  min-width: 1220px;
   height: 100%;
 }
 
