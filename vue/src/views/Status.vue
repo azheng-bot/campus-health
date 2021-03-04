@@ -69,24 +69,22 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-dialog title="提示" v-model="dialogVisible" width="30%">
-        <el-form label-width="80px" :model="formLabelAlign">
-          <el-form-item label="时间">
-            <el-input :disabled="true" v-model="formLabelAlign.time"></el-input>
-          </el-form-item>
-          <el-form-item label="区域">
-            <el-input :disabled="true" v-model="formLabelAlign.area"></el-input>
-          </el-form-item>
-          <el-form-item label="班级">
-            <el-input
-              :disabled="true"
-              v-model="formLabelAlign.class"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="情况">
-            <el-select v-model="statusValue" placeholder="请选择">
+      <el-dialog
+        title="编辑"
+        v-model="dialogVisible"
+        width="30%"
+        @close="handelClose"
+      >
+        <el-form
+          label-width="80px"
+          :model="formLabelAlign"
+          :rules="rules"
+          ref="ruleForm"
+        >
+          <el-form-item label="区域" prop="area">
+            <el-select v-model="formLabelAlign.area" placeholder="请选择">
               <el-option
-                v-for="item in statusData"
+                v-for="item in areaData"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -94,8 +92,8 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="负责人">
-            <el-select v-model="principalValue" placeholder="请选择">
+          <el-form-item label="负责人" prop="principal">
+            <el-select v-model="formLabelAlign.principal" placeholder="请选择">
               <el-option
                 v-for="item in principalData"
                 :key="item.value"
@@ -105,11 +103,44 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="班级" prop="class">
+            <el-select v-model="formLabelAlign.class" placeholder="请选择">
+              <el-option
+                v-for="item in classDatas"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="情况" prop="status">
+            <el-select v-model="formLabelAlign.status" placeholder="请选择">
+              <el-option
+                v-for="item in statusData"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="时间" prop="time">
+            <el-date-picker
+              v-model="formLabelAlign.time"
+              type="date"
+              placeholder="选择日期"
+              @blur="aab"
+            >
+            </el-date-picker>
+          </el-form-item>
         </el-form>
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="handleOk">确 定</el-button>
+            <el-button type="primary" @click="handleOk('ruleForm')"
+              >确 定</el-button
+            >
           </span>
         </template>
       </el-dialog>
@@ -124,11 +155,6 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      formLabelAlign: {
-        time: "",
-        class: "",
-        area: "",
-      },
       time: "",
       classData: [
         {
@@ -182,6 +208,76 @@ export default {
           label: "教学楼B区",
         },
       ],
+      formLabelAlign: {
+        time: "",
+        class: "",
+        area: "",
+        principal: "",
+        status: "",
+      },
+      rules: {
+        time: [{ required: true, message: "请输入活动名称", trigger: "blur" }],
+        class: [{ required: true, message: "请输入活动名称", trigger: "blur" }],
+        area: [{ required: true, message: "请输入活动名称", trigger: "blur" }],
+        principal: [
+          { required: true, message: "请输入活动名称", trigger: "blur" },
+        ],
+        status: [
+          { required: true, message: "请输入活动名称", trigger: "blur" },
+        ],
+      },
+      classDatas: [
+        {
+          value: ["1", "2019级全栈1212"],
+          label: "2019级全栈1212",
+        },
+        {
+          value: ["2", "19级Java"],
+          label: "19级Java",
+        },
+        {
+          value: ["3", "19级python"],
+          label: "19级python",
+        },
+        {
+          value: ["4", "19级数媒"],
+          label: "19级数媒",
+        },
+        {
+          value: ["5", "20级全栈Python"],
+          label: "20级全栈Python",
+        },
+        {
+          value: ["6", "20级Java"],
+          label: "20级Java",
+        },
+        {
+          value: ["7", "20级数媒"],
+          label: "20级数媒",
+        },
+      ],
+      areaData: [
+        {
+          value: ["1", "足球场"],
+          label: "足球场",
+        },
+        {
+          value: ["2", "风雨操场"],
+          label: "风雨操场",
+        },
+        {
+          value: ["3", "篮球场"],
+          label: "篮球场",
+        },
+        {
+          value: ["4", "教学楼A区"],
+          label: "教学楼A区",
+        },
+        {
+          value: ["5", "教学楼B区"],
+          label: "教学楼B区",
+        },
+      ],
       principalData: [
         {
           value: ["1", "李闯闯"],
@@ -222,8 +318,6 @@ export default {
           label: "差",
         },
       ],
-      statusValue: "",
-      principalValue: [],
       classValue: "",
       regionValue: "",
       tableData: [],
@@ -235,8 +329,23 @@ export default {
     this.handeltableData();
   },
   methods: {
+    aab() {
+      this.formLabelAlign.time = this.formLabelAlign.time
+        .toLocaleDateString()
+        .replaceAll("/", "-");
+    },
     handelSearch() {
       this.handeltableData();
+    },
+    handelClose() {
+      this.formLabelAlign = {
+        time: "",
+        class: "",
+        area: "",
+        principal: "",
+        status: "",
+      };
+      // location.reload();
     },
     aaa() {
       this.time = this.time.toLocaleDateString().replaceAll("/", "-");
@@ -244,36 +353,45 @@ export default {
     handleEdit(row) {
       this.dialogVisible = true;
       this.formLabelAlign.time = row.time;
-      this.formLabelAlign.class = row.class_name;
-      this.formLabelAlign.area = row.area_name;
-      this.statusValue = row.status;
       this.row = row;
     },
-    handleOk() {
+    handleOk(formName) {
       let _this = this;
-      console.log(this.principalValue);
-      axios({
-        method: "patch",
-        url: "/api/status?" + `id=${_this.row.id}`,
-        headers: {
-          Authorization: window.sessionStorage.getItem("token"),
-        },
-        data: {
-          id: this.row.id,
-          status: this.statusValue,
-          principal_id: _this.principalValue[0] || this.row.principal_id,
-          time: this.row.time,
-          principal_name: _this.principalValue[1] || this.row.principal_name,
-          area_name: this.row.area_name,
-          area_id: this.row.area_id,
-          class_name: this.row.area_name,
-          class_id: this.row.class_id,
-        },
-      }).then((res) => {
-        if (res.data.code == 200) {
-          this.handeltableData();
-          this.principalValue = [];
-          this.dialogVisible = false;
+      console.log(_this.row.id);
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          axios({
+            method: "patch",
+            url: "/api/status?" + `id=${_this.row.id}`,
+            headers: {
+              Authorization: window.sessionStorage.getItem("token"),
+            },
+            data: {
+              id: this.row.id,
+              status: this.formLabelAlign.status,
+              principal_id: this.formLabelAlign.principal[0],
+              principal_name: this.formLabelAlign.principal[1],
+              time: this.formLabelAlign.time,
+              area_name: this.formLabelAlign.area[1],
+              area_id: this.formLabelAlign.area[0],
+              class_name: this.formLabelAlign.class[1],
+              class_id: this.formLabelAlign.class[0],
+            },
+          })
+            .then((res) => {
+              if (res.data.code == 200) {
+                console.log(res);
+                this.handeltableData();
+                this.principalValue = [];
+                this.dialogVisible = false;
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
         }
       });
     },
@@ -299,6 +417,13 @@ export default {
         if (res.data.code == 200) {
           this.tableData = res.data.data;
           console.log(res.data.data);
+          this.formLabelAlign = {
+            time: "",
+            class: "",
+            area: "",
+            principal: "",
+            status: "",
+          };
         }
       });
     },
