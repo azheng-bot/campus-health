@@ -27,25 +27,25 @@ const routes = [
     name: "Status",
     component: () => import("../views/Status.vue"),
   },
-  // assign
+  // 分派
   {
     path: "/assign",
     name: "Assign",
     component: () => import("../views/Assign.vue"),
   },
-  // count
+  // 统计
   {
     path: "/count",
     name: "Count",
     component: () => import("../views/Count.vue"),
   },
-  // principal
+  // 负责人
   {
     path: "/principal",
     name: "Principal",
     component: () => import("../views/Principal.vue"),
   },
-  // class
+  // 班级
   {
     path: "/class",
     name: "Class",

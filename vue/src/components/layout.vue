@@ -4,6 +4,25 @@
       <img class="logo" src="http://czxy.com/images/public/logo.png" />
       <span class="hero">校园卫生分派可视化系统</span>
       <dataTime class="datatime"></dataTime>
+      <!-- 登出按钮 -->
+      <div class="logout" @click="logout" title="退出">
+        <svg
+          t="1601795407188"
+          style="display:block"
+          viewBox="0 0 1024 1024"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          p-id="4053"
+          width="40"
+          height="40"
+        >
+          <path
+            d="M625.777778 312.888889v113.777778H398.222222v170.666666h227.555556v113.777778l227.555555-170.666667-227.555555-227.555555z m-113.777778 0v-113.777778H170.666667v625.777778h341.333333v-113.777778H284.444444v-398.222222h227.555556z"
+            p-id="4054"
+            fill="#fff"
+          ></path>
+        </svg>
+      </div>
     </header>
     <div class="container">
       <aside class="aside">
@@ -73,6 +92,12 @@ export default {
       this.$router.push(url);
       // console.log(url);
     },
+    // 登出
+    logout(){
+      console.log('a')
+      window.sessionStorage.removeItem("token")
+      this.$router.push("/login")
+    }
   },
 };
 </script>
@@ -103,8 +128,16 @@ export default {
 }
 .header .datatime {
   position: absolute;
-  right: 0px;
+  right: 50px;
   top: -4px;
+}
+.header .logout {
+  height: 40px;
+  width: 40px;
+  position: absolute;
+  right: 15px;
+  top: 18px;
+  cursor: pointer;
 }
 .container {
   flex: 1;
