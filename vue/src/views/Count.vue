@@ -16,7 +16,15 @@
       <div class="row1">
         <div class="col1">
           <div class="card">
-            <div class="title">班级卫生情况为优占总次数的比率</div>
+            <div class="title">
+              班级卫生情况为优占总次数的比率
+              <span
+                class="tips"
+                style="font-weight: 200; color: gray; margin-left: 0px"
+                >(仅显示前五)</span
+              >
+            </div>
+
             <div class="wrapper">
               <div
                 class="echart echart2"
@@ -28,24 +36,31 @@
         </div>
         <div class="col2">
           <div class="card">
-            <div class="title">班级卫生情况为差占总次数的比率</div>
+            <div class="title">
+              总体优良差卫生情况占比
+            </div>
             <div class="wrapper">
               <div
                 class="echart echart3"
                 style="width: 100px; height: 100px"
-                ref="echart3"
+                ref="echart4"
               ></div>
             </div>
           </div>
         </div>
         <div class="col3">
           <div class="card">
-            <div class="title">总体优良差卫生情况占比</div>
+            <div class="title">班级卫生情况为差占总次数的比率
+              <span
+                class="tips"
+                style="font-weight: 200; color: gray; margin-left: 0px"
+                >(仅显示前五)</span
+              ></div>
             <div class="wrapper">
               <div
                 class="echart echart4"
                 style="width: 100px; height: 100px"
-                ref="echart4"
+                ref="echart3"
               ></div>
             </div>
           </div>
@@ -74,29 +89,38 @@ export default {
   data() {
     return {};
   },
-  created() {
+  async created() {
     // 初始化信息
-    this.init();
+    // await this.init();
   },
-  mounted() {
+  async mounted() {
+    // 初始化信息
+    await this.init();
     // 初始化echarts
     this.initEcharts();
   },
   methods: {
     // 初始化信息
-    init() {
+    async init() {
       // 获取统计信息
-      axios({
+      await axios({
         method: "get",
         url: "/api/count",
         headers: {
           Authorization: window.sessionStorage.getItem("token"),
         },
       }).then((res) => {
-        console.log(res);
+        console.log("res", res);
         if (res.data.code == 200) {
-          this.principalData = res.data.data;
-          console.log(res);
+          this.allClassStatus = res.data.data.allClassStatus;
+          this.principalStatus = res.data.data.principalStatus;
+          this.statusByGoodRate = res.data.data.statusByGoodRate;
+          this.statusByBadRate = res.data.data.statusByBadRate;
+          this.totalStatus = res.data.data.totalStatus;
+          // 根据卫生情况总数进行降序排序
+          this.allClassStatus.sort((a, b) => {
+            return b.total - a.total;
+          });
         }
       });
     },
@@ -106,79 +130,131 @@ export default {
       var echart1 = echarts.init(document.getElementsByClassName("echart1")[0]);
       // 绘制图表
       echart1.setOption({
-        title: {
-          text: "ECharts 入门示例",
-        },
+        legend: {},
         tooltip: {},
-        xAxis: {
-          data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"],
+        dataset: {
+          dimensions: [
+            "class_name",
+            { name: "total", displayName: "总数" },
+            { name: "good", displayName: "优" },
+            { name: "normal", displayName: "良" },
+            { name: "bad", displayName: "差" },
+            { name: "no_checked", displayName: "未检查" },
+          ],
+          source: this.allClassStatus,
         },
+        xAxis: { type: "category" },
         yAxis: {},
+        // Declare several bar series, each will be mapped
+        // to a column of dataset.source by default.
         series: [
-          {
-            name: "销量",
-            type: "bar",
-            data: [5, 20, 36, 10, 10, 20],
-          },
+          { type: "bar", color: "#546fc6" },
+          { type: "bar", color: "#91cd76" },
+          { type: "bar", color: "#fac958" },
+          { type: "bar", color: "#ef6667" },
+          { type: "bar", color: "gray" },
         ],
       });
       // echart2 - 优率排行
       var echart2 = echarts.init(document.getElementsByClassName("echart2")[0]);
+      let goodRateNames = []
+      let goodRates = []
+      this.statusByGoodRate.forEach(item => {
+        goodRates.push(item.good_rate)
+        goodRateNames.push(item.class_name)
+      })
       // 绘制图表
       echart2.setOption({
-        title: {
-          text: "ECharts 入门示例",
-        },
-        tooltip: {},
         xAxis: {
-          data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"],
+          type: "category",
+          data: goodRateNames,
+          axisLabel: {interval:0,width:70}
         },
-        yAxis: {},
+        yAxis: {
+          type: "value",
+          max:100
+        },
         series: [
           {
-            name: "销量",
+            data: goodRates,
             type: "bar",
-            data: [5, 20, 36, 10, 10, 20],
+            showBackground: true,
+            backgroundStyle: {
+              color: "rgba(180, 180, 180, 0.2)",
+            },
+            color: "#91cc75",
           },
         ],
       });
-      // echart3 - 差率排行
+      // echart3 - 总体优良差占比
+      console.log('this.totalStatus', this.totalStatus)
       var echart3 = echarts.init(document.getElementsByClassName("echart3")[0]);
       // 绘制图表
       echart3.setOption({
-        title: {
-          text: "ECharts 入门示例",
+        tooltip: {
+          trigger: "item",
         },
-        tooltip: {},
-        xAxis: {
-          data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"],
+        legend: {
+          top: "5%",
+          left: "center",
         },
-        yAxis: {},
         series: [
           {
-            name: "销量",
-            type: "bar",
-            data: [5, 20, 36, 10, 10, 20],
+            name: "访问来源",
+            type: "pie",
+            radius: ["40%", "70%"],
+            avoidLabelOverlap: false,
+            label: {
+              show: false,
+              position: "center",
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: "40",
+                fontWeight: "bold",
+              },
+            },
+            labelLine: {
+              show: false,
+            },
+            data: [
+              { value: this.totalStatus.total_good, name: "优" },
+              { value: this.totalStatus.total_normal, name: "良" },
+              { value: this.totalStatus.total_bad, name: "差" },
+              { value: this.totalStatus.total_no_checked, name: "未检查" },
+            ],
           },
         ],
       });
-      // echart4 - 总体优良差占比
+      // echart4 - 差率排行
       var echart4 = echarts.init(document.getElementsByClassName("echart4")[0]);
+      let badRates = []
+      let badRateNames = []
+      this.statusByBadRate.forEach(item => {
+        badRates.push(item.bad_rate)
+        badRateNames.push(item.class_name)
+      })
       // 绘制图表
       echart4.setOption({
-        title: {
-          text: "ECharts 入门示例",
-        },
-        tooltip: {},
         xAxis: {
-          data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"],
+          type: "category",
+          data: badRateNames,
+          axisLabel: {interval:0,width:70}
         },
-        yAxis: {},
+        yAxis: {
+          type: "value",
+          max:100
+        },
         series: [
           {
-            name: "销量",
+            data: badRates,
             type: "bar",
-            data: [5, 20, 36, 10, 10, 20],
+            showBackground: true,
+            backgroundStyle: {
+              color: "rgba(180, 180, 180, 0.2)",
+            },
+            color: "#ee6666",
           },
         ],
       });
@@ -186,20 +262,23 @@ export default {
       var echart5 = echarts.init(document.getElementsByClassName("echart5")[0]);
       // 绘制图表
       echart5.setOption({
-        title: {
-          text: "ECharts 入门示例",
-        },
+        legend: {},
         tooltip: {},
-        xAxis: {
-          data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"],
+        dataset: {
+          dimensions: [
+            "principal_name",
+            { name: "total_status", displayName: "总数" },
+            { name: "checked_status", displayName: "已检查" },
+            { name: "no_checked_status", displayName: "未检查" },
+          ],
+          source: this.principalStatus,
         },
+        xAxis: { type: "category" },
         yAxis: {},
         series: [
-          {
-            name: "销量",
-            type: "bar",
-            data: [5, 20, 36, 10, 10, 20],
-          },
+          { type: "bar", color: "#546fc6" },
+          { type: "bar", color: "#91cd76" },
+          { type: "bar", color: "gray" },
         ],
       });
 
