@@ -2,7 +2,14 @@
   <div id="app">
     <router-view v-if="$route.path == '/login'"></router-view>
     <layout v-else>
-      <router-view></router-view>
+      <transition name="el-fade-in">
+        <router-view></router-view>
+      </transition>
+      <!-- <router-view name="el-fade-in" v-slot="{ Component }">
+        <transition>
+          <component :is="Component" />
+        </transition>
+      </router-view> -->
     </layout>
   </div>
 </template>

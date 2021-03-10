@@ -1,18 +1,25 @@
 <template>
   <el-container>
-    <el-header class="top">
+    <el-header class="top" style="height: auto">
       <el-row :gutter="20">
         <el-col :span="4">
           <el-date-picker
             v-model="time"
             type="date"
             placeholder="选择日期"
-            @blur="aaa"
+            @change="formatDate"
+            style="width: 100%"
+            clearable 
           >
           </el-date-picker>
         </el-col>
-        <el-col :span="4" :offset="1">
-          <el-select v-model="classValue" placeholder="请选择班级">
+        <el-col :span="4" :offset="0">
+          <el-select
+            v-model="classValue"
+            placeholder="请选择班级"
+            style="width: 100%"
+            clearable 
+          >
             <el-option
               v-for="item in classData"
               :key="item.id"
@@ -23,7 +30,12 @@
           </el-select>
         </el-col>
         <el-col :span="4">
-          <el-select v-model="regionValue" placeholder="请选择区域">
+          <el-select
+            v-model="regionValue"
+            placeholder="请选择区域"
+            style="width: 100%"
+            clearable 
+          >
             <el-option
               v-for="item in areaData"
               :key="item.id"
@@ -33,7 +45,7 @@
             </el-option>
           </el-select>
         </el-col>
-        <el-col :span="6" :offset="3">
+        <el-col :span="6" :offset="0">
           <el-button type="primary" icon="el-icon-search" @click="handleSearch"
             >搜索</el-button
           >
@@ -44,7 +56,12 @@
       </el-row>
     </el-header>
     <el-main>
-      <el-table :data="tableData" border style="width: 100%">
+      <el-table
+        v-loading="tableLoading"
+        :data="tableData"
+        border
+        style="width: 100%"
+      >
         <el-table-column prop="time" label="时间" width="180">
         </el-table-column>
         <el-table-column prop="class_name" label="班级"> </el-table-column>
@@ -52,10 +69,12 @@
         </el-table-column>
         <el-table-column label="情况">
           <template #default="scope">
-            <el-tag class="status_tag" type="info" v-if="scope.row.status == 0">未<span>检查</span> </el-tag>
-            <el-tag type="success"  v-else-if="scope.row.status == 1">优</el-tag>
-            <el-tag  v-else-if="scope.row.status == 2">良</el-tag>
-            <el-tag type="danger"  v-else-if="scope.row.status == 3">差</el-tag>
+            <el-tag class="status_tag" type="info" v-if="scope.row.status == 0"
+              >未<span>检查</span>
+            </el-tag>
+            <el-tag type="success" v-else-if="scope.row.status == 1">优</el-tag>
+            <el-tag v-else-if="scope.row.status == 2">良</el-tag>
+            <el-tag type="danger" v-else-if="scope.row.status == 3">差</el-tag>
           </template>
         </el-table-column>
 
@@ -133,7 +152,7 @@
               v-model="formLabelAlign.time"
               type="date"
               placeholder="选择日期"
-              @change="aab"
+              @change="formatDate"
             >
             </el-date-picker>
           </el-form-item>
@@ -202,11 +221,12 @@ export default {
       classValue: "",
       regionValue: "",
       row: "",
+      tableLoading: false,
     };
   },
   created() {
     this.init();
-    this.handletableData();
+    this.getStatus();
   },
   methods: {
     // 初始化获取基本信息
@@ -238,15 +258,16 @@ export default {
         },
       });
       this.principalData = res3.data.data;
-      console.log(this.areaData)
-      console.log(this.classData)
-      console.log(this.principalData)
+      console.log(this.areaData);
+      console.log(this.classData);
+      console.log(this.principalData);
     },
-    aab(time) {
-      this.formLabelAlign.time = time.getFullYear() + '-'+time.getMonth() + "-" + time.getDate()
+    formatDate(time) {
+      this.formLabelAlign.time =
+        time.getFullYear() + "-" + time.getMonth() + "-" + time.getDate();
     },
     handleSearch() {
-      this.handletableData();
+      this.getStatus();
     },
     handleClose() {
       // this.formLabelAlign = {};
@@ -266,10 +287,16 @@ export default {
     handleOk(formName) {
       this.$refs[formName].validate((valid) => {
         // 根据id确定各个参数的name
-        this.formLabelAlign.class_name = this.classData.find(item => item.id == this.formLabelAlign.class_id).class_name
-        this.formLabelAlign.area_name = this.areaData.find(item => item.id == this.formLabelAlign.area_id).area_name
-        this.formLabelAlign.principal_name = this.principalData.find(item => item.id == this.formLabelAlign.principal_id).principal_name
-        console.log('this.formLabelAlign', this.formLabelAlign)
+        this.formLabelAlign.class_name = this.classData.find(
+          (item) => item.id == this.formLabelAlign.class_id
+        ).class_name;
+        this.formLabelAlign.area_name = this.areaData.find(
+          (item) => item.id == this.formLabelAlign.area_id
+        ).area_name;
+        this.formLabelAlign.principal_name = this.principalData.find(
+          (item) => item.id == this.formLabelAlign.principal_id
+        ).principal_name;
+        console.log("this.formLabelAlign", this.formLabelAlign);
 
         if (valid) {
           axios({
@@ -282,11 +309,11 @@ export default {
           })
             .then((res) => {
               if (res.data.code == 200) {
-                this.handletableData();
+                this.getStatus();
                 this.principalValue = [];
                 this.dialogVisible = false;
 
-                this.$message.success("修改成功")
+                this.$message.success("修改成功");
               }
             })
             .catch((err) => {
@@ -307,7 +334,8 @@ export default {
         type: "success",
       });
     },
-    handletableData() {
+    getStatus() {
+      this.tableLoading = true;
       axios({
         method: "get",
         url:
@@ -319,6 +347,7 @@ export default {
       }).then((res) => {
         if (res.data.code == 200) {
           this.tableData = res.data.data;
+          this.tableLoading = false;
           console.log(res.data.data);
           this.formLabelAlign = {
             time: "",
@@ -336,13 +365,13 @@ export default {
 
 <style>
 .top {
-  margin-top: 20px;
+  margin-top: 24px;
 }
 
-.status_tag span{
+.status_tag span {
   display: none;
 }
-.status_tag:hover span{
+.status_tag:hover span {
   display: inline-block;
 }
 </style>
