@@ -1,66 +1,80 @@
 <template>
   <el-container>
     <el-header class="top" style="height: auto">
-      <el-row :gutter="20">
-        <el-col :span="4">
-          <el-date-picker
-            v-model="time"
-            type="date"
-            placeholder="选择日期"
-            @change="formatDate"
-            style="width: 100%"
-            clearable 
-          >
-          </el-date-picker>
-        </el-col>
-        <el-col :span="4" :offset="0">
-          <el-select
-            v-model="classValue"
-            placeholder="请选择班级"
-            style="width: 100%"
-            clearable 
-          >
-            <el-option
-              v-for="item in classData"
-              :key="item.id"
-              :label="item.class_name"
-              :value="item.id"
+      <el-card>
+        <el-row :gutter="20">
+          <el-col :span="5">
+            <el-date-picker
+              v-model="time"
+              type="date"
+              placeholder="选择日期"
+              @change="formatDate1"
+              style="width: 100%"
+              clearable
             >
-            </el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="4">
-          <el-select
-            v-model="regionValue"
-            placeholder="请选择区域"
-            style="width: 100%"
-            clearable 
-          >
-            <el-option
-              v-for="item in areaData"
-              :key="item.id"
-              :label="item.area_name"
-              :value="item.id"
+            </el-date-picker>
+          </el-col>
+          <el-col :span="5" :offset="0">
+            <el-select
+              v-model="classValue"
+              placeholder="请选择班级"
+              style="width: 100%"
+              clearable
             >
-            </el-option>
-          </el-select>
-        </el-col>
-        <el-col :span="6" :offset="0">
-          <el-button type="primary" icon="el-icon-search" @click="handleSearch"
-            >搜索</el-button
+              <el-option
+                v-for="item in classData"
+                :key="item.id"
+                :label="item.class_name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="5">
+            <el-select
+              v-model="regionValue"
+              placeholder="请选择区域"
+              style="width: 100%"
+              clearable
+            >
+              <el-option
+                v-for="item in areaData"
+                :key="item.id"
+                :label="item.area_name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </el-col>
+          <el-col
+            :span="6"
+            :offset="0"
+            style="position: absolute; right: 0px; top: 0px; left: unset"
           >
-          <el-button type="info" icon="el-icon-delete" @click="handleReset"
-            >重置</el-button
-          ></el-col
-        >
-      </el-row>
+            <el-button
+              type="primary"
+              icon="el-icon-search"
+              @click="handleSearch"
+              style="width: 150px; margin-right: 5px"
+              >搜索</el-button
+            >
+            <el-button
+              type="info"
+              icon="el-icon-delete"
+              @click="handleReset"
+              style="width: 150px;"
+              >重置</el-button
+            ></el-col
+          >
+        </el-row></el-card
+      >
     </el-header>
     <el-main>
       <el-table
         v-loading="tableLoading"
         :data="tableData"
         border
-        style="width: 100%"
+        style="width: 100%;box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);"
       >
         <el-table-column prop="time" label="时间" width="180">
         </el-table-column>
@@ -152,7 +166,7 @@
               v-model="formLabelAlign.time"
               type="date"
               placeholder="选择日期"
-              @change="formatDate"
+              @change="formatDate2"
             >
             </el-date-picker>
           </el-form-item>
@@ -262,9 +276,15 @@ export default {
       console.log(this.classData);
       console.log(this.principalData);
     },
-    formatDate(time) {
+    formatDate1(time) {
+      if (!time) return (this.time = "");
+      this.time =
+        time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
+    },
+    formatDate2(time) {
+      if (!time) return (this.formLabelAlign.time = "");
       this.formLabelAlign.time =
-        time.getFullYear() + "-" + time.getMonth() + "-" + time.getDate();
+        time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
     },
     handleSearch() {
       this.getStatus();
@@ -329,10 +349,10 @@ export default {
       this.time = "";
       this.classValue = "";
       this.regionValue = "";
-      ElMessage.success({
-        message: "重置成功",
-        type: "success",
-      });
+      // ElMessage.success({
+      //   message: "重置成功",
+      //   type: "success",
+      // });
     },
     getStatus() {
       this.tableLoading = true;
@@ -348,7 +368,7 @@ export default {
         if (res.data.code == 200) {
           this.tableData = res.data.data;
           this.tableLoading = false;
-          console.log(res.data.data);
+
           this.formLabelAlign = {
             time: "",
             class: "",

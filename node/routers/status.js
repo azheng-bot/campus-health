@@ -7,6 +7,7 @@ let query = require('../utils/query')
 // 1.获取卫生情况
 router.get("/", async (req, res) => {
   let { time, area_id, class_id } = req.query
+  console.log('time', req.query)
   // 查询卫生情况
   // 查询语句
   let sqlStr = "SELECT * FROM STATUS WHERE";

@@ -1,10 +1,11 @@
 <template>
   <div class="count">
     <div class="view1">
-      <div class="card">
+      <div class="card" v-loading="echartsLoading">
         <div class="title">总卫生情况</div>
         <div class="wrapper">
           <div
+           
             class="echart echart1"
             style="width: 100px; height: 100px"
             ref="echart1"
@@ -87,7 +88,9 @@ import axios from "axios";
 import * as echarts from "echarts";
 export default {
   data() {
-    return {};
+    return {
+      echartsLoading:true
+    };
   },
   async created() {
     // 初始化信息
@@ -112,6 +115,8 @@ export default {
       }).then((res) => {
         console.log("res", res);
         if (res.data.code == 200) {
+          this.echartsLoading = false;
+
           this.allClassStatus = res.data.data.allClassStatus;
           this.principalStatus = res.data.data.principalStatus;
           this.statusByGoodRate = res.data.data.statusByGoodRate;
