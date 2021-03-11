@@ -6,22 +6,34 @@ let query = require('../utils/query')
 
 // 1.获取卫生情况
 router.get("/", async (req, res) => {
-  let { time, area_id, class_id } = req.query
-  console.log('time', req.query)
+  let { time, area_id, class_id,page_num,page_size } = req.query
+  console.log('object',  req.query)
+  if (!page_num) page_num = 1;
+  if (!page_size) page_size = 10;
+  page_num = Number(page_num)
+  page_size = Number(page_size)
+  
   // 查询卫生情况
   // 查询语句
   let sqlStr = "SELECT * FROM STATUS WHERE";
-  if (time) sqlStr += " TIME = '" + time + "' AND ";
-  if (area_id) sqlStr += " AREA_ID = " + area_id + " AND ";
-  if (class_id) sqlStr += " CLASS_ID = " + class_id + " AND ";
+  if (time) sqlStr += ` TIME = ${time} AND `;
+  if (area_id) sqlStr += ` AREA_ID = ${area_id} AND `;
+  if (class_id) sqlStr += ` CLASS_ID = ${class_id} AND `;
   // 去掉末尾的AND
   sqlStr = sqlStr.substr(0, sqlStr.length - 5)
+  // 添加分页条件
+  sqlStr += ` LIMIT ${(page_num-1) * page_size},${page_size}`
   // 发起查询请求
   let res1 = await query(sqlStr)
+  // 查询status总数
+  let res2 = await query("SELECT COUNT(*) AS TOTAL FROM STATUS")
   // 返回正确信息
   res.send({
     code: 200,
-    data: res1
+    data: {
+      statusData:res1,
+      total:res2[0].TOTAL
+    }
   })
 })
 
@@ -37,7 +49,6 @@ router.post("/", async (req, res) => {
 
   // 判断是否重复添加
   let res1 = await query(`SELECT * FROM STATUS WHERE TIME = ('${time}') AND AREA_ID = ('${area_id}')`)
-  console.log('res1', res1)
   // 如果重复添加则返回错误信息
   if (res1.length > 0) {
     return res.send({
@@ -58,7 +69,6 @@ router.post("/", async (req, res) => {
   })
   // 添加
   let res2 = await query(`INSERT INTO STATUS (${params_name}) VALUES (${params_value})`)
-  console.log('res2', res2)
   res.send({
     code: 200,
     msg: "分派成功"

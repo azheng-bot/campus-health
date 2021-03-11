@@ -1,5 +1,5 @@
 <template>
-  <el-container>
+  <el-container style="overflow: auto">
     <el-header class="top" style="height: auto">
       <el-card>
         <el-row :gutter="20">
@@ -62,7 +62,7 @@
               type="info"
               icon="el-icon-delete"
               @click="handleReset"
-              style="width: 150px;"
+              style="width: 150px"
               >重置</el-button
             ></el-col
           >
@@ -74,7 +74,7 @@
         v-loading="tableLoading"
         :data="tableData"
         border
-        style="width: 100%;box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);"
+        style="width: 100%; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)"
       >
         <el-table-column prop="time" label="时间" width="180">
         </el-table-column>
@@ -102,6 +102,20 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-row
+        style="margin-top: 20px"
+      >
+      <el-pagination
+        :current-page="page_num"
+        :page-size="page_size"
+        :page-sizes="[10, 20, 30, 40]"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      >
+      </el-pagination>
+      </el-row>
       <el-dialog
         title="编辑"
         v-model="dialogVisible"
@@ -234,7 +248,9 @@ export default {
       ],
       classValue: "",
       regionValue: "",
-      row: "",
+      page_size: 10,
+      page_num: 1,
+      total: 0,
       tableLoading: false,
     };
   },
@@ -293,6 +309,17 @@ export default {
       // this.formLabelAlign = {};
       // location.reload();
     },
+    // 分页器发生改变时
+    handleSizeChange(size) {
+      console.log("size", size);
+      this.page_size = size;
+      this.getStatus();
+    },
+    handleCurrentChange(num) {
+      console.log("num", num);
+      this.page_num = num || 1;
+      this.getStatus();
+    },
     aaa() {
       this.time = this.time.toLocaleDateString().replaceAll("/", "-");
     },
@@ -345,6 +372,7 @@ export default {
         }
       });
     },
+    // 重置搜索信息
     handleReset() {
       this.time = "";
       this.classValue = "";
@@ -354,19 +382,26 @@ export default {
       //   type: "success",
       // });
     },
+    // 获取卫生情况数据
     getStatus() {
+      console.log("this.page_size", this.page_size);
+      console.log("this.page_num", this.page_num);
+      // 加载状态
       this.tableLoading = true;
       axios({
         method: "get",
         url:
           "/api/status?" +
-          `time=${this.time}&area_id=${this.regionValue}&class_id=${this.classValue}`,
+          `time=${this.time}&area_id=${this.regionValue}&class_id=${this.classValue}&page_num=${this.page_num}&page_size=${this.page_size}`,
         headers: {
           Authorization: window.sessionStorage.getItem("token"),
         },
       }).then((res) => {
+        console.log("res", res);
         if (res.data.code == 200) {
-          this.tableData = res.data.data;
+          this.tableData = res.data.data.statusData;
+          this.total = res.data.data.total;
+          // 取消加载状态
           this.tableLoading = false;
 
           this.formLabelAlign = {

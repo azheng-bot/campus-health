@@ -144,6 +144,7 @@ export default {
   display: flex;
   flex-direction: row;
   width: 100%;
+  overflow: hidden;
 }
 .aside {
   width: 200px;
@@ -152,5 +153,6 @@ export default {
 .content {
   flex: 1;
   background-color: #e9eef3;
+  overflow: auto;
 }
 </style>

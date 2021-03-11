@@ -8,7 +8,7 @@
             <div class="card" style="height: 100%">
               <!-- card_header -->
               <div class="card_header">
-                <span style="font-size: 25px; font-weight: 500">地图</span>
+                <span style="font-size: 30px; font-weight: 500">地图</span>
               </div>
               <!-- card_body -->
 
