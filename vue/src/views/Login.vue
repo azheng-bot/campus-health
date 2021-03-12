@@ -75,6 +75,7 @@ export default {
                   type: "success",
                 });
                 _this.$router.push("/index");
+                _this.$store.commit("setAuthorData",response.data.data)
               } else {
                 ElMessage.error(response.data.message);
               }
@@ -95,7 +96,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .login {
   width: 100%;
   height: 100%;

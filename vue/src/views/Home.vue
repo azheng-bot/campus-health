@@ -261,6 +261,10 @@ export default {
   created() {
     this.hygieneData();
   },
+  mounted() {
+    this.switchRegion("playground")
+    
+  },
 
   methods: {
     // aaa() {
@@ -279,10 +283,15 @@ export default {
       Object.keys(this.regionColor).forEach(function (key) {
         // 恢复默认颜色
         document.getElementsByClassName(key)[0].style.backgroundColor = "";
+        // 取消框选
+        document.getElementsByClassName(key)[0].style.border = "none";
+
         if (key == param) {
           // 颜色加重
           document.getElementsByClassName(param)[0].style.backgroundColor =
             _this.regionColor[param][1];
+        // 框选
+        document.getElementsByClassName(key)[0].style.border = "5px solid #5e5e5e";
         }
       });
     },
@@ -297,7 +306,8 @@ export default {
         },
       }).then((res) => {
         if (res.data.code == 200) {
-          this.dataHygiene = res.data.data;
+          this.dataHygiene = res.data.data.statusData;
+          console.log('res', res)
           this.isLoading = false;
         }
       });
@@ -388,7 +398,7 @@ export default {
   height: 30px;
   line-height: 30px;
   margin-top: 30px;
-  background-color: #e1e1e1;
+  background-color: #727272;
   text-align: center;
 }
 .road span {
