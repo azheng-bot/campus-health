@@ -11,13 +11,12 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 // 1.创建路由拦截器
 app.use(async (req, res, next) => {
-  console.log('req', req.url.match("/statuds"))
-  console.log('req', req.method)
+  console.log('req', req.url)
   // 以下情况可以直接放行
   // 登录
-  if (req.url == '/login') return next()
+  if (req.url.match("/login")) return next()
   // 获取侧边栏信息
-  if (req.url == '/aside') return next()
+  if (req.url.match("/aside")) return next()
   // 获取首页卫生情况
   if (req.url.match("/status") && req.method == "GET") return next()
   // 如果没有令牌则返回没有令牌

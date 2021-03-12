@@ -6,7 +6,7 @@ let query = require('../utils/query')
 // 引入jwt
 let jwt = require("jsonwebtoken")
 
-// 1.登录
+// 1.根据账号密码登录
 router.post("/", async (req, res) => {
   let username = req.body.username
   let password = req.body.password
@@ -41,5 +41,29 @@ router.post("/", async (req, res) => {
     })
   }
 })
+
+// 2.根据token登录
+router.get("/", async (req, res) => {
+  // 否则判断token是否正确
+  let token = req.query.token.slice(7);
+  let encode = jwt.decode(token, "just_do_it")
+  let res1 = await query("select * from user where username =?", [encode])
+
+  // 若有数据返回成功信息
+  if (res1) {
+    let { username, role } = res1[0]
+    return res.send({
+      code: 200,
+      data: { username, role }
+    })
+    // 若没有则返回失败信息
+  } else {
+    res.send({
+      code: 400,
+      message: "token错误,请重新登录"
+    })
+  }
+})
+
 
 module.exports = router;

@@ -39,6 +39,8 @@ router.get("/", async (req, res) => {
 // 2.添加卫生情况
 router.post("/", async (req, res) => {
   let { class_id, class_name, area_id, area_name, principal_id, principal_name, time, status } = req.body;
+
+  // 判断信息是否填写完整
   if (!(class_id && class_name && area_id && area_name && principal_id && principal_name && time && status)) {
     return res.json({
       code: 400,
@@ -77,15 +79,29 @@ router.post("/", async (req, res) => {
 
 // 3.修改卫生情况
 router.patch('/', async (req, res) => {
+
   // 获取body数据
   let { id, class_id, class_name, area_id, area_name, time, status, principal_id, principal_name } = req.body;
+
   // 当body数据中某一数据为空时，返回错误信息
   if (!(id && class_id && class_name && area_id && area_name && time && status && principal_id && principal_name)) {
-    res.json({
+    return res.json({
       code: 400,
       msg: "请将数据填写完整"
     })
   }
+
+  // 当要修改的卫生情况日期在今天以后，则返回错误信息
+  let now = new Date().getTime();
+  let statusTime= new Date(time).getTime();
+  if (now < statusTime) {
+    return res.json({
+      code:400,
+      msg:"修改的卫生情况超过今天"
+    })
+  }
+
+
   // 数据库请求语句
   let queryStr = "update status ";
   queryStr += "set class_id = " + class_id + ",";

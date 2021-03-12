@@ -16,9 +16,19 @@
 
 <script>
 import layout from "./components/layout";
+import axios from "axios";
 export default {
   components: {
     layout,
+  },
+  created(e) {
+    // 如果没有登录者信息，则登录
+    if (!this.$store.state.author) {
+      let token = window.sessionStorage.getItem("token");
+      axios.get("/api/login", {params:{token}}).then((res) => {
+        this.$store.commit("setAuthorData",res.data.data)
+      });
+    }
   },
 };
 </script>

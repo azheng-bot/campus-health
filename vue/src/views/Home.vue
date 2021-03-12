@@ -284,7 +284,7 @@ export default {
         // 恢复默认颜色
         document.getElementsByClassName(key)[0].style.backgroundColor = "";
         // 取消框选
-        document.getElementsByClassName(key)[0].style.border = "none";
+        document.getElementsByClassName(key)[0].style.border = "5px solid transparent";
 
         if (key == param) {
           // 颜色加重

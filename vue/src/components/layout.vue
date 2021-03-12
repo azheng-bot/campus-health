@@ -132,13 +132,18 @@ export default {
     },
     // 登出
     logout() {
-      // this.$router.push("/login");
-      this.$store.commit("logout")
+      this.$confirm("确定要退出当前账号吗？", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        this.$store.commit("logout");
+      });
     },
     // 登录
     login() {
       // this.$store.commit("login")
-       this.$router.push("/login");
+      this.$router.push("/login");
     },
   },
 };
@@ -170,14 +175,14 @@ export default {
 }
 .header .datatime {
   position: absolute;
-  right: 50px;
+  right: 70px;
   top: -4px;
 }
 .header .logout {
   height: 40px;
   width: 40px;
   position: absolute;
-  right: 15px;
+  right: 25px;
   top: 18px;
   cursor: pointer;
 }
@@ -185,7 +190,7 @@ export default {
   height: 40px;
   width: 40px;
   position: absolute;
-  right: 15px;
+  right: 25px;
   top: 18px;
   cursor: pointer;
 }

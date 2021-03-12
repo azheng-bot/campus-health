@@ -104,12 +104,12 @@ export default {
 }
 .loginForm {
   width: 500px;
-  margin: 100px auto;
+  margin: 60px auto;
 }
 .loginTitle {
   text-align: center;
   font-size: 30px;
-  margin-top: 100px;
+  margin-top:250px ;
 }
 .loginTitle div {
   padding-left: 100px;
