@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
   let res1 = await query("select * from user where username =? and password =?", [username, password])
   // 若有数据返回成功信息
   if (res1.length > 0) {
-    let { username, role } = res1[0]
+    let { username, role, id } = res1[0]
     // 生成token
     let token = "Bearer " + jwt.sign(username, "just_do_it")
 
@@ -31,7 +31,7 @@ router.post("/", async (req, res) => {
     return res.send({
       code: 200,
       token,
-      data: { username, role }
+      data: { username, role, id }
     })
     // 若没有则返回失败信息
   } else {
@@ -51,10 +51,10 @@ router.get("/", async (req, res) => {
 
   // 若有数据返回成功信息
   if (res1) {
-    let { username, role } = res1[0]
+    let { username, role, id } = res1[0]
     return res.send({
       code: 200,
-      data: { username, role }
+      data: { username, role, id }
     })
     // 若没有则返回失败信息
   } else {

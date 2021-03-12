@@ -102,19 +102,17 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-row
-        style="margin-top: 20px"
-      >
-      <el-pagination
-        :current-page="page_num"
-        :page-size="page_size"
-        :page-sizes="[10, 20, 30, 40]"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      >
-      </el-pagination>
+      <el-row style="margin-top: 20px">
+        <el-pagination
+          :current-page="page_num"
+          :page-size="page_size"
+          :page-sizes="[10, 20, 30, 40]"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        >
+        </el-pagination>
       </el-row>
       <el-dialog
         title="编辑"
@@ -188,7 +186,10 @@
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="handleOk('ruleForm')"
+            <el-button
+              type="primary"
+              @click="handleOk('ruleForm')"
+              :loading="editLoading"
               >确 定</el-button
             >
           </span>
@@ -229,22 +230,10 @@ export default {
         ],
       },
       statusData: [
-        {
-          value: "0",
-          label: "未检查",
-        },
-        {
-          value: "1",
-          label: "优",
-        },
-        {
-          value: "2",
-          label: "良",
-        },
-        {
-          value: "3",
-          label: "差",
-        },
+        { value: "0", label: "未检查" },
+        { value: "1", label: "优" },
+        { value: "2", label: "良" },
+        { value: "3", label: "差" },
       ],
       classValue: "",
       regionValue: "",
@@ -252,6 +241,7 @@ export default {
       page_num: 1,
       total: 0,
       tableLoading: false,
+      editLoading: false,
     };
   },
   created() {
@@ -332,6 +322,7 @@ export default {
     },
     // 确认提交修改
     handleOk(formName) {
+      this.editLoading = true;
       this.$refs[formName].validate((valid) => {
         // 根据id确定各个参数的name
         this.formLabelAlign.class_name = this.classData.find(
@@ -356,6 +347,7 @@ export default {
           })
             .then((res) => {
               if (res.data.code == 200) {
+                this.editLoading = false;
                 this.getStatus();
                 this.principalValue = [];
                 this.dialogVisible = false;

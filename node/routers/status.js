@@ -41,7 +41,7 @@ router.post("/", async (req, res) => {
   let { class_id, class_name, area_id, area_name, principal_id, principal_name, time, status } = req.body;
 
   // 判断信息是否填写完整
-  if (!(class_id && class_name && area_id && area_name && principal_id && principal_name && time && status)) {
+  if (!(class_id && class_name && area_id && area_name && principal_id && principal_name && time)) {
     return res.json({
       code: 400,
       msg: "请将数据填写完整"
@@ -61,9 +61,9 @@ router.post("/", async (req, res) => {
 
   // 添加数据到数据库
   // mysql查询语句参数名
-  let params_name = ['class_id', 'class_name', 'area_id', 'area_name', 'principal_id', 'principal_name', 'time', 'status']
+  let params_name = ['class_id', 'class_name', 'area_id', 'area_name', 'principal_id', 'principal_name', 'time']
   // mysql查询语句参数值
-  let params_value = [class_id, class_name, area_id, area_name, principal_id, principal_name, time, status]
+  let params_value = [class_id, class_name, area_id, area_name, principal_id, principal_name, time]
   // 为了能够正确添加到mysql数据库数据，给每个数据添加双引号
   params_value.forEach((item, index) => {
     params_value[index] = '"' + item + '"'

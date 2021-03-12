@@ -1,70 +1,97 @@
 <template>
-  <div class="box">
-    <el-form
-      label-width="80px"
-      :model="formLabelAlign"
-      :rules="rules"
-      ref="ruleForm"
-    >
-      <el-form-item label="区域" prop="area">
-        <el-select v-model="formLabelAlign.area" placeholder="请选择">
-          <el-option
-            v-for="item in areaData"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          >
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="负责人" prop="principal">
-        <el-select v-model="formLabelAlign.principal" placeholder="请选择">
-          <el-option
-            v-for="item in principalData"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          >
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="班级" prop="class">
-        <el-select v-model="formLabelAlign.class" placeholder="请选择">
-          <el-option
-            v-for="item in classData"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          >
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="情况" prop="status">
-        <el-select v-model="formLabelAlign.status" placeholder="请选择">
-          <el-option
-            v-for="item in statusData"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          >
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="时间" prop="time">
-        <el-date-picker
-          v-model="formLabelAlign.time"
-          type="date"
-          placeholder="选择日期"
-          @blur="aaa"
-        >
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')"
-          >添加分派</el-button
-        >
-      </el-form-item>
-    </el-form>
+  <div class="assign">
+    <div class="assign-boxs">
+      <div v-for="(item, index) in assignForm" :key="index" class="assign-box">
+        <div class="wrapper">
+          <el-row>
+            <el-col :span="5" style="line-height: 40px; font-size: 18px">
+              日期：
+            </el-col>
+            <el-col :span="19">
+              <el-date-picker
+                v-model="time"
+                type="date"
+                placeholder="选择日期"
+                style="width: 100%"
+                height="40px"
+                clearable
+              >
+              </el-date-picker>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="7" style="line-height: 40px; font-size: 18px">
+              负责人：
+            </el-col>
+            <el-col :span="17">
+              <el-select
+                v-model="item.area_id"
+                placeholder="请选择"
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="item in areaData"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="5" style="line-height: 40px; font-size: 18px">
+              区域：
+            </el-col>
+            <el-col :span="19">
+              <el-select
+                v-model="item.area_id"
+                placeholder="请选择"
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="item in areaData"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="5" style="line-height: 40px; font-size: 18px">
+              班级：
+            </el-col>
+            <el-col :span="19">
+              <el-select
+                v-model="item.area_id"
+                placeholder="请选择"
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="item in areaData"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-col>
+          </el-row>
+        </div>
+      </div>
+      <div class="assign-box add-box">
+        <div class="wrapper" @click="addAssignBox">
+          <div class="align_center">+</div>
+        </div>
+      </div>
+    </div>
+    <div class="submit_btn">
+      <el-button style="font-size: 18px; width: 100px" type="primary"
+        >提交</el-button
+      >
+    </div>
   </div>
 </template>
 
@@ -74,6 +101,15 @@ import { ElMessage } from "element-plus";
 export default {
   data() {
     return {
+      assignForm: [
+        {
+          time: "",
+          class_id: "",
+          class_name: "",
+          area_id: "",
+          area_name: "",
+        },
+      ],
       formLabelAlign: {
         time: "",
         class: "",
@@ -92,107 +128,76 @@ export default {
           { required: true, message: "请输入活动名称", trigger: "blur" },
         ],
       },
-      classData: [
-        {
-          value: ["1", "2019级全栈1212"],
-          label: "2019级全栈1212",
-        },
-        {
-          value: ["2", "19级Java"],
-          label: "19级Java",
-        },
-        {
-          value: ["3", "19级python"],
-          label: "19级python",
-        },
-        {
-          value: ["4", "19级数媒"],
-          label: "19级数媒",
-        },
-        {
-          value: ["5", "20级全栈Python"],
-          label: "20级全栈Python",
-        },
-        {
-          value: ["6", "20级Java"],
-          label: "20级Java",
-        },
-        {
-          value: ["7", "20级数媒"],
-          label: "20级数媒",
-        },
-      ],
-      areaData: [
-        {
-          value: ["1", "足球场"],
-          label: "足球场",
-        },
-        {
-          value: ["2", "风雨操场"],
-          label: "风雨操场",
-        },
-        {
-          value: ["3", "篮球场"],
-          label: "篮球场",
-        },
-        {
-          value: ["4", "教学楼A区"],
-          label: "教学楼A区",
-        },
-        {
-          value: ["5", "教学楼B区"],
-          label: "教学楼B区",
-        },
-      ],
-      principalData: [
-        {
-          value: ["1", "李闯闯"],
-          label: "李闯闯",
-        },
-        {
-          value: ["2", "杨文林"],
-          label: "杨文林",
-        },
-        {
-          value: ["3", "徐丹丹"],
-          label: "徐丹丹",
-        },
-        {
-          value: ["4", "肖威"],
-          label: "肖威",
-        },
-        {
-          value: ["5", "毛娇娇"],
-          label: "毛娇娇",
-        },
-      ],
+      classData: [],
+      areaData: [],
+      principalData: [],
       statusData: [
-        {
-          value: "0",
-          label: "未检查",
-        },
-        {
-          value: "1",
-          label: "优",
-        },
-        {
-          value: "2",
-          label: "良",
-        },
-        {
-          value: "3",
-          label: "差",
-        },
+        { value: "0", label: "未检查" },
+        { value: "1", label: "优" },
+        { value: "2", label: "良" },
+        { value: "3", label: "差" },
       ],
     };
   },
+  created() {
+    this.init();
+  },
   methods: {
-    aaa() {
-      this.formLabelAlign.time = this.formLabelAlign.time
-        .toLocaleDateString()
-        .replaceAll("/", "-");
+    // 初始化获取基本信息
+    async init() {
+      // 获取区域信息
+      let res = await axios({
+        method: "get",
+        url: "/api/area",
+        headers: {
+          Authorization: window.sessionStorage.getItem("token"),
+        },
+      });
+      this.areaData = res.data.data;
+      // 获取班级信息
+      let res2 = await axios({
+        method: "get",
+        url: "/api/class",
+        headers: {
+          Authorization: window.sessionStorage.getItem("token"),
+        },
+      });
+      this.classData = res2.data.data;
+      // 获取负责人信息
+      let res3 = await axios({
+        method: "get",
+        url: "/api/principal",
+        headers: {
+          Authorization: window.sessionStorage.getItem("token"),
+        },
+      });
+      this.principalData = res3.data.data;
+      console.log(this.areaData);
+      console.log(this.classData);
+      console.log(this.principalData);
     },
 
+    // 新增分派任务
+    addAssignBox() {
+      // 当已经创建的分派任务超过五个时，返回错误信息
+      if (this.assignForm.length >= 5) {
+        return this.$message.info("创建的分派任务不能超过五个")
+      }
+      this.assignForm.push({
+        time: "",
+        class_id: "",
+        class_name: "",
+        area_id: "",
+        area_name: "",
+      });
+    },
+    // 格式日期
+    formatDate(time) {
+      return (
+        time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate()
+      );
+    },
+    // 提交表单
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -242,12 +247,62 @@ export default {
 };
 </script>
 
-<style>
-.box {
-  width: 500px;
-  margin: 100px auto;
+<style scoped>
+.assign {
+  padding: 25px;
+  min-width: 1600px;
+  box-sizing: border-box;
 }
-.el-select {
-  width: 300px;
+.assign-boxs::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+.assign-box {
+  width: 25%;
+  height: 390px;
+  padding: 25px;
+  float: left;
+  box-sizing: border-box;
+}
+.assign-box .wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  padding: 40px;
+  box-sizing: border-box;
+  background-color: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.add-box .wrapper {
+  border: 5px dashed #d9d9d9;
+  box-sizing: border-box;
+  position: relative;
+  font-size: 300px;
+  font-weight: 200;
+  color: #d9d9d9;
+  cursor: pointer;
+}
+.add-box .wrapper:hover {
+  border-color: #66b1ff;
+}
+.add-box .wrapper .align_center {
+  margin-top: -20px;
+}
+/* 水平垂直居中（父元素需相对定位） */
+.align_center {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.submit_btn {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding-left: 25px;
 }
 </style>
