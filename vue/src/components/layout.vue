@@ -138,11 +138,11 @@ export default {
         type: "warning",
       }).then(() => {
         this.$store.commit("logout");
+      this.$router.push("/index");
       });
     },
     // 登录
     login() {
-      // this.$store.commit("login")
       this.$router.push("/login");
     },
   },

@@ -4,76 +4,60 @@
       <div v-for="(item, index) in assignForm" :key="index" class="assign-box">
         <div class="wrapper">
           <el-row>
-            <el-col :span="5" style="line-height: 40px; font-size: 18px">
-              日期：
-            </el-col>
+            <el-col :span="5" style="line-height: 40px; font-size: 18px"
+              >日期:</el-col
+            >
             <el-col :span="19">
               <el-date-picker
-                v-model="time"
+                v-model="item.time"
                 type="date"
                 placeholder="选择日期"
                 style="width: 100%"
-                height="40px"
+                @change="timeChange"
                 clearable
               >
               </el-date-picker>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="7" style="line-height: 40px; font-size: 18px">
-              负责人：
-            </el-col>
+            <el-col :span="7" style="line-height: 40px; font-size: 18px"
+              >负责人:</el-col
+            >
             <el-col :span="17">
-              <el-select
-                v-model="item.area_id"
-                placeholder="请选择"
-                style="width: 100%"
-              >
+              <el-input readonly v-model="username"></el-input>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="5" style="line-height: 40px; font-size: 18px"
+              >区域:</el-col
+            >
+            <el-col :span="19">
+              <el-select v-model="item.area_id" placeholder="请选择">
                 <el-option
-                  v-for="item in areaData"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item2 in areaData"
+                  :key="item2.id"
+                  :label="item2.area_name"
+                  :value="item2.id"
                 >
                 </el-option>
               </el-select>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="5" style="line-height: 40px; font-size: 18px">
-              区域：
-            </el-col>
+            <el-col :span="5" style="line-height: 40px; font-size: 18px"
+              >班级:</el-col
+            >
             <el-col :span="19">
               <el-select
-                v-model="item.area_id"
+                v-model="item.class_id"
                 placeholder="请选择"
                 style="width: 100%"
               >
                 <el-option
-                  v-for="item in areaData"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="5" style="line-height: 40px; font-size: 18px">
-              班级：
-            </el-col>
-            <el-col :span="19">
-              <el-select
-                v-model="item.area_id"
-                placeholder="请选择"
-                style="width: 100%"
-              >
-                <el-option
-                  v-for="item in areaData"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item2 in classData"
+                  :key="item2.id"
+                  :label="item2.class_name"
+                  :value="item2.id"
                 >
                 </el-option>
               </el-select>
@@ -88,7 +72,11 @@
       </div>
     </div>
     <div class="submit_btn">
-      <el-button style="font-size: 18px; width: 100px" type="primary"
+      <el-button
+        style="font-size: 18px; width: 100px"
+        type="primary"
+        @click="submitForm"
+        :loading="isLoading"
         >提交</el-button
       >
     </div>
@@ -103,7 +91,8 @@ export default {
     return {
       assignForm: [
         {
-          time: "",
+          id: 1,
+          time: new Date(),
           class_id: "",
           class_name: "",
           area_id: "",
@@ -137,10 +126,16 @@ export default {
         { value: "2", label: "良" },
         { value: "3", label: "差" },
       ],
+      defaultTime: new Date(),
+      defaultId: 1,
+      username: "",
+      isLoading: false,
     };
   },
   created() {
     this.init();
+    this.username = this.$store.state.author.username;
+    console.log("this.username", this.username);
   },
   methods: {
     // 初始化获取基本信息
@@ -181,15 +176,20 @@ export default {
     addAssignBox() {
       // 当已经创建的分派任务超过五个时，返回错误信息
       if (this.assignForm.length >= 5) {
-        return this.$message.info("创建的分派任务不能超过五个")
+        return this.$message.info("创建的分派任务不能超过五个");
       }
       this.assignForm.push({
-        time: "",
+        id: ++this.defaultId,
+        time: this.defaultTime,
         class_id: "",
         class_name: "",
         area_id: "",
         area_name: "",
       });
+    },
+    // 日期改变时调整默认日期
+    timeChange(time) {
+      this.defaultTime = time;
     },
     // 格式日期
     formatDate(time) {
@@ -197,51 +197,115 @@ export default {
         time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate()
       );
     },
-    // 提交表单
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          axios({
-            method: "post",
-            url: "/api/status",
-            data: {
-              status: this.formLabelAlign.status,
-              principal_id: this.formLabelAlign.principal[0],
-              principal_name: this.formLabelAlign.principal[1],
-              time: this.formLabelAlign.time,
-              area_name: this.formLabelAlign.area[1],
-              area_id: this.formLabelAlign.area[0],
-              class_name: this.formLabelAlign.class[1],
-              class_id: this.formLabelAlign.class[0],
-            },
-            headers: {
-              Authorization: window.sessionStorage.getItem("token"),
-            },
-          })
-            .then((res) => {
-              if (res.data.code == 200) {
-                console.log(res);
-                ElMessage.success({
-                  message: "分派成功",
-                  type: "success",
-                });
-                this.formLabelAlign = {
-                  time: "",
-                  class: "",
-                  area: "",
-                  principal: "",
-                  status: "",
-                };
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        } else {
-          console.log("error submit!!");
-          return false;
+    // 校验表单
+    validForm() {
+      // 根据area_id、area_id选中area_name、class_name
+      this.assignForm.forEach((item, index) => {
+        if (item.area_id) {
+          item.area_name = this.areaData.find(
+            (item2) => (item2.id = item.area_id)
+          ).area_name;
+        }
+        if (item.class_id) {
+          item.class_name = this.classData.find(
+            (item2) => (item2.id = item.class_id)
+          ).class_name;
         }
       });
+      // 确定每一项表单内容都已填写
+      let isAllRight = true;
+      this.assignForm.forEach((item, index) => {
+        for (var key in item) {
+          if (!item[key]) {
+            return (isAllRight = false);
+          }
+        }
+      });
+      // 如果没有完全填写则返回错误信息
+      if (!isAllRight) return false;
+      return true;
+    },
+    // 提交表单
+    async submitForm() {
+      this.isLoading = true;
+      // 校验表单
+      let valid = this.validForm();
+      if (!valid) {
+        return this.$message.error("请将表单填写完整");
+      }
+      // 成功提交任务数组
+      let successAssign = [];
+      // 提交表单
+      this.assignForm.forEach(async (item, index) => {
+        await axios({
+          method: "post",
+          url: "/api/status",
+          data: {
+            principal_id: this.$store.state.author.id,
+            principal_name: this.$store.state.author.username,
+            time: this.formatDate(item.time),
+            area_id: item.area_id,
+            area_name: item.area_name,
+            class_id: item.class_id,
+            class_name: item.class_name,
+          },
+          headers: {
+            Authorization: window.sessionStorage.getItem("token"),
+          },
+        })
+          .then((res) => {
+            // 分派成功
+            if (res.data.code == 200) {
+              this.$message.success("分派成功");
+              successAssign.push(item.id);
+              // 分派失败
+            } else {
+              this.$message({
+                message: res.data.msg,
+                duration: 10000,
+                showClose: true,
+                type: "error",
+              });
+            }
+
+            // 当任务提交到最后一个时，清理表单内容
+            if (index == this.assignForm.length - 1) {
+              console.log("finish");
+              console.log("successAssign", successAssign);
+              this.clearForm(successAssign);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+    },
+    // 根据成功提交的任务id，清理表单内容
+    clearForm(successAssign) {
+      // 判断表单是否会被清空
+      let isEmpty = successAssign.length == this.assignForm.length;
+      console.log(successAssign.length, this.assignForm.length);
+      console.log("isEmpty", isEmpty);
+      // 删除成功提交的任务
+      successAssign.forEach((item) => {
+        let index = this.assignForm.findIndex((item2) => item2.id == item);
+        this.assignForm.splice(index, 1);
+      });
+
+      // 清理完之后如果数组被清空，则新增一条初始信息
+      if (this.assignForm.length == 0) {
+        this.assignForm.push({
+          id: ++this.defaultId,
+          time: this.defaultTime,
+          class_id: "",
+          class_name: "",
+          area_id: "",
+          area_name: "",
+        });
+      }
+
+      // 完成分派
+      this.isLoading = false;
     },
   },
 };
@@ -261,7 +325,7 @@ export default {
 .assign-box {
   width: 25%;
   height: 390px;
-  padding: 25px;
+  padding: 29px;
   float: left;
   box-sizing: border-box;
 }

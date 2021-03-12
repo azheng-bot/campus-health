@@ -184,7 +184,7 @@
                   </div>
                   <div
                     class="card_body"
-                    style="padding: 15px; font-size: 44px"
+                    style="padding: 15px; font-size: 35px"
                     v-loading="isLoading"
                   >
                     <span v-if="dataHygiene[0]">{{
@@ -206,7 +206,7 @@
                   </div>
                   <div
                     class="card_body"
-                    style="font-size: 44px; font-weight: 500"
+                    style="font-size: 35px; font-weight: 500"
                     v-loading="isLoading"
                   >
                     <template v-if="dataHygiene[0]">
