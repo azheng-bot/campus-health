@@ -4,6 +4,7 @@
     <el-container>
       <el-main>
         <el-table
+          v-loading="isLoading"
           :data="operationData"
           style="width: 100%; box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 12px 0px"
           border
@@ -47,6 +48,7 @@ export default {
       page_num: 1,
       page_size: 10,
       total: 0,
+      isLoading: true,
     };
   },
   async created() {
@@ -54,6 +56,7 @@ export default {
   },
   methods: {
     async getOperaion() {
+      this.isLoading = true;
       await axios({
         method: "get",
         url: "/api/operation",
@@ -69,6 +72,7 @@ export default {
           if (res.data.code == 200) {
             this.operationData = res.data.data.operationData;
             this.total = res.data.data.total;
+            this.isLoading = false;
             console.log(res);
           }
         })

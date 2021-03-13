@@ -59,4 +59,8 @@ body {
     }
   }
 }
+
+/deep/.el-table--border th.gutter:last-of-type {
+    display: table-cell !important;
+}
 </style>

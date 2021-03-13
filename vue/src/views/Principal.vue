@@ -23,12 +23,12 @@
           >
             <el-form-item
               label="姓名"
-              prop="principal"
+              prop="principal_name"
               :rules="[{ required: true, message: '负责人名不能为空' }]"
             >
               <el-input
                 type="principal"
-                v-model="numberValidateForm.principal"
+                v-model="numberValidateForm.principal_name"
               ></el-input>
             </el-form-item>
             <el-form-item

@@ -4,6 +4,9 @@ import App from "./App.vue";
 import router from "./router";
 // vuex
 import store from "./store";
+
+import "./assets/index.css"
+
 // Element-plus
 import ElementPlus from "element-plus";
 import "element-plus/lib/theme-chalk/index.css";
