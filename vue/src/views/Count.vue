@@ -1,11 +1,11 @@
 <template>
   <div class="count">
     <div class="view1">
+      <div class="title">统计分析</div>
       <div class="card" v-loading="echartsLoading">
-        <div class="title">总卫生情况</div>
+        <div class="card_title">总卫生情况</div>
         <div class="wrapper">
           <div
-           
             class="echart echart1"
             style="width: 100px; height: 100px"
             ref="echart1"
@@ -17,7 +17,7 @@
       <div class="row1">
         <div class="col1">
           <div class="card">
-            <div class="title">
+            <div class="card_title">
               班级卫生情况为优占总次数的比率
               <span
                 class="tips"
@@ -37,9 +37,7 @@
         </div>
         <div class="col2">
           <div class="card">
-            <div class="title">
-              总体优良差卫生情况占比
-            </div>
+            <div class="card_title">总体优良差卫生情况占比</div>
             <div class="wrapper">
               <div
                 class="echart echart3"
@@ -51,12 +49,14 @@
         </div>
         <div class="col3">
           <div class="card">
-            <div class="title">班级卫生情况为差占总次数的比率
+            <div class="card_title">
+              班级卫生情况为差占总次数的比率
               <span
                 class="tips"
                 style="font-weight: 200; color: gray; margin-left: 0px"
                 >(仅显示前五)</span
-              ></div>
+              >
+            </div>
             <div class="wrapper">
               <div
                 class="echart echart4"
@@ -69,7 +69,7 @@
       </div>
       <div class="row2">
         <div class="card">
-          <div class="title">负责人考勤情况</div>
+          <div class="card_title">负责人考勤情况</div>
           <div class="wrapper">
             <div
               class="echart echart5"
@@ -89,7 +89,7 @@ import * as echarts from "echarts";
 export default {
   data() {
     return {
-      echartsLoading:true
+      echartsLoading: true,
     };
   },
   async created() {
@@ -162,22 +162,22 @@ export default {
       });
       // echart2 - 优率排行
       var echart2 = echarts.init(document.getElementsByClassName("echart2")[0]);
-      let goodRateNames = []
-      let goodRates = []
-      this.statusByGoodRate.forEach(item => {
-        goodRates.push(item.good_rate)
-        goodRateNames.push(item.class_name)
-      })
+      let goodRateNames = [];
+      let goodRates = [];
+      this.statusByGoodRate.forEach((item) => {
+        goodRates.push(item.good_rate);
+        goodRateNames.push(item.class_name);
+      });
       // 绘制图表
       echart2.setOption({
         xAxis: {
           type: "category",
           data: goodRateNames,
-          axisLabel: {interval:0,width:70}
+          axisLabel: { interval: 0, width: 70 },
         },
         yAxis: {
           type: "value",
-          max:100
+          max: 100,
         },
         series: [
           {
@@ -192,7 +192,7 @@ export default {
         ],
       });
       // echart3 - 总体优良差占比
-      console.log('this.totalStatus', this.totalStatus)
+      console.log("this.totalStatus", this.totalStatus);
       var echart3 = echarts.init(document.getElementsByClassName("echart3")[0]);
       // 绘制图表
       echart3.setOption({
@@ -234,22 +234,22 @@ export default {
       });
       // echart4 - 差率排行
       var echart4 = echarts.init(document.getElementsByClassName("echart4")[0]);
-      let badRates = []
-      let badRateNames = []
-      this.statusByBadRate.forEach(item => {
-        badRates.push(item.bad_rate)
-        badRateNames.push(item.class_name)
-      })
+      let badRates = [];
+      let badRateNames = [];
+      this.statusByBadRate.forEach((item) => {
+        badRates.push(item.bad_rate);
+        badRateNames.push(item.class_name);
+      });
       // 绘制图表
       echart4.setOption({
         xAxis: {
           type: "category",
           data: badRateNames,
-          axisLabel: {interval:0,width:70}
+          axisLabel: { interval: 0, width: 70 },
         },
         yAxis: {
           type: "value",
-          max:100
+          max: 100,
         },
         series: [
           {
@@ -324,11 +324,34 @@ export default {
   color: #111;
   overflow: auto;
 }
+.count .title {
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 30px;
+  padding-left: 17px;
+  box-sizing: border-box;
+  margin-bottom: 28px;
+  margin-top: 10px;
+  position: relative;
+  position: relative;
+}
+.count .title::after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 22px;
+  background-color: #2e81e1;
+  position: absolute;
+  top: 6px;
+  left: 0px;
+}
 .view1 {
   height: 100%;
   width: 100%;
-  padding: 15px;
+  padding: 20px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .card {
@@ -338,14 +361,15 @@ export default {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 .view1 .card {
+  flex:1;
   width: 100%;
   height: 100%;
-  padding: 15px;
+  padding: 20px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
 }
-.view1 .card .title {
+.view1 .card .card_title {
   text-align: center;
   line-height: 40px;
   font-size: 25px;
@@ -358,7 +382,7 @@ export default {
 .view2 {
   height: 100%;
   width: 100%;
-  padding: 15px;
+  padding: 20px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -366,7 +390,7 @@ export default {
 }
 .view2 .row1 {
   height: 50%;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -374,7 +398,7 @@ export default {
 .view2 .row1 .col1 {
   height: 100%;
   width: 33.3333%;
-  margin-right: 20px;
+  margin-right: 25px;
 }
 .view2 .row1 .col1 .card {
   height: 100%;
@@ -382,7 +406,7 @@ export default {
   padding: 10px;
   box-sizing: border-box;
 }
-.view2 .row1 .card .title {
+.view2 .row1 .card .card_title {
   line-height: 30px;
   font-size: 18px;
   padding-left: 5px;
@@ -390,7 +414,7 @@ export default {
 .view2 .row1 .col2 {
   height: 100%;
   width: 33.3333%;
-  margin-right: 20px;
+  margin-right: 25px;
 }
 .view2 .row1 .col2 .card {
   height: 100%;
@@ -416,7 +440,7 @@ export default {
   padding: 10px;
   box-sizing: border-box;
 }
-.view2 .row2 .card .title {
+.view2 .row2 .card .card_title {
   line-height: 30px;
   font-size: 22px;
   text-align: center;

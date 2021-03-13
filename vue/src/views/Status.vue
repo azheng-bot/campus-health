@@ -369,6 +369,7 @@ export default {
                 this.$message.success("修改成功");
               } else {
                 this.$message.error(res.data.msg)
+                this.editLoading = false;
               }
             })
             .catch((err) => {

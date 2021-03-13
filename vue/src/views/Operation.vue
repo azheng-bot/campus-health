@@ -3,7 +3,11 @@
     <div class="title">操作记录</div>
     <el-container>
       <el-main>
-        <el-table :data="operationData" style="width: 100%" border>
+        <el-table
+          :data="operationData"
+          style="width: 100%; box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 12px 0px"
+          border
+        >
           <!-- <el-table-column prop="date" label="日期" width="180">
         </el-table-column> -->
           <el-table-column width="40" center type="index"> </el-table-column>
@@ -20,7 +24,7 @@
           <el-pagination
             :current-page="page_num"
             :page-size="page_size"
-            :page-sizes="[5,10, 20, 50]"
+            :page-sizes="[5, 10, 20, 50]"
             layout="total, sizes, prev, pager, next, jumper"
             :total="total"
             @size-change="handleSizeChange"
@@ -42,7 +46,7 @@ export default {
       operationData: [],
       page_num: 1,
       page_size: 10,
-      total:0
+      total: 0,
     };
   },
   async created() {
@@ -53,10 +57,9 @@ export default {
       await axios({
         method: "get",
         url: "/api/operation",
-        params:{
-          page_num:this.page_num,
-          page_size:this.page_size
-          
+        params: {
+          page_num: this.page_num,
+          page_size: this.page_size,
         },
         headers: {
           Authorization: window.sessionStorage.getItem("token"),
@@ -65,7 +68,7 @@ export default {
         .then((res) => {
           if (res.data.code == 200) {
             this.operationData = res.data.data.operationData;
-            this.total = res.data.data.total
+            this.total = res.data.data.total;
             console.log(res);
           }
         })
@@ -80,7 +83,7 @@ export default {
       this.page_num = num || 1;
       this.getOperaion();
     },
-  // 格式时间
+    // 格式时间
     formatDate(time) {
       time = new Date(time);
       console.log(
@@ -124,7 +127,7 @@ export default {
   box-sizing: border-box;
   margin: 28px 0px;
   margin-left: 20px;
-  margin-bottom: 3px;
+  margin-bottom: 5px;
   position: relative;
 }
 .operation .title::after {

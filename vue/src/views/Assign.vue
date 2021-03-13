@@ -1,5 +1,6 @@
 <template>
   <div class="assign">
+    <div class="title">卫生分派</div>
     <div class="assign-boxs">
       <div v-for="(item, index) in assignForm" :key="index" class="assign-box">
         <div class="wrapper">
@@ -176,7 +177,7 @@ export default {
     addAssignBox() {
       // 当已经创建的分派任务超过五个时，返回错误信息
       if (this.assignForm.length >= 5) {
-        return this.$message.info("创建的分派任务不能超过五个");
+        return this.$message.info("单次最多创建五个卫生分派任务");
       }
       this.assignForm.push({
         id: ++this.defaultId,
@@ -197,21 +198,27 @@ export default {
         time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate()
       );
     },
-    // 校验表单
-    validForm() {
-      // 根据area_id、area_id选中area_name、class_name
+    // 完善表单
+    completeForm() {
+      // 根据area_id、class_id选中area_name、class_name
       this.assignForm.forEach((item, index) => {
+      // 根据area_id选中area_name
         if (item.area_id) {
           item.area_name = this.areaData.find(
-            (item2) => (item2.id = item.area_id)
+            (item2) => (item2.id == item.area_id)
           ).area_name;
         }
+
+      // 根据class_id选中class_name
         if (item.class_id) {
           item.class_name = this.classData.find(
-            (item2) => (item2.id = item.class_id)
+            (item2) => (item2.id == item.class_id)
           ).class_name;
         }
       });
+    },
+    // 校验表单
+    validForm() {
       // 确定每一项表单内容都已填写
       let isAllRight = true;
       this.assignForm.forEach((item, index) => {
@@ -227,12 +234,15 @@ export default {
     },
     // 提交表单
     async submitForm() {
-      this.isLoading = true;
+      // 完善表单
+      this.completeForm();
+      console.log('this.', this.assignForm)
       // 校验表单
       let valid = this.validForm();
       if (!valid) {
         return this.$message.error("请将表单填写完整");
       }
+      this.isLoading = true;
       // 成功提交任务数组
       let successAssign = [];
       // 提交表单
@@ -323,9 +333,7 @@ export default {
   line-height: 30px;
   padding-left: 17px;
   box-sizing: border-box;
-  margin: 28px 0px;
-  margin-left: 20px;
-  margin-bottom: 3px;
+  margin: 5px 0px;
   position: relative;
 }
 .assign .title::after {

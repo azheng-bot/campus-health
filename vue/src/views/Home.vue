@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <div v-if="$store.state.author" class="title">首页</div>
     <el-container>
       <el-main>
         <el-row style="height: 100%" :gutter="24">
@@ -323,6 +324,27 @@ export default {
   height: 100%;
   min-width: 1600px;
   min-height: 700px;
+}
+.home .title {
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 30px;
+  padding-left: 17px;
+  box-sizing: border-box;
+  margin: 28px 0px;
+  margin-left: 20px;
+  margin-bottom: 3px;
+  position: relative;
+}
+.home .title::after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 22px;
+  background-color: #2e81e1;
+  position: absolute;
+  top: 6px;
+  left: 0px;
 }
 .el-container {
   height: 100%;
