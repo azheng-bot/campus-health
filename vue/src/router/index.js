@@ -51,6 +51,12 @@ const routes = [
     name: "Class",
     component: () => import("../views/Class.vue"),
   },
+  // 操作记录
+  {
+    path: "/operation",
+    name: "Operation",
+    component: () => import("../views/Operation.vue"),
+  },
 ];
 
 const router = createRouter({

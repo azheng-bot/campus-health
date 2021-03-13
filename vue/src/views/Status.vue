@@ -1,202 +1,215 @@
 <template>
-  <el-container style="overflow: auto">
-    <el-header class="top" style="height: auto">
-      <el-card>
-        <el-row :gutter="20">
-          <el-col :span="5">
-            <el-date-picker
-              v-model="time"
-              type="date"
-              placeholder="选择日期"
-              @change="formatDate1"
-              style="width: 100%"
-              clearable
-            >
-            </el-date-picker>
-          </el-col>
-          <el-col :span="5" :offset="0">
-            <el-select
-              v-model="classValue"
-              placeholder="请选择班级"
-              style="width: 100%"
-              clearable
-            >
-              <el-option
-                v-for="item in classData"
-                :key="item.id"
-                :label="item.class_name"
-                :value="item.id"
+  <div class="status">
+    <div class="title">卫生情况</div>
+    <el-container style="overflow: auto">
+      <el-header class="top" style="height: auto">
+        <el-card>
+          <el-row :gutter="20">
+            <el-col :span="5">
+              <el-date-picker
+                v-model="time"
+                type="date"
+                placeholder="选择日期"
+                @change="formatDate1"
+                style="width: 100%"
+                clearable
               >
-              </el-option>
-            </el-select>
-          </el-col>
-          <el-col :span="5">
-            <el-select
-              v-model="regionValue"
-              placeholder="请选择区域"
-              style="width: 100%"
-              clearable
-            >
-              <el-option
-                v-for="item in areaData"
-                :key="item.id"
-                :label="item.area_name"
-                :value="item.id"
+              </el-date-picker>
+            </el-col>
+            <el-col :span="5" :offset="0">
+              <el-select
+                v-model="classValue"
+                placeholder="请选择班级"
+                style="width: 100%"
+                clearable
               >
-              </el-option>
-            </el-select>
-          </el-col>
-          <el-col
-            :span="6"
-            :offset="0"
-            style="position: absolute; right: 0px; top: 0px; left: unset"
-          >
-            <el-button
-              type="primary"
-              icon="el-icon-search"
-              @click="handleSearch"
-              style="width: 150px; margin-right: 5px"
-              >搜索</el-button
+                <el-option
+                  v-for="item in classData"
+                  :key="item.id"
+                  :label="item.class_name"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+            </el-col>
+            <el-col :span="5">
+              <el-select
+                v-model="regionValue"
+                placeholder="请选择区域"
+                style="width: 100%"
+                clearable
+              >
+                <el-option
+                  v-for="item in areaData"
+                  :key="item.id"
+                  :label="item.area_name"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+            </el-col>
+            <el-col
+              :span="6"
+              :offset="0"
+              style="position: absolute; right: 0px; top: 0px; left: unset"
             >
-            <el-button
-              type="info"
-              icon="el-icon-delete"
-              @click="handleReset"
-              style="width: 150px"
-              >重置</el-button
-            ></el-col
-          >
-        </el-row></el-card
-      >
-    </el-header>
-    <el-main>
-      <el-table
-        v-loading="tableLoading"
-        :data="tableData"
-        border
-        style="width: 100%; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)"
-      >
-        <el-table-column prop="time" label="时间" width="180">
-        </el-table-column>
-        <el-table-column prop="class_name" label="班级"> </el-table-column>
-        <el-table-column prop="area_name" label="区域" width="180">
-        </el-table-column>
-        <el-table-column label="情况">
-          <template #default="scope">
-            <el-tag class="status_tag" type="info" v-if="scope.row.status == 0"
-              >未<span>检查</span>
-            </el-tag>
-            <el-tag type="success" v-else-if="scope.row.status == 1">优</el-tag>
-            <el-tag v-else-if="scope.row.status == 2">良</el-tag>
-            <el-tag type="danger" v-else-if="scope.row.status == 3">差</el-tag>
-          </template>
-        </el-table-column>
+              <el-button
+                type="primary"
+                icon="el-icon-search"
+                @click="handleSearch"
+                style="width: 150px; margin-right: 5px"
+                >搜索</el-button
+              >
+              <el-button
+                type="info"
+                icon="el-icon-delete"
+                @click="handleReset"
+                style="width: 150px"
+                >重置</el-button
+              ></el-col
+            >
+          </el-row></el-card
+        >
+      </el-header>
+      <el-main>
+        <el-table
+          v-loading="tableLoading"
+          :data="tableData"
+          border
+          style="width: 100%; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)"
+        >
+          <el-table-column prop="time" label="时间" width="180">
+          </el-table-column>
+          <el-table-column prop="class_name" label="班级"> </el-table-column>
+          <el-table-column prop="area_name" label="区域" width="180">
+          </el-table-column>
+          <el-table-column label="情况">
+            <template #default="scope">
+              <el-tag
+                class="status_tag"
+                type="info"
+                v-if="scope.row.status == 0"
+                >未<span>检查</span>
+              </el-tag>
+              <el-tag type="success" v-else-if="scope.row.status == 1"
+                >优</el-tag
+              >
+              <el-tag v-else-if="scope.row.status == 2">良</el-tag>
+              <el-tag type="danger" v-else-if="scope.row.status == 3"
+                >差</el-tag
+              >
+            </template>
+          </el-table-column>
 
-        <el-table-column prop="principal_name" label="负责人">
-        </el-table-column>
-        <el-table-column label="操作">
-          <template #default="scope">
-            <el-button size="mini" type="warning" @click="handleEdit(scope.row)"
-              >编辑</el-button
-            >
+          <el-table-column prop="principal_name" label="负责人">
+          </el-table-column>
+          <el-table-column label="操作">
+            <template #default="scope">
+              <el-button
+                size="mini"
+                type="warning"
+                @click="handleEdit(scope.row)"
+                >编辑</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-row style="margin-top: 20px">
+          <el-pagination
+            :current-page="page_num"
+            :page-size="page_size"
+            :page-sizes="[5,10, 20, 50]"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          >
+          </el-pagination>
+        </el-row>
+        <el-dialog
+          title="编辑"
+          v-model="dialogVisible"
+          width="30%"
+          @close="handleClose"
+        >
+          <el-form
+            label-width="80px"
+            :model="formLabelAlign"
+            :rules="rules"
+            ref="ruleForm"
+          >
+            <el-form-item label="区域" prop="area_id">
+              <el-select v-model="formLabelAlign.area_id" placeholder="请选择">
+                <el-option
+                  v-for="item in areaData"
+                  :key="item.id"
+                  :label="item.area_name"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="负责人" prop="principal_id">
+              <el-select
+                v-model="formLabelAlign.principal_id"
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in principalData"
+                  :key="item.id"
+                  :label="item.principal_name"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="班级" prop="class_id">
+              <el-select v-model="formLabelAlign.class_id" placeholder="请选择">
+                <el-option
+                  v-for="item in classData"
+                  :key="item.id"
+                  :label="item.class_name"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="情况" prop="status">
+              <el-select v-model="formLabelAlign.status" placeholder="请选择">
+                <el-option
+                  v-for="item in statusData"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="时间" prop="time">
+              <el-date-picker
+                v-model="formLabelAlign.time"
+                type="date"
+                placeholder="选择日期"
+                @change="formatDate2"
+              >
+              </el-date-picker>
+            </el-form-item>
+          </el-form>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="dialogVisible = false">取 消</el-button>
+              <el-button
+                type="primary"
+                @click="handleOk('ruleForm')"
+                :loading="editLoading"
+                >确 定</el-button
+              >
+            </span>
           </template>
-        </el-table-column>
-      </el-table>
-      <el-row style="margin-top: 20px">
-        <el-pagination
-          :current-page="page_num"
-          :page-size="page_size"
-          :page-sizes="[10, 20, 30, 40]"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        >
-        </el-pagination>
-      </el-row>
-      <el-dialog
-        title="编辑"
-        v-model="dialogVisible"
-        width="30%"
-        @close="handleClose"
-      >
-        <el-form
-          label-width="80px"
-          :model="formLabelAlign"
-          :rules="rules"
-          ref="ruleForm"
-        >
-          <el-form-item label="区域" prop="area_id">
-            <el-select v-model="formLabelAlign.area_id" placeholder="请选择">
-              <el-option
-                v-for="item in areaData"
-                :key="item.id"
-                :label="item.area_name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="负责人" prop="principal_id">
-            <el-select
-              v-model="formLabelAlign.principal_id"
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in principalData"
-                :key="item.id"
-                :label="item.principal_name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="班级" prop="class_id">
-            <el-select v-model="formLabelAlign.class_id" placeholder="请选择">
-              <el-option
-                v-for="item in classData"
-                :key="item.id"
-                :label="item.class_name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="情况" prop="status">
-            <el-select v-model="formLabelAlign.status" placeholder="请选择">
-              <el-option
-                v-for="item in statusData"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="时间" prop="time">
-            <el-date-picker
-              v-model="formLabelAlign.time"
-              type="date"
-              placeholder="选择日期"
-              @change="formatDate2"
-            >
-            </el-date-picker>
-          </el-form-item>
-        </el-form>
-        <template #footer>
-          <span class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button
-              type="primary"
-              @click="handleOk('ruleForm')"
-              :loading="editLoading"
-              >确 定</el-button
-            >
-          </span>
-        </template>
-      </el-dialog>
-    </el-main>
-  </el-container>
+        </el-dialog>
+      </el-main>
+    </el-container>
+  </div>
 </template>
 
 <script>
@@ -346,6 +359,7 @@ export default {
             data: this.formLabelAlign,
           })
             .then((res) => {
+              console.log('res', res)
               if (res.data.code == 200) {
                 this.editLoading = false;
                 this.getStatus();
@@ -353,6 +367,8 @@ export default {
                 this.dialogVisible = false;
 
                 this.$message.success("修改成功");
+              } else {
+                this.$message.error(res.data.msg)
               }
             })
             .catch((err) => {
@@ -410,7 +426,28 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.status .title {
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 30px;
+  padding-left: 17px;
+  box-sizing: border-box;
+  margin: 28px 0px;
+  margin-left: 20px;
+  margin-bottom: 3px;
+  position: relative;
+}
+.status .title::after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 22px;
+  background-color: #2e81e1;
+  position: absolute;
+  top: 6px;
+  left: 0px;
+}
 .top {
   margin-top: 24px;
 }

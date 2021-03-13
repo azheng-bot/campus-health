@@ -9,7 +9,6 @@ router.get("/", async (req, res) => {
   try {
     // 执行添加语句
     let res1 = await query("SELECT * FROM CLASS")
-    console.log('res1', res1)
     // 返回成功信息
     res.send({
       code: 200,
@@ -28,11 +27,9 @@ router.get("/", async (req, res) => {
 
 // 2.添加班级
 router.post("/", async (req, res) => {
-  console.log('req.body', req.body)
   try {
     // 执行添加语句
     let res1 = await query("insert into class (class_name) values(?)", [req.body.class_name])
-    console.log('res1', res1)
     // 返回成功信息
     res.send({
       code: 200,
@@ -49,11 +46,9 @@ router.post("/", async (req, res) => {
 
 // 3.删除班级
 router.delete("/", async (req, res) => {
-  console.log('req.body', req.query)
   try {
     // 执行添加语句
     let res1 = await query("delete from class where id = ?", [req.query.id])
-    console.log('res1', res1)
     // 返回成功信息
     res.send({
       code: 200,
@@ -71,11 +66,9 @@ router.delete("/", async (req, res) => {
 
 // 4.修改班级
 router.patch("/", async (req, res) => {
-  console.log('req.body', req.query)
   try {
     // 执行添加语句
     let res1 = await query("update class set class_name = ? where id = ?", [req.body.class_name, req.body.id])
-    console.log('res1', res1)
     // 返回成功信息
     res.send({
       code: 200,

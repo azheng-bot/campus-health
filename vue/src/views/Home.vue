@@ -19,6 +19,7 @@
                   display: flex;
                   flex-direction: column;
                   justify-content: center;
+                  font-style:italic
                 "
               >
                 <el-row class="map">
@@ -274,6 +275,7 @@ export default {
     formatDate(time) {
       this.cleanTime =
         time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
+        this.hygieneData()
     },
     // 点击区域的事件
     switchRegion(param) {

@@ -8,7 +8,6 @@ let jwt = require("jsonwebtoken")
 
 // 1.获取侧边栏
 router.get("/", async (req, res) => {
-  console.log(req.get("Authorization"));
   // 如果没有登录信息，则认定为游客，返回空信息
   if (!req.get("Authorization")) {
     return res.send({
@@ -47,6 +46,7 @@ router.get("/", async (req, res) => {
               { id: "7", name: "班级", url: "/class" }
             ]
           },
+          { id: "8", name: "操作记录", url: "/operation" },
 
         ]
       })

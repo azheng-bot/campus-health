@@ -26,7 +26,6 @@ router.post("/", async (req, res) => {
     let token = "Bearer " + jwt.sign(username, "just_do_it")
 
     let decode = jwt.decode(token, "just_do_it")
-    console.log('decode', decode)
 
     return res.send({
       code: 200,

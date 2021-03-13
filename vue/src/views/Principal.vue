@@ -1,81 +1,98 @@
 <template>
-  <el-container>
-    <el-header>
-      <el-button type="primary" style="margin-top: 20px" @click="openClass"
-        >添加负责人</el-button
+  <div class="principal">
+    <div class="title">负责人管理</div>
+    <el-container>
+      <el-header>
+        <el-button type="primary" style="margin-top: 20px" @click="openClass"
+          >添加负责人</el-button
+        >
+        <el-dialog
+          title="添加"
+          v-model="dialogVisible"
+          width="30%"
+          @close="guan"
+        >
+          <el-form
+            :model="numberValidateForm"
+            ref="numberValidateForm"
+            label-width="80px"
+            class="demo-ruleForm"
+          >
+            <el-form-item
+              label="姓名"
+              prop="class"
+              :rules="[{ required: true, message: '姓名不能为空' }]"
+            >
+              <el-input
+                type="class"
+                v-model="numberValidateForm.class"
+              ></el-input>
+            </el-form-item>
+          </el-form>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="dialogVisible = false">取 消</el-button>
+              <el-button
+                type="primary"
+                @click="submitForm('numberValidateForm')"
+                >确 定</el-button
+              >
+            </span>
+          </template>
+        </el-dialog>
+      </el-header>
+      <el-main>
+        <el-table :data="principalData" style="width: 100%" border>
+          <!-- <el-table-column prop="date" label="日期" width="180">
+        </el-table-column> -->
+          <el-table-column type="index"> </el-table-column>
+          <el-table-column prop="principal_name" label="姓名" align="center">
+          </el-table-column>
+          <el-table-column label="操作" align="center">
+            <template #default="scope">
+              <el-button size="mini" @click="handleEdit(scope.row)"
+                >编辑</el-button
+              >
+              <el-popconfirm title="您确定要删除吗？" @confirm="del(scope.row)">
+                <template #reference>
+                  <el-button size="mini" type="danger">删除</el-button>
+                </template>
+              </el-popconfirm>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-main>
+      <el-dialog
+        title="编辑"
+        v-model="editVisible"
+        width="30%"
+        @close="editGuan"
       >
-      <el-dialog title="添加" v-model="dialogVisible" width="30%" @close="guan">
         <el-form
-          :model="numberValidateForm"
-          ref="numberValidateForm"
+          :model="edit"
+          ref="edit"
           label-width="80px"
           class="demo-ruleForm"
         >
           <el-form-item
-            label="姓名"
+            label="班级"
             prop="class"
-            :rules="[{ required: true, message: '姓名不能为空' }]"
+            :rules="[{ required: true, message: '班级名不能为空' }]"
           >
-            <el-input
-              type="class"
-              v-model="numberValidateForm.class"
-            ></el-input>
+            <el-input type="class" v-model="edit.class"></el-input>
           </el-form-item>
         </el-form>
         <template #footer>
           <span class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="submitForm('numberValidateForm')"
+            <el-button @click="editVisible = false">取 消</el-button>
+            <el-button type="primary" @click="editForm('edit')"
               >确 定</el-button
             >
           </span>
         </template>
       </el-dialog>
-    </el-header>
-    <el-main>
-      <el-table :data="principalData" style="width: 100%" border>
-        <!-- <el-table-column prop="date" label="日期" width="180">
-        </el-table-column> -->
-        <el-table-column type="index"> </el-table-column>
-        <el-table-column prop="principal_name" label="姓名" align="center">
-        </el-table-column>
-        <el-table-column label="操作" align="center">
-          <template #default="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)"
-              >编辑</el-button
-            >
-            <el-popconfirm title="您确定要删除吗？" @confirm="del(scope.row)">
-              <template #reference>
-                <el-button size="mini" type="danger">删除</el-button>
-              </template>
-            </el-popconfirm>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-main>
-    <el-dialog title="编辑" v-model="editVisible" width="30%" @close="editGuan">
-      <el-form
-        :model="edit"
-        ref="edit"
-        label-width="80px"
-        class="demo-ruleForm"
-      >
-        <el-form-item
-          label="班级"
-          prop="class"
-          :rules="[{ required: true, message: '班级名不能为空' }]"
-        >
-          <el-input type="class" v-model="edit.class"></el-input>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="editVisible = false">取 消</el-button>
-          <el-button type="primary" @click="editForm('edit')">确 定</el-button>
-        </span>
-      </template>
-    </el-dialog>
-  </el-container>
+    </el-container>
+  </div>
 </template>
 
 <script>
@@ -215,5 +232,26 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.principal .title {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 30px;
+  padding-left: 17px;
+  box-sizing: border-box;
+  margin: 28px 0px;
+  margin-left: 20px;
+  margin-bottom: 3px;
+  position: relative;
+}
+.principal .title::after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 22px;
+  background-color: #2e81e1;
+  position: absolute;
+  top: 6px;
+  left: 0px;
+}
 </style>

@@ -9,7 +9,6 @@ router.get("/", async (req, res) => {
   try {
     // 执行添加语句
     let res1 = await query("SELECT * FROM PRINCIPAL")
-    console.log('res1', res1)
     // 返回成功信息
     res.send({
       code: 200,
@@ -28,11 +27,9 @@ router.get("/", async (req, res) => {
 
 // 2.添加负责人
 router.post("/", async (req, res) => {
-  console.log('req.body', req.body)
   try {
     // 执行添加语句
     let res1 = await query("insert into PRINCIPAL (principal_name) values(?)", [req.body.principal_name])
-    console.log('res1', res1)
     // 返回成功信息
     res.send({
       code: 200,
@@ -49,11 +46,9 @@ router.post("/", async (req, res) => {
 
 // 3.删除负责人
 router.delete("/", async (req, res) => {
-  console.log('req.body', req.query)
   try {
     // 执行添加语句
     let res1 = await query("delete from PRINCIPAL where id = ?", [req.query.id])
-    console.log('res1', res1)
     // 返回成功信息
     res.send({
       code: 200,
@@ -75,7 +70,6 @@ router.patch("/", async (req, res) => {
   try {
     // 执行添加语句
     let res1 = await query("update PRINCIPAL set principal_name = ? where id = ?", [req.body.principal_name, req.body.id])
-    console.log('res1', res1)
     // 返回成功信息
     res.send({
       code: 200,

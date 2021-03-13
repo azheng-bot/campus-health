@@ -121,7 +121,6 @@ async function acountTotalStatus() {
     total_no_checked:0
   }
   allStatus.forEach(item => {
-    console.log('item', item)
     if (item.status == 0) {
       returnObj.total_no_checked++
     } else if (item.status == 1) {

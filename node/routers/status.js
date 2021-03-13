@@ -20,7 +20,7 @@ router.get("/", async (req, res) => {
   if (page_num && page_size) {
     page_num = Number(page_num)
     page_size = Number(page_size)
-    sqlStr += ` LIMIT ${(page_num - 1) * page_size},${page_size}`
+    sqlStr += ` ORDER BY ID DESC LIMIT ${(page_num - 1) * page_size},${page_size}`
   }
   // 发起查询请求
   let res1 = await query(sqlStr)

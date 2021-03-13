@@ -132,11 +132,11 @@ export default {
     },
     // 登出
     logout() {
-      this.$confirm("确定要退出当前账号吗？", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      }).then(() => {
+      this.$confirm('确定要退出当前账号吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
         this.$store.commit("logout");
       this.$router.push("/index");
       });

@@ -11,7 +11,6 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 // 1.创建路由拦截器
 app.use(async (req, res, next) => {
-  console.log('req', req.url)
   // 以下情况可以直接放行
   // 登录
   if (req.url.match("/login")) return next()
@@ -29,9 +28,20 @@ app.use(async (req, res, next) => {
   let token = req.get("Authorization").slice(7)
   let encode = jwt.decode(token, "just_do_it")
   let res1 = await query("select *from user where username =?", [encode])
-  console.log('res1', res1)
+  
   // 如果正确则放行
   if (res1.length > 0) {
+    // 记录操作记录
+    let url = req.url;
+    let method = req.method;
+    let username = res1[0].username;
+    let user_id = res1[0].id;
+    let time = new Date().toString();
+    // 如果不是get方法则记录
+    if (method != "GET") {
+      await query("INSERT INTO OPERATION (URL,METHOD,USERNAME,USER_ID,TIME) VALUES (?)",[[url,method,username,user_id,time]]).catch(err => console.log('err', err))
+    }
+
     return next()
     // 如果不正确则返回错误信息
   } else {
@@ -66,6 +76,9 @@ app.use("/principal", principalRouter)
 // 2.6 获取区域信息路由
 let areaRouter = require("./routers/area")
 app.use("/area", areaRouter)
+// 2.7 获取操作记录信息路由
+let operationRouter = require("./routers/operation")
+app.use("/operation", operationRouter)
 
 // 3. 挂载
 app.listen(3000, () => {

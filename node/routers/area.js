@@ -9,7 +9,6 @@ router.get("/", async (req, res) => {
   try {
     // 执行添加语句
     let res1 = await query("SELECT * FROM AREA")
-    console.log('res1', res1)
     // 返回成功信息
     res.send({
       code: 200,

@@ -1,4 +1,7 @@
 <template>
+<div class="class">
+    <div class="title">班级管理</div>
+
   <el-container>
     <el-header>
       <el-button type="primary" style="margin-top: 20px" @click="openClass"
@@ -76,6 +79,7 @@
       </template>
     </el-dialog>
   </el-container>
+</div>
 </template>
 
 <script>
@@ -216,5 +220,27 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+
+.class .title {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 30px;
+  padding-left: 17px;
+  box-sizing: border-box;
+  margin: 28px 0px;
+  margin-left: 20px;
+  margin-bottom: 3px;
+  position: relative;
+}
+.class .title::after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 22px;
+  background-color: #2e81e1;
+  position: absolute;
+  top: 6px;
+  left: 0px;
+}
 </style>

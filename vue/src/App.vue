@@ -22,6 +22,7 @@ export default {
     layout,
   },
   created(e) {
+    document.title = '校园卫生分派可视化系统'
     // 如果没有登录者信息，则登录
     if (!this.$store.state.author) {
       let token = window.sessionStorage.getItem("token");
@@ -57,5 +58,9 @@ body {
       color: #42b983;
     }
   }
+}
+
+body .el-table th.gutter{
+    display: table-cell!important;
 }
 </style>

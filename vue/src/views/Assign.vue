@@ -317,6 +317,27 @@ export default {
   min-width: 1600px;
   box-sizing: border-box;
 }
+.assign .title {
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 30px;
+  padding-left: 17px;
+  box-sizing: border-box;
+  margin: 28px 0px;
+  margin-left: 20px;
+  margin-bottom: 3px;
+  position: relative;
+}
+.assign .title::after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 22px;
+  background-color: #2e81e1;
+  position: absolute;
+  top: 6px;
+  left: 0px;
+}
 .assign-boxs::after {
   content: "";
   display: block;
