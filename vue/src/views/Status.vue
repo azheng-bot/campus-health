@@ -48,25 +48,23 @@
                 </el-option>
               </el-select>
             </el-col>
-            <el-col
-              :span="6"
-              :offset="0"
-              style="position: absolute; right: 0px; top: 0px; left: unset"
+            <div
+              style="position:absolute;right:10px;width:20%;display:flex;justify-content:space-between"
             >
               <el-button
                 type="primary"
                 icon="el-icon-search"
                 @click="handleSearch"
-                style="width: 150px; margin-right: 5px"
+                style="width: 48%; margin-right: 5px"
                 >搜索</el-button
               >
               <el-button
                 type="info"
                 icon="el-icon-delete"
                 @click="handleReset"
-                style="width: 150px"
+                style="width: 48%"
                 >重置</el-button
-              ></el-col
+              ></div
             >
           </el-row></el-card
         >
