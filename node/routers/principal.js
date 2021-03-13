@@ -8,7 +8,51 @@ let query = require('../utils/query')
 router.get("/", async (req, res) => {
   try {
     // 执行添加语句
-    let res1 = await query("SELECT * FROM PRINCIPAL")
+    let res1 = await query("SELECT * FROM USER")
+
+    // 删除查询结果中的admin超级管理员
+    let index = res1.findIndex(item => item.username == "admin")
+    res1.splice(index, 1)
+
+    // 把username改成principal_name
+    // 把password删除
+    res1.forEach(item => {
+      item.principal_name = item.username
+      delete item.username
+      delete item.password
+    })
+
+    // 返回成功信息
+    res.send({
+      code: 200,
+      data: res1
+    })
+  } catch {
+    // 出现报错时，返回失败信息
+    res.send({
+      code: 400,
+      msg: "获取失败"
+    })
+
+  }
+})
+
+// 2.获取负责人（用户名&密码）
+router.get("/user", async (req, res) => {
+  try {
+    // 执行添加语句
+    let res1 = await query("SELECT * FROM USER")
+
+    // 删除查询结果中的admin超级管理员
+    let index = res1.findIndex(item => item.username == "admin")
+    res1.splice(index, 1)
+
+    // 把username改成principal_name
+    res1.forEach(item => {
+      item.principal_name = item.username
+      delete item.username
+    })
+
     // 返回成功信息
     res.send({
       code: 200,
@@ -25,11 +69,13 @@ router.get("/", async (req, res) => {
 })
 
 
-// 2.添加负责人
+// 3.添加负责人
 router.post("/", async (req, res) => {
   try {
+    console.log('req.body', req.body)
     // 执行添加语句
-    let res1 = await query("insert into PRINCIPAL (principal_name) values(?)", [req.body.principal_name])
+    let res2 = await query("insert into USER (username,password,role) values(?)", [[req.body.principal_name, req.body.password, "principal"]]).catch(err => console.log('err1', err)
+    )
     // 返回成功信息
     res.send({
       code: 200,
@@ -44,11 +90,11 @@ router.post("/", async (req, res) => {
   }
 })
 
-// 3.删除负责人
+// 4.删除负责人
 router.delete("/", async (req, res) => {
   try {
     // 执行添加语句
-    let res1 = await query("delete from PRINCIPAL where id = ?", [req.query.id])
+    let res1 = await query("delete from USER where id = ?", [req.query.id])
     // 返回成功信息
     res.send({
       code: 200,
@@ -64,12 +110,12 @@ router.delete("/", async (req, res) => {
   }
 })
 
-// 4.修改负责人
+// 5.修改负责人
 router.patch("/", async (req, res) => {
   console.log('req.body', req.query)
   try {
     // 执行添加语句
-    let res1 = await query("update PRINCIPAL set principal_name = ? where id = ?", [req.body.principal_name, req.body.id])
+    let res1 = await query("update USER set USERNAME = ? where id = ?", [req.body.principal_name, req.body.id])
     // 返回成功信息
     res.send({
       code: 200,

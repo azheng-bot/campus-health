@@ -10,6 +10,7 @@
               <!-- card_header -->
               <div class="card_header">
                 <span style="font-size: 30px; font-weight: 500">地图</span>
+                <span style="font-size: 30px; font-weight: 500;float:right;color:#eee">MAP</span>
               </div>
               <!-- card_body -->
 
@@ -163,6 +164,7 @@
                 <div class="card">
                   <div class="card_header">
                     <span style="font-size: 20px; font-weight: 500">日期 </span>
+                <span style="font-size: 20px; font-weight: 500;float:right;color:#eee">DATE</span>
                   </div>
                   <div class="card_body" style="padding: 15px">
                     <el-date-picker
@@ -183,6 +185,7 @@
                 <div class="card" style="height: 100%">
                   <div class="card_header">
                     <span style="font-size: 20px; font-weight: 500">班级</span>
+                <span style="font-size: 20px; font-weight: 500;float:right;color:#eee">CLASS</span>
                   </div>
                   <div
                     class="card_body"
@@ -205,6 +208,7 @@
                     <span style="font-size: 20px; font-weight: 500"
                       >打扫情况</span
                     >
+                <span style="font-size: 20px; font-weight: 500;float:right;color:#eee">STATUS</span>
                   </div>
                   <div
                     class="card_body"

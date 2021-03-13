@@ -3,7 +3,10 @@
     <div class="title">负责人管理</div>
     <el-container>
       <el-header>
-        <el-button type="primary" style="margin-top: 20px" @click="openClass"
+        <el-button
+          type="primary"
+          style="margin-top: 20px"
+          @click="openPrincipal"
           >添加负责人</el-button
         >
         <el-dialog
@@ -16,21 +19,31 @@
             :model="numberValidateForm"
             ref="numberValidateForm"
             label-width="80px"
-            class="demo-ruleForm"
+            principal="demo-ruleForm"
           >
             <el-form-item
               label="姓名"
-              prop="class"
-              :rules="[{ required: true, message: '姓名不能为空' }]"
+              prop="principal"
+              :rules="[{ required: true, message: '负责人名不能为空' }]"
             >
               <el-input
-                type="class"
-                v-model="numberValidateForm.class"
+                type="principal"
+                v-model="numberValidateForm.principal"
+              ></el-input>
+            </el-form-item>
+            <el-form-item
+              label="密码"
+              prop="password"
+              :rules="[{ required: true, message: '密码不能为空' }]"
+            >
+              <el-input
+                type="principal"
+                v-model="numberValidateForm.password"
               ></el-input>
             </el-form-item>
           </el-form>
           <template #footer>
-            <span class="dialog-footer">
+            <span principal="dialog-footer">
               <el-button @click="dialogVisible = false">取 消</el-button>
               <el-button
                 type="primary"
@@ -42,11 +55,17 @@
         </el-dialog>
       </el-header>
       <el-main>
-        <el-table :data="principalData" style="width: 100%;    box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 12px 0px;" border>
+        <el-table
+          :data="principalData"
+          style="width: 100%; box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 12px 0px"
+          border
+        >
           <!-- <el-table-column prop="date" label="日期" width="180">
         </el-table-column> -->
           <el-table-column type="index"> </el-table-column>
           <el-table-column prop="principal_name" label="姓名" align="center">
+          </el-table-column>
+          <el-table-column prop="password" label="密码" align="center">
           </el-table-column>
           <el-table-column label="操作" align="center">
             <template #default="scope">
@@ -75,11 +94,18 @@
           class="demo-ruleForm"
         >
           <el-form-item
-            label="班级"
-            prop="class"
-            :rules="[{ required: true, message: '班级名不能为空' }]"
+            label="负责人"
+            prop="principal_name"
+            :rules="[{ required: true, message: '负责人名不能为空' }]"
           >
-            <el-input type="class" v-model="edit.class"></el-input>
+            <el-input type="principal" v-model="edit.principal_name"></el-input>
+          </el-form-item>
+          <el-form-item
+            label="密码"
+            prop="password"
+            :rules="[{ required: true, message: '密码不能为空' }]"
+          >
+            <el-input type="principal" v-model="edit.password"></el-input>
           </el-form-item>
         </el-form>
         <template #footer>
@@ -104,11 +130,14 @@ export default {
       principalData: [],
       dialogVisible: false,
       numberValidateForm: {
-        class: "",
+        principal: "",
+        password: "",
       },
       editVisible: false,
       edit: {
-        class: "",
+        id:0,
+        principal: "",
+        password: "",
       },
       id: "",
     };
@@ -120,7 +149,7 @@ export default {
     getPrincipal() {
       axios({
         method: "get",
-        url: "/api/principal",
+        url: "/api/principal/user",
         headers: {
           Authorization: window.sessionStorage.getItem("token"),
         },
@@ -131,11 +160,12 @@ export default {
         }
       });
     },
-    openClass() {
+    openPrincipal() {
       this.dialogVisible = true;
     },
     guan() {
-      this.numberValidateForm.class = "";
+      this.numberValidateForm.principal = "";
+      this.numberValidateForm.password = "";
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -144,7 +174,8 @@ export default {
             method: "post",
             url: "/api/principal",
             data: {
-              principal_name: this.numberValidateForm.class,
+              principal_name: this.numberValidateForm.principal_name,
+              password: this.numberValidateForm.password,
             },
             headers: {
               Authorization: window.sessionStorage.getItem("token"),
@@ -158,7 +189,7 @@ export default {
                   type: "success",
                 });
                 this.numberValidateForm = {
-                  class: "",
+                  principal: "",
                 };
                 this.dialogVisible = false;
                 this.getPrincipal();
@@ -183,17 +214,20 @@ export default {
         },
       }).then((res) => {
         if (res.data.code == 200) {
-          console.log(res);
           this.getPrincipal();
+          this.$message.success("删除成功")
         }
       });
     },
     handleEdit(row) {
       this.editVisible = true;
-      this.id = row.id;
+      this.edit.id = row.id;
+      this.edit.principal_name = row.principal_name;
+      this.edit.password = row.password;
     },
     editGuan() {
-      this.edit.class = "";
+      this.edit.principal = "";
+      this.edit.password = "";
     },
     editForm(formName) {
       //   console.log(this.id);
@@ -207,16 +241,19 @@ export default {
               Authorization: window.sessionStorage.getItem("token"),
             },
             data: {
-              id: this.id,
-              principal_name: this.edit.class,
+              id: this.edit.id,
+              principal_name: this.edit.principal_name,
+              password: this.edit.password,
             },
           })
             .then((res) => {
               if (res.data.code == 200) {
-                // console.log(res);
+                
                 this.getPrincipal();
+                this.$message.success("修改成功")
                 this.editVisible = false;
-                this.edit.class = "";
+                this.edit.principal = "";
+                this.edit.password = "";
               }
             })
             .catch((err) => {
