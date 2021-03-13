@@ -205,7 +205,7 @@ export default {
         },
         series: [
           {
-            name: "访问来源",
+            name: "总体优良差占比",
             type: "pie",
             radius: ["40%", "70%"],
             avoidLabelOverlap: false,
@@ -218,16 +218,21 @@ export default {
                 show: true,
                 fontSize: "40",
                 fontWeight: "bold",
+                 formatter: `{b} {d}%`
               },
             },
             labelLine: {
               show: false,
             },
+            // label: {
+              // normal: { show: true, position: "center", },
+            // },
+            color: ["#91cd76", "#fac958", "#ef6667", "#808080"],
             data: [
-              { value: this.totalStatus.total_good, name: "优" },
-              { value: this.totalStatus.total_normal, name: "良" },
-              { value: this.totalStatus.total_bad, name: "差" },
-              { value: this.totalStatus.total_no_checked, name: "未检查" },
+              { value: this.totalStatus.total_good, name: "优 " },
+              { value: this.totalStatus.total_normal, name: "良 " },
+              { value: this.totalStatus.total_bad, name: "差 " },
+              { value: this.totalStatus.total_no_checked, name: "未检查 " },
             ],
           },
         ],
@@ -361,7 +366,7 @@ export default {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 .view1 .card {
-  flex:1;
+  flex: 1;
   width: 100%;
   height: 100%;
   padding: 20px;

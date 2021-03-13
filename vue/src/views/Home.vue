@@ -9,8 +9,16 @@
             <div class="card" style="height: 100%">
               <!-- card_header -->
               <div class="card_header">
-                <span style="font-size: 30px; font-weight: 500">地图</span>
-                <span style="font-size: 30px; font-weight: 500;float:right;color:#eee">MAP</span>
+                <span style="font-size: 30px; font-weight: 550">地图</span>
+                <span
+                  style="
+                    font-size: 30px;
+                    font-weight: 500;
+                    float: right;
+                    color: #c9c9c9;
+                  "
+                  >MAP</span
+                >
               </div>
               <!-- card_body -->
 
@@ -21,7 +29,7 @@
                   display: flex;
                   flex-direction: column;
                   justify-content: center;
-                  font-style:italic
+                  font-style: italic;
                 "
               >
                 <el-row class="map">
@@ -163,8 +171,16 @@
               <el-col :span="24">
                 <div class="card">
                   <div class="card_header">
-                    <span style="font-size: 20px; font-weight: 500">日期 </span>
-                <span style="font-size: 20px; font-weight: 500;float:right;color:#eee">DATE</span>
+                    <span style="font-size: 20px; font-weight: 550">日期 </span>
+                    <span
+                      style="
+                        font-size: 20px;
+                        font-weight: 500;
+                        float: right;
+                        color: #c9c9c9;
+                      "
+                      >DATE</span
+                    >
                   </div>
                   <div class="card_body" style="padding: 15px">
                     <el-date-picker
@@ -179,61 +195,91 @@
                 </div>
               </el-col>
             </el-row>
-            <!-- 班级 -->
-            <el-row style="margin-top: 24px; height: 40%">
-              <el-col :span="24">
-                <div class="card" style="height: 100%">
-                  <div class="card_header">
-                    <span style="font-size: 20px; font-weight: 500">班级</span>
-                <span style="font-size: 20px; font-weight: 500;float:right;color:#eee">CLASS</span>
-                  </div>
-                  <div
-                    class="card_body"
-                    style="padding: 15px; font-size: 35px"
-                    v-loading="isLoading"
-                  >
-                    <span v-if="dataHygiene[0]">{{
-                      dataHygiene[0].class_name
-                    }}</span>
-                    <span v-else>无班级打扫</span>
-                  </div>
-                </div>
-              </el-col>
-            </el-row>
-            <!-- 情况 -->
-            <el-row style="margin-top: 24px; height: 40%">
-              <el-col :span="24">
-                <div class="card" style="height: 100%">
-                  <div class="card_header">
-                    <span style="font-size: 20px; font-weight: 500"
-                      >打扫情况</span
+            <div
+              style="
+                flex: 1 1 0%;
+                display: flex;
+                padding: 10px;
+                border-radius: 20px;
+                border: 10px solid rgb(255, 255, 255);
+                margin-top: 20px;
+                flex-direction: column;
+              "
+            >
+              <!-- 班级 -->
+              <el-row style="height: 50%">
+                <el-col :span="24">
+                  <div class="card" style="height: 100%">
+                    <div class="card_header">
+                      <span style="font-size: 20px; font-weight: 500"
+                        >打扫班级</span
+                      >
+                      <span
+                        style="
+                          font-size: 20px;
+                          font-weight: 500;
+                          float: right;
+                          color: #c9c9c9;
+                        "
+                        >CLASS</span
+                      >
+                    </div>
+                    <div
+                      class="card_body"
+                      style="padding: 15px; font-size: 35px"
+                      v-loading="isLoading"
                     >
-                <span style="font-size: 20px; font-weight: 500;float:right;color:#eee">STATUS</span>
+                      <span v-if="dataHygiene[0]">{{
+                        dataHygiene[0].class_name
+                      }}</span>
+                      <span v-else>无班级打扫</span>
+                    </div>
                   </div>
-                  <div
-                    class="card_body"
-                    style="font-size: 35px; font-weight: 500"
-                    v-loading="isLoading"
-                  >
-                    <template v-if="dataHygiene[0]">
-                      <template v-if="dataHygiene[0].status == 0">
-                        <div class="status_panel no_checked">未检查</div>
+                </el-col>
+              </el-row>
+              <!-- 情况 -->
+              <el-row style="margin-top: 10px; height: 50%">
+                <el-col :span="24">
+                  <div class="card" style="height: 100%">
+                    <div class="card_header">
+                      <span style="font-size: 20px; font-weight: 500"
+                        >打扫情况</span
+                      >
+                      <span
+                        style="
+                          font-size: 20px;
+                          font-weight: 500;
+                          float: right;
+                          color: #c9c9c9;
+                        "
+                        >STATUS</span
+                      >
+                    </div>
+                    <div
+                      class="card_body"
+                      style="font-size: 35px; font-weight: 500"
+                      v-loading="isLoading"
+                    >
+                      <template v-if="dataHygiene[0]">
+                        <template v-if="dataHygiene[0].status == 0">
+                          <div class="status_panel no_checked">未检查</div>
+                        </template>
+                        <template v-else-if="dataHygiene[0].status == 1">
+                          <div class="status_panel good">优</div>
+                        </template>
+                        <template v-else-if="dataHygiene[0].status == 2">
+                          <div style="" class="status_panel normal">良</div>
+                        </template>
+                        <template v-else-if="dataHygiene[0].status == 3">
+                          <div class="status_panel bad">差</div>
+                        </template>
                       </template>
-                      <template v-else-if="dataHygiene[0].status == 1">
-                        <div class="status_panel good">优</div>
-                      </template>
-                      <template v-else-if="dataHygiene[0].status == 2">
-                        <div style="" class="status_panel normal">良</div>
-                      </template>
-                      <template v-else-if="dataHygiene[0].status == 3">
-                        <div class="status_panel bad">差</div>
-                      </template>
-                    </template>
-                    <div v-else class="status_panel" style="">无班级打扫</div>
+                      <div v-else class="status_panel" style="">无班级打扫</div>
+                    </div>
                   </div>
-                </div>
-              </el-col>
-            </el-row>
+                </el-col>
+              </el-row>
+            </div>
           </el-col>
         </el-row>
       </el-main>
@@ -249,7 +295,7 @@ export default {
   data() {
     return {
       // 时间
-      cleanTime: "2021-1-22",
+      cleanTime: this.todayDate(),
       // 选择的那块区域
       region: 1,
       // 各个区域背景颜色
@@ -268,8 +314,7 @@ export default {
     this.hygieneData();
   },
   mounted() {
-    this.switchRegion("playground")
-    
+    this.switchRegion("playground");
   },
 
   methods: {
@@ -280,7 +325,13 @@ export default {
     formatDate(time) {
       this.cleanTime =
         time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
-        this.hygieneData()
+      this.hygieneData();
+    },
+    todayDate() {
+      let time = new Date();
+      return (
+        time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate()
+      );
     },
     // 点击区域的事件
     switchRegion(param) {
@@ -291,14 +342,16 @@ export default {
         // 恢复默认颜色
         document.getElementsByClassName(key)[0].style.backgroundColor = "";
         // 取消框选
-        document.getElementsByClassName(key)[0].style.border = "5px solid transparent";
+        document.getElementsByClassName(key)[0].style.border =
+          "5px solid transparent";
 
         if (key == param) {
           // 颜色加重
           document.getElementsByClassName(param)[0].style.backgroundColor =
             _this.regionColor[param][1];
-        // 框选
-        document.getElementsByClassName(key)[0].style.border = "5px solid #5e5e5e";
+          // 框选
+          document.getElementsByClassName(key)[0].style.border =
+            "5px solid #5e5e5e";
         }
       });
     },
@@ -314,7 +367,7 @@ export default {
       }).then((res) => {
         if (res.data.code == 200) {
           this.dataHygiene = res.data.data.statusData;
-          console.log('res', res)
+          console.log("res", res);
           this.isLoading = false;
         }
       });

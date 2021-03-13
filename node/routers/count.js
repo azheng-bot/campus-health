@@ -88,7 +88,17 @@ async function getRate(allClassStatus) {
 async function getPrincipalStatus() {
   // 获取所有情况和所有负责人
   let allStatus = await query("SELECT * FROM STATUS")
-  let allPrincipal = await query("SELECT *FROM PRINCIPAL")
+  let allPrincipal = await query("SELECT *FROM USER")
+
+  // 删除查询结果中的admin超级管理员
+  let index = allPrincipal.findIndex(item => item.username == "admin")
+  allPrincipal.splice(index, 1)
+  // 把username改成principal_name
+  allPrincipal.forEach(item => {
+    item.principal_name = item.username
+    delete item.username
+  })
+
   // 给每一个负责人添加初始默认值
   allPrincipal.forEach(item => {
     item.total_status = 0;
@@ -120,6 +130,7 @@ async function acountTotalStatus() {
     total_bad: 0,
     total_no_checked:0
   }
+
   allStatus.forEach(item => {
     if (item.status == 0) {
       returnObj.total_no_checked++
@@ -131,6 +142,12 @@ async function acountTotalStatus() {
       returnObj.total_bad++
     }
   })
+
+  let total = allStatus.length;
+  returnObj.good_rate = Math.round(returnObj.total_good/total*100);
+  returnObj.normal_rate = Math.round(returnObj.total_normal/total*100);
+  returnObj.bad_rate = Math.round(returnObj.total_bad/total*100);
+  returnObj.no_checked_rate = Math.round(returnObj.total_no_checked/total*100);
 
   // 返回
   return returnObj
