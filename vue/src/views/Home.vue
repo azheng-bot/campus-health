@@ -65,7 +65,7 @@
                     </div>
                   </el-col>
                 </el-row>
-                <div class="road">马<span>路</span></div>
+                <div class="road" style="color:#Fff">马<span>路</span></div>
                 <div class="teaching">
                   <el-row style="height: 100%">
                     <el-col
@@ -379,7 +379,7 @@ export default {
 <style lang="scss" scoped>
 .home {
   height: 100%;
-  min-width: 1600px;
+  // min-width: 1400px;
   min-height: 700px;
 }
 .home .title {

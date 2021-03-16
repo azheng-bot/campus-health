@@ -112,10 +112,9 @@ router.delete("/", async (req, res) => {
 
 // 5.修改负责人
 router.patch("/", async (req, res) => {
-  console.log('req.body', req.query)
   try {
     // 执行添加语句
-    let res1 = await query("update USER set USERNAME = ? where id = ?", [req.body.principal_name, req.body.id])
+    let res1 = await query("update USER set USERNAME = ?, PASSWORD = ? where id = ?", [req.body.principal_name,req.body.password, req.body.id]).catch(err => console.log(`err`, err))
     // 返回成功信息
     res.send({
       code: 200,
