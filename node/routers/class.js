@@ -8,7 +8,7 @@ let query = require('../utils/query')
 router.get("/", async (req, res) => {
   try {
     // 执行添加语句
-    let res1 = await query("SELECT * FROM CLASS")
+    let res1 = await query("SELECT * FROM class")
     // 返回成功信息
     res.send({
       code: 200,
@@ -68,7 +68,7 @@ router.delete("/", async (req, res) => {
 router.patch("/", async (req, res) => {
   try {
     // 执行添加语句
-    let res1 = await query("update class set class_name = ? where id = ?", [req.body.class_name, req.body.id])
+    let res1 = await query("UPDATE class set class_name = ? where id = ?", [req.body.class_name, req.body.id])
     // 返回成功信息
     res.send({
       code: 200,

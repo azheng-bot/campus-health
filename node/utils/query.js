@@ -7,6 +7,7 @@ let query = (queryStr, params) => {
   return new Promise(function (resolve, reject) {
     // 发起请求
     db.query(queryStr, params || [], function (err, result) {
+      queryStr = queryStr.toLowerCase();
       console.log('queryStr', queryStr)
       console.log('params', params)
       // reject返回报错

@@ -40,7 +40,7 @@ app.use(async (req, res, next) => {
     let time = new Date().toString();
     // 如果不是get方法则记录
     if (method != "GET") {
-      await query("INSERT INTO OPERATION (URL,METHOD,USERNAME,USER_ID,TIME) VALUES (?)",[[url,method,username,user_id,time]]).catch(err => console.log('err', err))
+      await query("INSERT INTO operation (URL,METHOD,USERNAME,USER_ID,TIME) VALUES (?)",[[url,method,username,user_id,time]]).catch(err => console.log('err', err))
     }
 
     return next()

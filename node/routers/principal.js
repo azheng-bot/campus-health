@@ -72,7 +72,6 @@ router.get("/user", async (req, res) => {
 // 3.添加负责人
 router.post("/", async (req, res) => {
   try {
-    console.log('req.body', req.body)
     // 执行添加语句
     let res2 = await query("insert into USER (username,password,role) values(?)", [[req.body.principal_name, req.body.password, "principal"]]).catch(err => console.log('err1', err)
     )
