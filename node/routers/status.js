@@ -11,6 +11,9 @@ const snowId = require("../utils/snowflake")
 router.get("/", async (req, res) => {
   let { time, area_id, class_id, page_num, page_size } = req.query
 
+  page_num  = page_num || 1;
+  page_size  = page_size || 5;
+
   // 查询卫生情况
   // 查询语句
   let sqlStr = "SELECT * FROM STATUS WHERE";
@@ -28,13 +31,21 @@ router.get("/", async (req, res) => {
   // 发起查询请求
   let res1 = await query(sqlStr)
   // 查询status总数
-  let res2 = await query("SELECT COUNT(*) AS TOTAL FROM STATUS")
+  // 查询语句
+  let totalSql = "SELECT count(*) as total FROM STATUS WHERE";
+  if (time) totalSql += ` TIME = '${time}' AND `;
+  if (area_id) totalSql += ` AREA_ID = ${area_id} AND `;
+  if (class_id) totalSql += ` CLASS_ID = ${class_id} AND `;
+  // 去掉末尾的AND
+  totalSql = totalSql.substr(0, totalSql.length - 5)
+  let res2 = await query(totalSql)
+  
   // 返回正确信息
   res.send({
     code: 200,
     data: {
       statusData: res1,
-      total: res2[0].TOTAL
+      total: res2[0].total
     }
   })
 })
@@ -64,10 +75,10 @@ router.post("/", async (req, res) => {
 
   // 添加数据到数据库
   // mysql查询语句参数名
-  let params_name = ['id','class_id', 'class_name', 'area_id', 'area_name', 'principal_id', 'principal_name', 'time','status']
+  let params_name = ['id', 'class_id', 'class_name', 'area_id', 'area_name', 'principal_id', 'principal_name', 'time', 'status']
   // mysql查询语句参数值
   let id = snowId();
-  let params_value = [id,class_id, class_name, area_id, area_name, principal_id, principal_name, time,0]
+  let params_value = [id, class_id, class_name, area_id, area_name, principal_id, principal_name, time, 0]
   // 为了能够正确添加到mysql数据库数据，给每个数据添加双引号
   params_value.forEach((item, index) => {
     params_value[index] = '"' + item + '"'
@@ -97,11 +108,11 @@ router.patch('/', async (req, res) => {
 
   // 当要修改的卫生情况日期在今天以后，则返回错误信息
   let now = new Date().getTime();
-  let statusTime= new Date(time).getTime();
+  let statusTime = new Date(time).getTime();
   if (now < statusTime) {
     return res.json({
-      code:400,
-      msg:"修改的卫生情况超过今天"
+      code: 400,
+      msg: "修改的卫生情况超过今天"
     })
   }
 

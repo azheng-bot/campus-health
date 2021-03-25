@@ -5,9 +5,9 @@ const db = require('../db/index')
 let query = (queryStr, params) => {
   // Promise
   return new Promise(function (resolve, reject) {
-    // 发起请求
-    db.query(queryStr, params || [], function (err, result) {
       queryStr = queryStr.toLowerCase();
+      // 发起请求
+    db.query(queryStr, params || [], function (err, result) {
       console.log('queryStr', queryStr)
       console.log('params', params)
       // reject返回报错
