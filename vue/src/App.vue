@@ -27,6 +27,7 @@ export default {
     if (!this.$store.state.author) {
       let token = window.sessionStorage.getItem("token");
       axios.get("/api/login", {params:{token}}).then((res) => {
+        console.log(`res`, res)
         this.$store.commit("setAuthorData",res.data.data)
       });
     }

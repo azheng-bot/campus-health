@@ -176,6 +176,7 @@ export default {
         if (res.data.code == 200) {
           console.log(res);
           this.getPrincipal();
+          this.$message.success("删除成功")
         }
       });
     },

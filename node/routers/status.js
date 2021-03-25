@@ -3,6 +3,9 @@ const express = require("express")
 let router = express.Router()
 // 引入mysql
 let query = require('../utils/query')
+// 引入雪花算法
+const snowId = require("../utils/snowflake")
+
 
 // 1.获取卫生情况
 router.get("/", async (req, res) => {
@@ -61,9 +64,10 @@ router.post("/", async (req, res) => {
 
   // 添加数据到数据库
   // mysql查询语句参数名
-  let params_name = ['class_id', 'class_name', 'area_id', 'area_name', 'principal_id', 'principal_name', 'time','status']
+  let params_name = ['id','class_id', 'class_name', 'area_id', 'area_name', 'principal_id', 'principal_name', 'time','status']
   // mysql查询语句参数值
-  let params_value = [class_id, class_name, area_id, area_name, principal_id, principal_name, time,0]
+  let id = snowId();
+  let params_value = [id,class_id, class_name, area_id, area_name, principal_id, principal_name, time,0]
   // 为了能够正确添加到mysql数据库数据，给每个数据添加双引号
   params_value.forEach((item, index) => {
     params_value[index] = '"' + item + '"'

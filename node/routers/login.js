@@ -43,6 +43,12 @@ router.post("/", async (req, res) => {
 
 // 2.根据token登录
 router.get("/", async (req, res) => {
+  if (!req.query.token) {
+  return  res.json({
+      code:400,
+      msg:"未上传token"
+    })
+  }
   // 否则判断token是否正确
   let token = req.query.token.slice(7);
   let encode = jwt.decode(token, "just_do_it")
