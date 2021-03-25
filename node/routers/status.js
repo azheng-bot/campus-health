@@ -30,6 +30,7 @@ router.get("/", async (req, res) => {
   }
   // 发起查询请求
   let res1 = await query(sqlStr)
+  
   // 查询status总数
   // 查询语句
   let totalSql = "SELECT count(*) as total FROM STATUS WHERE";

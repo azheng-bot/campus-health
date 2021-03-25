@@ -23,12 +23,14 @@ router.get("/", async (req, res) => {
   let res1 = await query(sqlStr)
   // 查询总数
   let res2 = await query("SELECT COUNT(*) AS TOTAL FROM OPERATION")
+
+  
   // 返回正确信息
   res.send({
     code: 200,
     data: {
       operationData: res1,
-      total: res2[0].TOTAL
+      total: res2[0].total
     }
   })
 })
