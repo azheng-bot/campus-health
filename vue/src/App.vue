@@ -21,7 +21,7 @@ export default {
   components: {
     layout,
   },
-  created(e) {
+  beforeCreate(e) {
     document.title = '校园卫生分派可视化系统'
     // 如果没有登录者信息，则登录
     if (!this.$store.state.author) {

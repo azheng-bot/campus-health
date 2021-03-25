@@ -25,7 +25,7 @@
               >负责人:</el-col
             >
             <el-col :span="17">
-              <el-input readonly v-model="username"></el-input>
+              <el-input readonly v-if="$store.state.author " v-model=" $store.state.author.username "></el-input>
             </el-col>
           </el-row>
           <el-row>
@@ -129,14 +129,12 @@ export default {
       ],
       defaultTime: new Date(),
       defaultId: 1,
-      username: "",
       isLoading: false,
     };
   },
   created() {
     this.init();
-    this.username = this.$store.state.author.username;
-    console.log("this.username", this.username);
+    // this.username = this.$store.state.author.username;
   },
   methods: {
     // 初始化获取基本信息
