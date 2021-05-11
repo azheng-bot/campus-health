@@ -4,11 +4,11 @@ let router = express.Router()
 // 引入mysql
 let query = require('../utils/query')
 
-// 1.获取区域信息
+// 1.获取地图信息
 router.get("/", async (req, res) => {
   try {
-    // 执行添加语句
-    let res1 = await query("SELECT * FROM area")
+    // 根据学校id，获取学校所有的map
+    let res1 = await query("SELECT * FROM map where s_id = ?",[req.query.id])
     // 返回成功信息
     res.send({
       code: 200,
@@ -23,6 +23,8 @@ router.get("/", async (req, res) => {
 
   }
 })
+
+// 添加地图
 
 
 

@@ -3,7 +3,12 @@
     <div class="title">地图设置</div>
     <div class="main">
       <div class="wrapper">
-        <div v-for="(item, index) in 10" :key="index" class="map-item">
+        <div
+          v-for="(item, index) in mapList"
+          :key="index"
+          class="map-item"
+          @click="toMap(item.id)"
+        >
           <div
             class="map-bg"
             :style="{ background: 'url(' + bgList[index % 4] + ')' }"
@@ -30,17 +35,20 @@ export default {
         "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=937847181,2174643299&fm=26&gp=0.jpg",
         "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=471959811,4126902569&fm=11&gp=0.jpg",
       ],
-      mapList:[
-        {id:1,name:'通天苑'},
-        {id:2,name:'东校区'},
-        {id:3,name:'西校区'},
-      ]
+      mapList: [
+        { id: 1, name: "通天苑" },
+        { id: 2, name: "东校区" },
+        { id: 3, name: "西校区" },
+      ],
     };
   },
   methods: {
+    toMap(id) {
+      this.$router.push("/setting/set_map/" + id);
+    },
     addMap() {
-      this.$router.push('/setting/set_map')
-    }
+      this.$router.push("/setting/set_map");
+    },
   },
 };
 </script>
