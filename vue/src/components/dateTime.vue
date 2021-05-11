@@ -36,7 +36,6 @@ export default {
       "星期五",
       "星期六",
     ];
-    console.log("dsadas", momentNow.format("e"));
     this.day = dayNameMapping[momentNow.format("e")];
     this.updateTime();
   },

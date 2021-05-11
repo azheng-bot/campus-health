@@ -71,6 +71,13 @@ const routes = [
   },
   // 系统设置-地图设置
   {
+    path: "/setting/set_map/:id",
+    name: "set_map_by_id",
+    component: () => import("../views/SetMap.vue"),
+    props:true
+  },
+  // 系统设置-地图设置
+  {
     path: "/setting/set_map",
     name: "set_map",
     component: () => import("../views/SetMap.vue"),

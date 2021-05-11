@@ -22,13 +22,19 @@ export default {
     layout,
   },
   beforeCreate(e) {
-    document.title = '校园卫生分派可视化系统'
+    document.title = "校园卫生分派可视化系统";
     // 如果没有登录者信息，则登录
     if (!this.$store.state.author) {
       let token = window.sessionStorage.getItem("token");
-      axios.get("/api/login", {params:{token}}).then((res) => {
-        console.log(`res`, res)
-        this.$store.commit("setAuthorData",res.data.data)
+      axios.get("/api/login", { params: { token } }).then((res) => {
+        console.log(`res`, res);
+        this.$store.commit("setAuthorData", res.data.data);
+      });
+    }
+    // 如果没有学校信息，则获取
+    if (!this.$store.state.school) {
+      this.$axios.get("/api/school", { params: { id: 1 } }).then((res) => {
+        this.$store.commit("setSchoolData", res.data.data);
       });
     }
   },
@@ -60,5 +66,4 @@ body {
     }
   }
 }
-
 </style>

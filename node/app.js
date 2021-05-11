@@ -19,10 +19,12 @@ app.use(async (req, res, next) => {
   if (req.url.match("/aside")) return next()
   // 获取首页卫生情况
   if (req.url.match("/status") && req.method == "GET") return next()
+  // 学校logo添加与获取
+  if (req.url.match("/school/logo")) return next()
   // 如果没有令牌则返回没有令牌
   if (!req.get("Authorization")) return res.json({
     code: 400,
-    message: "无效token"
+    message: "token缺失"
   })
 
   // 否则判断token是否正确
@@ -48,7 +50,7 @@ app.use(async (req, res, next) => {
   } else {
     return res.json({
       code: 400,
-      message: "无效token"
+      message: "token令牌错误"
     })
   }
 })
@@ -80,6 +82,10 @@ app.use("/area", areaRouter)
 // 2.7 获取操作记录信息路由
 let operationRouter = require("./routers/operation")
 app.use("/operation", operationRouter)
+// 2.8 学校信息设置路由
+let schoolRouter = require("./routers/school")
+app.use("/school", schoolRouter)
+
 
 // 3. 挂载
 app.listen(3000, () => {

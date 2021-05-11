@@ -1,8 +1,8 @@
 <template>
   <div class="layout">
     <header class="header">
-      <img class="logo" src="http://czxy.com/images/public/logo.png" />
-      <span class="hero">校园卫生分派可视化系统</span>
+      <img class="logo" :src="logo" alt="logo" />
+      <span class="hero">{{ name }}校园卫生</span>
       <dataTime class="datatime"></dataTime>
       <!-- 登录按钮 -->
       <div
@@ -99,6 +99,7 @@
 <script>
 import dataTime from "./dateTime";
 import axios from "axios";
+
 export default {
   data() {
     return {
@@ -111,6 +112,14 @@ export default {
   components: {
     dataTime,
   },
+  computed: {
+    logo: function () {
+      return this.$store.state.school ? this.$store.state.school.logo : "";
+    },
+    name: function () {
+      return this.$store.state.school ? this.$store.state.school.name : "";
+    },
+  },
   methods: {
     layoutData() {
       axios({
@@ -122,23 +131,21 @@ export default {
       }).then((res) => {
         if (res.data.code == 200) {
           this.dataLayout = res.data.data;
-          console.log(res.data.data);
         }
       });
     },
     JumpClick(url) {
       this.$router.push(url);
-      // console.log(url);
     },
     // 登出
     logout() {
-      this.$confirm('确定要退出当前账号吗？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
+      this.$confirm("确定要退出当前账号吗？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
         this.$store.commit("logout");
-      this.$router.push("/index");
+        this.$router.push("/index");
       });
     },
     // 登录
@@ -168,7 +175,7 @@ export default {
 }
 .header .logo {
   position: absolute;
-  left: 0px;
+  left: 20px;
   display: block;
   height: 65px;
   margin-top: 5px;
