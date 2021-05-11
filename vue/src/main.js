@@ -7,6 +7,9 @@ import store from "./store";
 
 import "./assets/index.css"
 
+// flexible
+// import "lib-flexible"
+
 // Element-plus
 import ElementPlus from "element-plus";
 import "element-plus/lib/theme-chalk/index.css";

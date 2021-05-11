@@ -376,7 +376,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
 .home {
   height: 100%;
   // min-width: 1400px;

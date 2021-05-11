@@ -50,7 +50,7 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
+<style lang="less" scoped>
 .date-info {
   height: 100%;
   font-weight: 200;

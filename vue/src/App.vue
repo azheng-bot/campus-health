@@ -35,7 +35,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="less">
 html,
 body {
   height: 100%;
@@ -61,7 +61,4 @@ body {
   }
 }
 
-/deep/.el-table--border th.gutter:last-of-type {
-    display: table-cell !important;
-}
 </style>

@@ -154,31 +154,6 @@ INSERT INTO `operation` VALUES (115, 'PATCH', '/status', '李闯闯', 2, 'Sat Ma
 INSERT INTO `operation` VALUES (116, 'PATCH', '/status', '李闯闯', 2, 'Sat Mar 13 2021 21:48:08 GMT+0800 (GMT+08:00)');
 INSERT INTO `operation` VALUES (117, 'PATCH', '/status', '李闯闯', 2, 'Sat Mar 13 2021 21:48:11 GMT+0800 (GMT+08:00)');
 
--- ----------------------------
--- Table structure for principal
--- ----------------------------
-DROP TABLE IF EXISTS `principal`;
-CREATE TABLE `principal`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `principal_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '责任人名',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of principal
--- ----------------------------
-INSERT INTO `principal` VALUES (1, '李闯闯');
-INSERT INTO `principal` VALUES (7, '薛佳昊');
-INSERT INTO `principal` VALUES (8, '薛佳昊');
-INSERT INTO `principal` VALUES (9, '薛佳昊');
-INSERT INTO `principal` VALUES (10, '22');
-INSERT INTO `principal` VALUES (11, '22');
-INSERT INTO `principal` VALUES (12, '额');
-INSERT INTO `principal` VALUES (13, '33');
-INSERT INTO `principal` VALUES (14, '33');
-INSERT INTO `principal` VALUES (15, '44');
-INSERT INTO `principal` VALUES (16, '嗯嗯');
-INSERT INTO `principal` VALUES (17, '薛佳昊');
 
 -- ----------------------------
 -- Table structure for status

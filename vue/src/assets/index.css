@@ -1,6 +1,8 @@
 body {
 }
 
-.el-table--border th.gutter:last-of-type {
-  display: block!important;
+.clear::after {
+  content:"";
+  clear: both;
+  display: block;
 }

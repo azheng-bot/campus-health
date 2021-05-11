@@ -57,6 +57,26 @@ const routes = [
     name: "Operation",
     component: () => import("../views/Operation.vue"),
   },
+  // 系统设置-基本信息
+  {
+    path: "/setting/info",
+    name: "set_infom]",
+    component: () => import("../views/SetInfo.vue"),
+  },
+  // 系统设置-地图信息
+  {
+    path: "/setting/maps",
+    name: "maps",
+    component: () => import("../views/Maps.vue"),
+  },
+  // 系统设置-地图设置
+  {
+    path: "/setting/set_map",
+    name: "set_map",
+    component: () => import("../views/SetMap.vue"),
+  },
+
+
 ];
 
 const router = createRouter({
