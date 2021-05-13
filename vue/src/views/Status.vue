@@ -289,9 +289,6 @@ export default {
         },
       });
       this.principalData = res3.data.data;
-      console.log(this.areaData);
-      console.log(this.classData);
-      console.log(this.principalData);
     },
     formatDate1(time) {
       if (!time) return (this.time = "");
@@ -312,12 +309,10 @@ export default {
     },
     // 分页器发生改变时
     handleSizeChange(size) {
-      console.log("size", size);
       this.page_size = size;
       this.getStatus();
     },
     handleCurrentChange(num) {
-      console.log("num", num);
       this.page_num = num || 1;
       this.getStatus();
     },
@@ -327,7 +322,6 @@ export default {
     // 点击修改回显
     handleEdit(row) {
       this.dialogVisible = true;
-      console.log("object", Object(row));
       // 深拷贝
       this.formLabelAlign = JSON.parse(JSON.stringify(row));
     },
@@ -345,7 +339,6 @@ export default {
         this.formLabelAlign.principal_name = this.principalData.find(
           (item) => item.id == this.formLabelAlign.principal_id
         ).principal_name;
-        console.log("this.formLabelAlign", this.formLabelAlign);
 
         if (valid) {
           axios({
@@ -357,7 +350,6 @@ export default {
             data: this.formLabelAlign,
           })
             .then((res) => {
-              console.log('res', res)
               if (res.data.code == 200) {
                 this.editLoading = false;
                 this.getStatus();
@@ -374,7 +366,6 @@ export default {
               console.log(err);
             });
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -391,8 +382,6 @@ export default {
     },
     // 获取卫生情况数据
     getStatus() {
-      console.log("this.page_size", this.page_size);
-      console.log("this.page_num", this.page_num);
       // 加载状态
       this.tableLoading = true;
       axios({
@@ -404,7 +393,6 @@ export default {
           Authorization: window.sessionStorage.getItem("token"),
         },
       }).then((res) => {
-        console.log("res", res);
         if (res.data.code == 200) {
           this.tableData = res.data.data.statusData;
           this.total = res.data.data.total;
@@ -426,6 +414,10 @@ export default {
 </script>
 
 <style scoped>
+.status {
+  height: 100%;
+  overflow: auto;
+}
 .status .title {
   font-size: 28px;
   font-weight: 500;

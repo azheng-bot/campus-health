@@ -8,7 +8,7 @@ let query = require('../utils/query')
 router.get("/", async (req, res) => {
   try {
     // 执行添加语句
-    let res1 = await query("SELECT * FROM area")
+    let res1 = await query("SELECT * FROM area where m_id = ?",req.query.m_id)
     // 返回成功信息
     res.send({
       code: 200,

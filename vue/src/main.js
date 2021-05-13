@@ -13,14 +13,18 @@ import "./assets/index.css"
 // Element-plus
 import ElementPlus from "element-plus";
 import "element-plus/lib/theme-chalk/index.css";
+import "dayjs/locale/zh-cn";
+import locale from "element-plus/lib/locale/lang/zh-cn";
 
 // axios
 import axios from "axios";
-let service = axios.create({})
+let service = axios.create({
+  baseURL: "/api/"
+})
 service.interceptors.request.use(
   config => {
     if (window.sessionStorage.getItem("token")) {
-    config.headers["Authorization"] = window.sessionStorage.getItem("token")
+      config.headers["Authorization"] = window.sessionStorage.getItem("token")
     }
     return config
   },
@@ -29,10 +33,6 @@ service.interceptors.request.use(
   }
 )
 
-
-
-import "dayjs/locale/zh-cn";
-import locale from "element-plus/lib/locale/lang/zh-cn";
 
 let app = createApp(App);
 app.config.globalProperties.$axios = service

@@ -43,7 +43,7 @@ export default {
     };
   },
   async created() {
-    let res = await this.$axios.get("/api/school", { params: { id: 1 } });
+    let res = await this.$axios.get("/school", { params: { id: 1 } });
     console.log(`res`, res);
     this.school_name = res.data.data.name;
     this.school_logo = res.data.data.logo;
@@ -70,7 +70,7 @@ export default {
     },
     async handleSubmit() {
       console.log(`school`, this.school_name, this.school_logo, this.school_id);
-      let res = await this.$axios.patch("/api/school", {
+      let res = await this.$axios.patch("/school", {
         id: this.school_id,
         name: this.school_name,
         logo: this.school_logo,

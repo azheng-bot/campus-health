@@ -8,7 +8,8 @@ let query = require('../utils/query')
 router.get("/", async (req, res) => {
   try {
     // 执行添加语句
-    let res1 = await query("SELECT * FROM class")
+    let res1 = await query("SELECT * FROM class where s_id = ?",req.query.s_id)
+
     // 返回成功信息
     res.send({
       code: 200,

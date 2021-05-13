@@ -6,7 +6,6 @@ let query = require('../utils/query')
 // 引入雪花算法
 const snowId = require("../utils/snowflake")
 
-
 // 1.获取卫生情况
 router.get("/", async (req, res) => {
   let { time, area_id, class_id, page_num, page_size } = req.query

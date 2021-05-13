@@ -1,5 +1,5 @@
 <template>
-  <div class="count">
+  <div class="count" ref="countRef">
     <div class="view1">
       <div class="title">统计分析</div>
       <div class="card" v-loading="echartsLoading">
@@ -90,6 +90,8 @@ export default {
   data() {
     return {
       echartsLoading: true,
+      // 向下滑或向上滑的次数（下滑正数、上滑负数）
+      wheelTimes: 0,
     };
   },
   async created() {
@@ -101,6 +103,29 @@ export default {
     await this.init();
     // 初始化echarts
     this.initEcharts();
+    // 鼠标滚动事件
+    document.onmousewheel =  (e)=> {
+      // 向上滑时
+      if (e.wheelDelta > 0) {
+        this.wheelTimes > 0 ? (this.wheelTimes = -1) : this.wheelTimes--;
+      }
+      // 向下滑时
+      else {
+        this.wheelTimes < 0 ? (this.wheelTimes = 1) : this.wheelTimes++;
+      }
+      
+      // 当下滑或次数到三次时，页面滚动
+      if (this.wheelTimes >= 3) {
+        this.$refs.countRef.style.top = "-100%"
+      }
+      if (this.wheelTimes <= -3) {
+        this.$refs.countRef.style.top = "0%"
+
+      }
+    };
+  },
+  destroyed() {
+    window.onresize;
   },
   methods: {
     // 初始化信息
@@ -218,14 +243,14 @@ export default {
                 show: true,
                 fontSize: "40",
                 fontWeight: "bold",
-                 formatter: `{b} {d}%`
+                formatter: `{b} {d}%`,
               },
             },
             labelLine: {
               show: false,
             },
             // label: {
-              // normal: { show: true, position: "center", },
+            // normal: { show: true, position: "center", },
             // },
             color: ["#91cd76", "#fac958", "#ef6667", "#808080"],
             data: [
@@ -291,9 +316,9 @@ export default {
           { type: "bar", color: "gray" },
         ],
       });
-
       // 页面长度宽度改变时echarts自适应
-      window.onresize = echartsAtaption;
+      // window.onresize = echartsAtaption;
+      document.addEventListener("onresize", echartsAtaption);
       // echarts自适应
       function echartsAtaption() {
         echartArr.forEach((item) => {
@@ -315,6 +340,7 @@ export default {
         { echartObj: echart4, cssName: ".echart4" },
         { echartObj: echart5, cssName: ".echart5" },
       ];
+
       // 初始时echarts自适应
       echartsAtaption();
     },
@@ -327,7 +353,9 @@ export default {
   width: 100%;
   height: 100%;
   color: #111;
-  overflow: auto;
+  position: relative;
+  transition: 0.7s cubic-bezier(0, 0, 0.34, 0.99);
+  /* overflow: auto; */
 }
 .count .title {
   font-size: 28px;

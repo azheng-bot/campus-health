@@ -15,9 +15,14 @@
 </template>
 
 <script>
+
 import layout from "./components/layout";
 import axios from "axios";
 export default {
+  data() {
+    return {
+    };
+  },
   components: {
     layout,
   },
@@ -33,7 +38,9 @@ export default {
     }
     // 如果没有学校信息，则获取
     if (!this.$store.state.school) {
-      this.$axios.get("/api/school", { params: { id: 1 } }).then((res) => {
+      let s_id = window.sessionStorage.getItem("s_id") || 1;
+      this.$axios.get("/school", { params: { id: s_id } }).then((res) => {
+        console.log(`res`, res);
         this.$store.commit("setSchoolData", res.data.data);
       });
     }

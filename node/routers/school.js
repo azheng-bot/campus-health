@@ -15,11 +15,10 @@ let query = require('../utils/query')
 
 // 1.获取学校
 router.get("/", async (req, res) => {
-  console.log(`req.query1`, req.query)
+  console.log(`req.s_id`, req.s_id)
   // 执行添加语句
   let res1 = await query("SELECT * FROM school where id = ?", [req.query.id])
 
-  console.log(`res1`, res1)
   // 返回成功信息
   res.send({
     code: 200,
@@ -29,7 +28,6 @@ router.get("/", async (req, res) => {
 
 // 2.修改学校信息
 router.patch("/", async (req, res) => {
-  console.log(`req.body`, req.body)
   // 执行添加语句
   let res1 = await query("update school set name = ?, logo = ? where id = ?", [req.body.name, req.body.logo, req.body.id]).catch(err => console.log(`err`, err))
   // 返回成功信息
@@ -41,7 +39,6 @@ router.patch("/", async (req, res) => {
 
 // 3.上传logo图片
 router.post("/logo", uploader.single("logo"), async (req, res) => {
-  console.log(`req.file`, req.file)
   let file = req.file;
   //获取后缀名
   const extname = path.extname(file.originalname)
@@ -64,7 +61,6 @@ router.post("/logo", uploader.single("logo"), async (req, res) => {
 // 4.返回学校logo
 router.get("/logo", async (req, res) => {
   try {
-    console.log(`req.params`, req.query)
     // 找到图片
     res.sendFile(path.join(__dirname, '../', 'public', 'images', req.query.imageUrl))
 

@@ -74,8 +74,8 @@ export default {
                   message: "登录成功",
                   type: "success",
                 });
-                _this.$router.push("/index");
-                _this.$store.commit("setAuthorData",response.data.data)
+                _this.$store.commit("setAuthorData", response.data.userInfo);
+                _this.$router.push({ name: "Index", params: { s_id: response.data.userInfo.s_id } });
               } else {
                 ElMessage.error(response.data.message);
               }
@@ -84,7 +84,6 @@ export default {
               console.log(error);
             });
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -109,7 +108,7 @@ export default {
 .loginTitle {
   text-align: center;
   font-size: 30px;
-  margin-top:250px ;
+  margin-top: 250px;
 }
 .loginTitle div {
   padding-left: 100px;

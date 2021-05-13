@@ -1,7 +1,16 @@
 <template>
   <div class="set-map">
     <div class="main">
-      <div class="title">地图设置</div>
+      <div class="title">
+        <span v-if="isEdit">
+          编辑<span class="navigator" @click="backToMaps">地图 </span> >
+          {{ mapName }}
+        </span>
+        <span v-else>
+          新增<span class="navigator" @click="backToMaps">地图 </span>
+        </span>
+        <!-- {{ isEdit ? "编辑地图 > " + mapName : "新增地图" }} -->
+      </div>
       <!-- 画布 -->
       <div
         class="canvas"
@@ -21,6 +30,7 @@
             top: item.top + 'px',
             lineHeight: item.height + 'px',
             backgroundColor: item.color || '#eee',
+            fontSize: item.width / 10 + 'px',
           }"
           :class="[item.shape, { active: index == selectedAreaIndex }]"
           @mousedown="areaMousedown($event, item.a_id)"
@@ -28,7 +38,7 @@
           @mousemove="areaMousemove"
           @contextmenu.prevent="rightClickArea($event, item.a_id)"
         >
-          {{ item.name }}
+          {{ item.area_name }}
         </div>
         <!-- 虚拟正在绘制的元素 -->
         <div
@@ -43,16 +53,16 @@
             lineHeight: drawingArea.height + 'px',
           }"
         ></div>
-        <!-- 提示信息 -->
-        <ul class="tips">
-          <li>操作提示：</li>
-          <li>1.选择形状</li>
-          <li>></li>
-          <li>2.鼠标在画布上长按移动</li>
-          <li>></li>
-          <li>3.生成区域</li>
-        </ul>
       </div>
+      <!-- 提示信息 -->
+      <ul class="tips">
+        <li>操作提示：</li>
+        <li>1.选择形状</li>
+        <li>></li>
+        <li>2.鼠标在画布上长按移动</li>
+        <li>></li>
+        <li>3.生成区域</li>
+      </ul>
     </div>
     <!-- 操作区 -->
     <div class="operation">
@@ -60,8 +70,8 @@
       <div class="set-map-name">
         <div class="label">地图名：</div>
         <div class="input">
-          <el-input v-model="mapName"></el-input
-          ><el-button v-if="isEdit">确定</el-button>
+          <el-input v-model="inputMapName"></el-input
+          ><el-button v-if="isEdit" @click="editName">确定</el-button>
         </div>
       </div>
       <!-- 图形操作 -->
@@ -96,7 +106,7 @@
           <div class="label">N：</div>
           <div class="input">
             <el-input
-              v-model="movingAreaInfo.name"
+              v-model="movingAreaInfo.area_name"
               placeholder="区域名"
             ></el-input>
           </div>
@@ -152,18 +162,21 @@
         </div>
 
         <div class="btn">
-          <el-button v-if="isEdit">保存设置</el-button>
-          <el-button v-else>保存地图</el-button>
+          <el-button v-if="isEdit" @click="saveMap">保存设置</el-button>
+          <el-button v-else @click="addMap">保存地图</el-button>
         </div>
       </div>
     </div>
     <!-- 右键area时的菜单 -->
     <ul
-      v-if="areaMenuSite.is_show"
-      :style="{ left: areaMenuSite.left + 'px', top: areaMenuSite.top + 'px' }"
-      class="area-menu"
+      v-if="areaRcMenuSite.is_show"
+      :style="{
+        left: areaRcMenuSite.left + 'px',
+        top: areaRcMenuSite.top + 'px',
+      }"
+      class="area-rc-menu"
     >
-      <li @click="deleteArea">删除</li>
+      <li @click.prevent="deleteArea">删除</li>
     </ul>
   </div>
 </template>
@@ -175,6 +188,8 @@ export default {
     return {
       // 地图名
       mapName: "",
+      // 地图名(input)
+      inputMapName: "",
       // 当前页面是否是修改地图页面
       isEdit: false,
       // 选中的绘画形状
@@ -185,27 +200,7 @@ export default {
       // is_drawing: false,
       // 地图上所有元素
       areaList: [
-        {
-          // a_id用于区分和查找各个区域，非真实id
-          a_id: 1,
-          name: "教学楼1",
-          width: 100,
-          height: 50,
-          left: 50,
-          top: 50,
-          color: "",
-          shape: "square",
-        },
-        {
-          a_id: 2,
-          name: "教学楼2",
-          width: 200,
-          height: 100,
-          left: 200,
-          top: 50,
-          color: "",
-          shape: "ellipse",
-        },
+        // a_id用于区分和查找各个区域，非真实id
       ],
       // 点击canvas前，鼠标的client坐标
       beforeDrawMouseSite: {
@@ -227,7 +222,7 @@ export default {
         shape: "square",
       },
       // 最后一个区域的id
-      lastId: 2,
+      lastId: 0,
       // 移动area前，鼠标的client坐标
       beforeMoveMouseSite: {
         x: 0,
@@ -242,7 +237,7 @@ export default {
       isMoving: false,
       // 正在移动的区域的信息
       movingAreaInfo: {
-        name: "",
+        area_name: "",
         width: "",
         height: "",
         left: "",
@@ -251,20 +246,47 @@ export default {
         shape: "square",
       },
       // 右键area显示的menu位置
-      areaMenuSite: {
+      areaRcMenuSite: {
         is_show: false,
         left: 0,
         top: 0,
       },
       // 要删除的area的a_id
-      toDeleteAreaId:-1
+      toDeleteAreaId: -1,
     };
   },
-  created() {
-    console.log(`this.id`, this.id);
+  async created() {
+    // 初始确定当前页面是 修改地图 还是 新增地图
     if (this.id) this.isEdit = true;
+    // 如果是修改地图，使得要修改的地图回显
+    if (this.isEdit) {
+      let res = await this.$axios.get("/map/areas", {
+        params: { id: this.id },
+      });
+      if (res.data.code == 200) {
+        this.inputMapName = res.data.data.name;
+        this.mapName = res.data.data.name;
+        this.areaList = res.data.data.areaList;
+        // 给每一个area元素加一个a_id
+        this.areaList.forEach((item) => {
+          item.a_id = ++this.lastId;
+        });
+      } else {
+        this.$message.error("获取地图信息失败");
+      }
+    }
+  },
+  mounted() {
+    window.addEventListener("click", (e) => {
+      // 关闭右键产生的弹窗
+      this.areaRcMenuSite.is_show = false;
+    });
   },
   methods: {
+    // 返回maps页面
+    backToMaps() {
+      this.$router.push('/'+this.$route.params.s_id+"/setting/maps");
+    },
     // 选择图形
     selectShape(shape) {
       if (this.selectedShape == shape) {
@@ -283,6 +305,7 @@ export default {
       if (e.target.className != "canvas") return false;
       // 点击canvas，取消选择area
       if (this.selectedShape == -1) {
+        this.selectedAreaIndex = -1;
         this.movingAreaInfo = {
           name: "",
           width: "",
@@ -311,12 +334,23 @@ export default {
         // 太小时则不生成
         if (this.drawingArea.width <= 10 && this.drawingArea.height <= 10) {
           this.drawingArea.is_show = false;
+          // 取消选择area
+          this.selectedAreaIndex = -1;
+          this.movingAreaInfo = {
+            name: "",
+            width: "",
+            height: "",
+            left: "",
+            top: "",
+            color: "",
+            shape: "square",
+          };
           return false;
         }
         // 添加到area数组
         this.areaList.push({
           a_id: ++this.lastId,
-          name: "",
+          area_name: "",
           width: this.drawingArea.width,
           height: this.drawingArea.height,
           left: this.drawingArea.left,
@@ -342,7 +376,6 @@ export default {
     canvasMousemove(e) {
       if (this.drawingArea.is_show) {
         // if (e.target.className == "canvas") {
-        console.log(`e`, e);
         let canvasLeft = document.getElementsByClassName("canvas")[0]
           .offsetLeft;
         let canvasTop = document.getElementsByClassName("canvas")[0].scrollTop;
@@ -362,12 +395,37 @@ export default {
         //   this.drawingArea.height = e.layerY;
         // }
       }
+      // area的mousemove事件
+      if (this.isMoving) {
+        // 当超出画布时return
+        let canvasLeft = this.getElementLeft(
+          document.getElementsByClassName("canvas")[0]
+        );
+        let canvasWidth = document.getElementsByClassName("canvas")[0]
+          .offsetWidth;
+        if (e.clientX >= canvasLeft + canvasWidth) return false;
+
+        this.areaList[this.selectedAreaIndex].left =
+          this.beforeMoveAreaSite.left +
+          (e.clientX - this.beforeMoveMouseSite.x);
+        this.areaList[this.selectedAreaIndex].top =
+          this.beforeMoveAreaSite.top +
+          (e.clientY - this.beforeMoveMouseSite.y);
+      }
+    },
+    getElementLeft(element) {
+      var actualLeft = element.offsetLeft;
+      var current = element.offsetParent;
+
+      while (current !== null) {
+        actualLeft += current.offsetLeft;
+        current = current.offsetParent;
+      }
+      return actualLeft;
     },
     // 选中area
     selectArea(a_id) {
-      console.log(`a_id`, a_id);
       let index = this.areaList.findIndex((item) => item.a_id == a_id);
-      console.log(`index`, index);
       this.selectedAreaIndex = index;
 
       this.movingAreaInfo = this.areaList[index];
@@ -394,35 +452,96 @@ export default {
     },
     // area的mousemove事件
     areaMousemove(e) {
-      if (!e.target.classList.contains("area")) return false;
-      if (this.isMoving) {
-        this.areaList[this.selectedAreaIndex].left = Math.max(
-          this.beforeMoveAreaSite.left +
-            (e.clientX - this.beforeMoveMouseSite.x),
-          0
-        );
-        this.areaList[this.selectedAreaIndex].top = Math.max(
-          this.beforeMoveAreaSite.top +
-            (e.clientY - this.beforeMoveMouseSite.y),
-          0
-        );
-      }
+      // if (!e.target.classList.contains("area")) return false;
+      // if (this.isMoving) {
+      //   this.areaList[this.selectedAreaIndex].left = Math.max(
+      //     this.beforeMoveAreaSite.left +
+      //       (e.clientX - this.beforeMoveMouseSite.x),
+      //     0
+      //   );
+      //   this.areaList[this.selectedAreaIndex].top = Math.max(
+      //     this.beforeMoveAreaSite.top +
+      //       (e.clientY - this.beforeMoveMouseSite.y),
+      //     0
+      //   );
+      // }
     },
     // 右键area
     rightClickArea(e, a_id) {
-      console.log(`e`, e);
-      this.areaMenuSite.left = e.pageX;
-      this.areaMenuSite.top = e.pageY;
-      this.areaMenuSite.is_show = true;
+      this.areaRcMenuSite.left = e.pageX;
+      this.areaRcMenuSite.top = e.pageY;
+      this.areaRcMenuSite.is_show = true;
       this.toDeleteAreaId = a_id;
-      console.log(`a_id`, a_id);
     },
     // 点击删除area
     deleteArea() {
-      let index = this.areaList.findIndex((item) => item.a_id == this.toDeleteAreaId);
+      let index = this.areaList.findIndex(
+        (item) => item.a_id == this.toDeleteAreaId
+      );
       this.areaList.splice(index, 1);
-      this.$message.success("删除区域成功")
-      this.areaMenuSite.is_show = false;
+      this.$message.success("删除区域成功");
+      this.areaRcMenuSite.is_show = false;
+    },
+    // 更改地图名
+    async editName() {
+      // 如果没有name则报错
+      if (!this.inputMapName.trim()) {
+        return this.$message.error("请填写地图名");
+      }
+      let res = await this.$axios.patch("/map/name", {
+        id: this.id,
+        name: this.inputMapName,
+      });
+      if (res.data.code == 200) {
+        this.$message.success("修改成功");
+        this.mapName = this.inputMapName;
+      } else {
+        this.$message.error("修改失败");
+      }
+    },
+    // 添加地图
+    async addMap() {
+      // 如果没有name则报错
+      if (!this.inputMapName.trim()) {
+        return this.$message.error("请填写地图名");
+      }
+      // 判断是否有区域名称为空
+      let noNameArea = this.areaList.findIndex((item) => item.area_name == "");
+      if (noNameArea != -1) {
+        return this.$message.error("请给每个区域添加名称");
+      }
+      let res = await this.$axios.post("/map", {
+        s_id: 1,
+        name: this.inputMapName,
+        areaList: this.areaList,
+      });
+      if (res.data.code == 200) {
+        this.$message.success("添加成功");
+        this.$router.push('/'+this.$route.params.s_id+"/setting/set_map/" + res.data.id);
+      } else {
+        this.$message.error("添加失败");
+      }
+    },
+    // 更改地图后保存地图
+    async saveMap() {
+      // 判断是否有区域名称为空
+      console.log(`this.areaList`, this.areaList);
+      let noNameArea = this.areaList.findIndex(
+        (item) => !item.area_name.trim()
+      );
+      console.log(`noNameArea`, noNameArea);
+      if (noNameArea != -1) {
+        return this.$message.error("请给每个区域添加名称");
+      }
+      let res = await this.$axios.patch("/map", {
+        id: this.id,
+        areaList: this.areaList,
+      });
+      if (res.data.code == 200) {
+        this.$message.success(res.data.msg);
+      } else {
+        this.$message.error("修改失败");
+      }
     },
   },
 };
@@ -455,8 +574,14 @@ export default {
   height: 22px;
   background-color: #2e81e1;
   position: absolute;
-  top: 6px;
+  top: 5px;
   left: 0px;
+}
+.set-map .main > .title .navigator {
+  cursor: pointer;
+}
+.set-map .main > .title .navigator:hover {
+  color: #0359bb;
 }
 .main {
   width: 75%;
@@ -483,6 +608,7 @@ export default {
   background-size: 75px 75px, 75px 75px, 15px 15px, 15px 15px;
 
   user-select: none;
+  overflow: hidden;
 }
 .canvas .area {
   border: 3px #aaa solid;
@@ -509,14 +635,14 @@ export default {
 .canvas .drawing-area.ellipse {
   border-radius: 999px;
 }
-.canvas .tips {
-  position: absolute;
-  left: 0px;
-  bottom: -35px;
+.main .tips {
+  width: 900px;
+  margin: 20px auto;
+
   font-size: 14px;
   color: #aaa;
 }
-.canvas .tips li {
+.main .tips li {
   float: left;
   margin-right: 10px;
 }
@@ -576,7 +702,7 @@ export default {
   text-align: center;
   cursor: pointer;
   border: 1px solid transparent;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 .shapes .square:hover,
@@ -649,7 +775,7 @@ export default {
   float: right;
 }
 
-.area-menu {
+.area-rc-menu {
   position: fixed;
   z-index: 200;
   left: 100px;
@@ -659,7 +785,7 @@ export default {
   border: 1px solid rgb(226, 226, 226);
   background-color: #fff;
 }
-.area-menu li {
+.area-rc-menu li {
   width: 100%;
   font-size: 16px;
   line-height: 20px;
@@ -670,8 +796,8 @@ export default {
   color: #111;
   cursor: pointer;
 }
-.area-menu li:hover {
+.area-rc-menu li:hover {
   background-color: #ecf5ff;
-  color: #409eff;
+  color: #111;
 }
 </style>

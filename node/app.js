@@ -19,8 +19,16 @@ app.use(async (req, res, next) => {
   if (req.url.match("/aside")) return next()
   // 获取首页卫生情况
   if (req.url.match("/status") && req.method == "GET") return next()
+  // 获取地图信息
+  if (req.url.match("/map") && req.method == "GET") return next()
+  // 获取区域信息
+  if (req.url.match("/area") && req.method == "GET") return next()
+  // 获取班级信息
+  if (req.url.match("/class") && req.method == "GET") return next()
   // 学校logo添加与获取
   if (req.url.match("/school/logo")) return next()
+  // 学校信息获取
+  if (req.url.match("/school")) return next()
   // 如果没有令牌则返回没有令牌
   if (!req.get("Authorization")) return res.json({
     code: 400,
@@ -30,7 +38,7 @@ app.use(async (req, res, next) => {
   // 否则判断token是否正确
   let token = req.get("Authorization").slice(7)
   let encode = jwt.decode(token, "just_do_it")
-  let res1 = await query("select *from user where username =?", [encode])
+  let res1 = await query("select * from user where username = ?", [encode])
   
   // 如果正确则放行
   if (res1.length > 0) {
@@ -45,6 +53,7 @@ app.use(async (req, res, next) => {
       await query("INSERT INTO operation (URL,METHOD,USERNAME,USER_ID,TIME) VALUES (?)",[[url,method,username,user_id,time]]).catch(err => console.log('err', err))
     }
 
+    req.s_id = res1[0].s_id;
     return next()
     // 如果不正确则返回错误信息
   } else {
@@ -82,9 +91,12 @@ app.use("/area", areaRouter)
 // 2.7 获取操作记录信息路由
 let operationRouter = require("./routers/operation")
 app.use("/operation", operationRouter)
-// 2.8 学校信息设置路由
+// 2.8 学校信息路由
 let schoolRouter = require("./routers/school")
 app.use("/school", schoolRouter)
+// 2.9 地图信息路由
+let mapRouter = require("./routers/map")
+app.use("/map", mapRouter)
 
 
 // 3. 挂载

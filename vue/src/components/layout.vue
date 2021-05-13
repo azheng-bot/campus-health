@@ -107,7 +107,7 @@ export default {
     };
   },
   created() {
-    this.layoutData();
+    this.getLayoutData();
   },
   components: {
     dataTime,
@@ -120,8 +120,14 @@ export default {
       return this.$store.state.school ? this.$store.state.school.name : "";
     },
   },
+  watch: {
+    // $route(to,from) {
+    //   this.getLayoutData()
+    // }
+  },
   methods: {
-    layoutData() {
+    getLayoutData() {
+      console.log(`get`)
       axios({
         method: "get",
         url: "/api/aside",
@@ -135,7 +141,7 @@ export default {
       });
     },
     JumpClick(url) {
-      this.$router.push(url);
+      this.$router.push("/" + this.$route.params.s_id + url);
     },
     // 登出
     logout() {
@@ -145,12 +151,12 @@ export default {
         type: "warning",
       }).then(() => {
         this.$store.commit("logout");
-        this.$router.push("/index");
+        this.$router.push("/" + this.$route.params.s_id + "/index");
       });
     },
     // 登录
     login() {
-      this.$router.push("/login");
+      this.$router.push("/" + this.$route.params.s_id + "/login");
     },
   },
 };
@@ -215,6 +221,7 @@ export default {
 .content {
   flex: 1;
   background-color: #e9eef3;
-  overflow: auto;
+  width: 100%;
+  /* overflow: auto; */
 }
 </style>
