@@ -11,6 +11,7 @@ export default createStore({
   mutations: {
     setAuthorData(state,data) {
       state.author = data;
+      console.log(`state.author`, state.author)
     },
     // 退出登录
     logout(state) {

@@ -9,18 +9,19 @@
             <div class="card" style="height: 100%">
               <!-- card_header -->
               <div class="card_header">
-                <span style="font-size: 30px; font-weight: 550">{{mapName}}</span>
-                <div class="map-select">
-                  <el-select v-if="mapId" v-model="mapId" placeholder="请选择">
-                    <el-option
-                      v-for="item in mapList"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id"
-                    >
-                    </el-option>
-                  </el-select>
-                </div>
+                <span
+                  style="font-size: 30px; font-weight: 550; margin-left: 8px"
+                  >{{ mapName }}</span
+                >
+                <span
+                  style="
+                    font-size: 30px;
+                    font-weight: 500;
+                    float: right;
+                    color: #c9c9c9;
+                  "
+                  >AREA</span
+                >
               </div>
               <!-- card_body -->
 
@@ -34,7 +35,27 @@
                   font-style: italic;
                 "
               >
-                <div class="map-canvas">aa</div>
+                <div v-loading="isAreaLoading" class="map-canvas">
+                  <!-- area元素 -->
+                  <div
+                    v-for="item in areaList"
+                    :key="item.id"
+                    class="area"
+                    :style="{
+                      width: item.width + 'px',
+                      height: item.height + 'px',
+                      left: item.left + 'px',
+                      top: item.top + 'px',
+                      lineHeight: item.height + 'px',
+                      backgroundColor: item.color || '#eee',
+                      fontSize: item.width / 10 + 'px',
+                    }"
+                    :class="[item.shape, { active: item.id == areaId }]"
+                    @click="handleArea(item.id)"
+                  >
+                    {{ item.area_name }}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -78,10 +99,46 @@
                       v-model="cleanTime"
                       type="date"
                       placeholder="选择日期"
-                      @change="formatDate"
-                      style="font-size: 20px; width: 100%"
+                      @change="dateChange"
+                      style="width: 100%"
                     >
                     </el-date-picker>
+                  </div>
+                </div>
+              </el-col>
+            </el-row>
+            <!-- 选择地图 -->
+            <el-row style="margin-top: 20px">
+              <el-col :span="24">
+                <div class="card">
+                  <div class="card_header">
+                    <span style="font-size: 20px; font-weight: 550">地图 </span>
+                    <span
+                      style="
+                        font-size: 20px;
+                        font-weight: 500;
+                        float: right;
+                        color: #c9c9c9;
+                      "
+                      >MAP</span
+                    >
+                  </div>
+                  <div class="card_body" style="padding: 15px">
+                    <el-select
+                      v-if="mapId"
+                      v-model="mapId"
+                      placeholder="请选择"
+                      style="width: 100%"
+                      @change="mapChange"
+                    >
+                      <el-option
+                        v-for="item in mapList"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                      >
+                      </el-option>
+                    </el-select>
                   </div>
                 </div>
               </el-col>
@@ -99,7 +156,7 @@
                         float: right;
                         color: #c9c9c9;
                       "
-                      >DATE</span
+                      >CLASS</span
                     >
                   </div>
                   <div class="card_body" style="padding: 15px">
@@ -108,6 +165,7 @@
                       v-model="classId"
                       style="font-size: 20px; width: 100%"
                       placeholder="请选择"
+                      @change="classChange"
                     >
                       <el-option
                         v-for="item in classList"
@@ -221,47 +279,22 @@ export default {
       ],
       // 时间
       cleanTime: this.todayDate(),
-      // 选择的那块区域
-      area: 1,
-      // 各个区域背景颜色
-      areaColor: {
-        playground: ["#d9f8c1", "#a9ee7b", 1],
-        gym: ["#b5e4f5", " #08b3f1", 2],
-        basketball: ["#f3ccb4", "#f87320", 3],
-        floorLeft: ["#fdebb8", "#faca47", 4],
-        floorRight: ["#c0d2f7", "#4c85f8", 5],
-      },
       statusData: "",
       isLoading: true,
       // 地图列表
-      mapList: [
-        {
-          value: "选项1",
-          label: "黄金糕",
-        },
-        {
-          value: "选项2",
-          label: "双皮奶",
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎",
-        },
-        {
-          value: "选项4",
-          label: "龙须面",
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭",
-        },
-      ],
+      mapList: [],
       mapId: "",
-      mapName:"",
+      mapName: "",
+      // 班级列表
       classList: [],
       classId: "",
+      // 区域列表
+      areaList: [],
+      areaId: "",
+      isAreaLoading: true,
     };
   },
+  watch: {},
   async created() {
     // 获取所有地图
     await this.getMapList();
@@ -270,16 +303,11 @@ export default {
     // 获取地图对应的区域信息
     await this.getAreaList();
 
+    // 获取初始信息对应的卫生状态
     await this.getStatus();
   },
   mounted() {
-    // this.switcharea("playground");
-  },
-  watch: {
-    mapId:function(oldV,newV) {
-      console.log(`oldV,newV`, oldV,newV)
-
-    }
+    // this.handleArea("playground");
   },
   methods: {
     // 获取所有地图
@@ -287,17 +315,15 @@ export default {
       let res = await this.$axios.get("/map", {
         params: { s_id: this.$route.params.s_id },
       });
-      console.log(`res1`, res);
       this.mapList = res.data.data;
       this.mapId = this.mapList[0].id;
-      this.mapName = this.mapList[0].name
+      this.mapName = this.mapList[0].name;
     },
     // 获取所有班级
     async getClassList() {
       let res = await this.$axios.get("/class", {
         params: { s_id: this.$route.params.s_id },
       });
-      console.log(`res2`, res);
       this.classList = res.data.data;
       this.classId = this.classList[0].id;
     },
@@ -306,15 +332,20 @@ export default {
       let res = await this.$axios.get("/area", {
         params: { m_id: this.mapId },
       });
-      console.log(`res3`, res);
       this.areaList = res.data.data;
+      if (this.areaList[0]) {
+        this.areaId = this.areaList[0].id;
+      } else {
+        this.areaId = "";
+      }
+      this.isAreaLoading = false;
     },
     // 格式化日期选择器的信息
-    formatDate(time) {
-      this.cleanTime =
-        time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
-      this.hygieneData();
-    },
+    // formatDate(time) {
+    //   this.cleanTime =
+    //     time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
+    //   this.getStatus();
+    // },
     // 把时间调到今天
     todayDate() {
       let time = new Date();
@@ -323,42 +354,53 @@ export default {
       );
     },
     // 点击区域的事件
-    switcharea(param) {
-      let _this = this;
-      this.area = this.areaColor[param][2];
-      this.hygieneData();
-      Object.keys(this.areaColor).forEach(function (key) {
-        // 恢复默认颜色
-        document.getElementsByClassName(key)[0].style.backgroundColor = "";
-        // 取消框选
-        document.getElementsByClassName(key)[0].style.border =
-          "5px solid transparent";
-
-        if (key == param) {
-          // 颜色加重
-          document.getElementsByClassName(param)[0].style.backgroundColor =
-            _this.areaColor[param][1];
-          // 框选
-          document.getElementsByClassName(key)[0].style.border =
-            "5px solid #5e5e5e";
-        }
-      });
+    handleArea(id) {
+      if (this.areaId == id) return false;
+      this.areaId = id;
+      this.getStatus();
     },
-    getStatus() {
+    // 获取卫生情况
+    async getStatus() {
       this.isLoading = true;
-      axios({
-        method: "get",
-        // ?time=2021-1-20&area_id=1
-        url: "/api/status?" + `time=${this.cleanTime}&area_id=${this.area}`,
-        headers: {
-          Authorization: window.sessionStorage.getItem("token"),
-        },
-      }).then((res) => {
-        if (res.data.code == 200) {
-          this.statusData = res.data.data.statusData;
-          this.isLoading = false;
-        }
+      // 根据查询模式配置参数
+      let params;
+      if (this.searchMode == "class") {
+        params = {
+          time: this.cleanTime,
+          area_id: this.areaId,
+          class_id: this.classId,
+        };
+      } else {
+        params = {
+          time: this.cleanTime,
+          area_id: this.areaId,
+        };
+      }
+      let res = await this.$axios.get("/status", {
+        params,
       });
+      if (res.data.code == 200) {
+        this.statusData = res.data.data.statusData;
+        this.isLoading = false;
+      }
+    },
+    // 日期发生改变
+    dateChange(time) {
+      // 格式化日期选择器的信息
+      this.cleanTime =
+        time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
+      this.getStatus();
+    },
+    // 地图发生改变
+    async mapChange(mapId) {
+      this.isAreaLoading = true;
+      this.mapName = this.mapList.find((item) => item.id == mapId).name;
+      await this.getAreaList();
+      this.getStatus();
+    },
+    // 班级发生改变
+    classChange(classId) {
+      this.getStatus();
     },
   },
 };
@@ -436,6 +478,22 @@ export default {
 .container .c1 .map-canvas {
   width: 900px;
   height: 600px;
+  position: relative;
+  margin: 0 auto;
+}
+.map-canvas .area {
+  border: 3px #aaa solid;
+  background: #eee;
+  font-style: italic;
+  position: absolute;
+  text-align: center;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.map-canvas .area.active {
+  border-color: #dd5858;
+  z-index: 100;
 }
 .container .c2 {
   width: 400px;
@@ -453,7 +511,7 @@ export default {
 }
 
 .search-mode .label {
-  margin-right: 10px;
+  margin-right: 3px;
   font-size: 20px;
   width: 120px;
   line-height: 40px;
@@ -483,7 +541,7 @@ export default {
   padding: 20px;
 }
 .search-result .card_body .text {
-  font-size: 45px;
+  font-size: 35px;
   text-align: center;
 }
 
