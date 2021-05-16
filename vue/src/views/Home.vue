@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div v-if="$store.state.author" class="title">首页</div>
+    <div v-if="$store.state.userInfo" class="title">首页</div>
     <el-container>
       <el-main>
         <div class="container">
@@ -36,6 +36,18 @@
                 "
               >
                 <div v-loading="isAreaLoading" class="map-canvas">
+                  <div class="area test"
+                    :style="{
+                      width: 100 + 'px',
+                      height: 100 + 'px',
+                      left: 10 + 'px',
+                      top: 10 + 'px',
+                      lineHeight: 100 + 'px',
+                      backgroundColor: '#e1e1e1' || '#eee',
+                      fontSize: 20 + 'px',
+                    }">
+                    哈哈哈
+                  </div>
                   <!-- area元素 -->
                   <div
                     v-for="item in areaList"
@@ -60,129 +72,138 @@
             </div>
           </div>
           <div class="c2" style="display: flex; flex-direction: column">
-            <!-- 查询方式 - 班级/日期 -->
-            <el-row>
-              <div class="search-mode">
-                <div class="label">查询方式</div>
-                <el-select
-                  v-model="searchMode"
-                  style="width: 100%; font-size: 18px"
-                >
-                  <el-option
-                    v-for="item in searchModeList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+            <!-- 查询条件 -->
+            <div class="search-condition" style="">
+              <!-- 查询方式 - 班级/日期 -->
+              <el-row>
+                <div class="search-mode">
+                  <div class="label">查询方式</div>
+                  <el-select
+                    v-model="searchMode"
+                    style="width: 100%; font-size: 18px"
                   >
-                  </el-option>
-                </el-select>
-              </div>
-            </el-row>
-            <!-- 选择日期 -->
-            <el-row style="margin-top: 20px">
-              <el-col :span="24">
-                <div class="card">
-                  <div class="card_header">
-                    <span style="font-size: 20px; font-weight: 550">日期 </span>
-                    <span
-                      style="
-                        font-size: 20px;
-                        font-weight: 500;
-                        float: right;
-                        color: #c9c9c9;
-                      "
-                      >DATE</span
+                    <el-option
+                      v-for="item in searchModeList"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
                     >
-                  </div>
-                  <div class="card_body" style="padding: 15px">
-                    <el-date-picker
-                      v-model="cleanTime"
-                      type="date"
-                      placeholder="选择日期"
-                      @change="dateChange"
-                      style="width: 100%"
-                    >
-                    </el-date-picker>
-                  </div>
+                    </el-option>
+                  </el-select>
                 </div>
-              </el-col>
-            </el-row>
-            <!-- 选择地图 -->
-            <el-row style="margin-top: 20px">
-              <el-col :span="24">
-                <div class="card">
-                  <div class="card_header">
-                    <span style="font-size: 20px; font-weight: 550">地图 </span>
-                    <span
-                      style="
-                        font-size: 20px;
-                        font-weight: 500;
-                        float: right;
-                        color: #c9c9c9;
-                      "
-                      >MAP</span
-                    >
-                  </div>
-                  <div class="card_body" style="padding: 15px">
-                    <el-select
-                      v-if="mapId"
-                      v-model="mapId"
-                      placeholder="请选择"
-                      style="width: 100%"
-                      @change="mapChange"
-                    >
-                      <el-option
-                        v-for="item in mapList"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id"
+              </el-row>
+              <!-- 选择日期 -->
+              <el-row style="margin-top: 15px">
+                <el-col :span="24">
+                  <div class="card">
+                    <div class="card_header">
+                      <span style="font-size: 20px; font-weight: 550"
+                        >日期
+                      </span>
+                      <span
+                        style="
+                          font-size: 20px;
+                          font-weight: 500;
+                          float: right;
+                          color: #c9c9c9;
+                        "
+                        >DATE</span
                       >
-                      </el-option>
-                    </el-select>
-                  </div>
-                </div>
-              </el-col>
-            </el-row>
-            <!-- 选择班级 -->
-            <el-row v-if="searchMode == 'class'" style="margin-top: 20px">
-              <el-col :span="24">
-                <div class="card">
-                  <div class="card_header">
-                    <span style="font-size: 20px; font-weight: 550">班级 </span>
-                    <span
-                      style="
-                        font-size: 20px;
-                        font-weight: 500;
-                        float: right;
-                        color: #c9c9c9;
-                      "
-                      >CLASS</span
-                    >
-                  </div>
-                  <div class="card_body" style="padding: 15px">
-                    <el-select
-                      v-if="classId"
-                      v-model="classId"
-                      style="font-size: 20px; width: 100%"
-                      placeholder="请选择"
-                      @change="classChange"
-                    >
-                      <el-option
-                        v-for="item in classList"
-                        :key="item.id"
-                        :label="item.class_name"
-                        :value="item.id"
+                    </div>
+                    <div class="card_body" style="padding: 15px">
+                      <el-date-picker
+                        v-model="cleanTime"
+                        type="date"
+                        placeholder="选择日期"
+                        @change="dateChange"
+                        style="width: 100%"
                       >
-                      </el-option>
-                    </el-select>
+                      </el-date-picker>
+                    </div>
                   </div>
-                </div>
-              </el-col>
-            </el-row>
+                </el-col>
+              </el-row>
+              <!-- 选择班级 -->
+              <el-row v-if="searchMode == 'class'" style="margin-top: 15px">
+                <el-col :span="24">
+                  <div class="card">
+                    <div class="card_header">
+                      <span style="font-size: 20px; font-weight: 550"
+                        >班级
+                      </span>
+                      <span
+                        style="
+                          font-size: 20px;
+                          font-weight: 500;
+                          float: right;
+                          color: #c9c9c9;
+                        "
+                        >CLASS</span
+                      >
+                    </div>
+                    <div class="card_body" style="padding: 15px">
+                      <el-select
+                        v-if="classId"
+                        v-model="classId"
+                        style="font-size: 20px; width: 100%"
+                        placeholder="请选择"
+                        @change="classChange"
+                      >
+                        <el-option
+                          v-for="item in classList"
+                          :key="item.id"
+                          :label="item.class_name"
+                          :value="item.id"
+                        >
+                        </el-option>
+                      </el-select>
+                    </div>
+                  </div>
+                </el-col>
+              </el-row>
+              <!-- 选择地图 -->
+              <el-row v-if="searchMode == 'area'" style="margin-top: 15px">
+                <el-col :span="24">
+                  <div class="card">
+                    <div class="card_header">
+                      <span style="font-size: 20px; font-weight: 550"
+                        >地图
+                      </span>
+                      <span
+                        style="
+                          font-size: 20px;
+                          font-weight: 500;
+                          float: right;
+                          color: #c9c9c9;
+                        "
+                        >MAP</span
+                      >
+                    </div>
+                    <div class="card_body" style="padding: 15px">
+                      <el-select
+                        v-if="mapId"
+                        v-model="mapId"
+                        placeholder="请选择"
+                        style="width: 100%"
+                        @change="mapChange"
+                      >
+                        <el-option
+                          v-for="item in mapList"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id"
+                        >
+                        </el-option>
+                      </el-select>
+                    </div>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
             <!-- 查询结果 -->
             <div class="search-result" style="">
               <!-- 班级 -->
-              <el-row v-if="searchMode != 'class'" style="height: 50%">
+              <el-row v-if="searchMode != 'class'" >
                 <el-col :span="24">
                   <div class="card" style="height: 100%">
                     <div class="card_header">
@@ -199,7 +220,7 @@
                         >CLASS</span
                       >
                     </div>
-                    <div class="card_body" v-loading="isLoading">
+                    <div class="card_body clean-class" v-loading="isLoading">
                       <span v-if="statusData[0]" class="text">{{
                         statusData[0].class_name
                       }}</span>
@@ -213,7 +234,7 @@
                 :style="
                   searchMode == 'class'
                     ? 'height:100%;'
-                    : 'margin-top: 10px; height: 50%'
+                    : 'margin-top: 10px; height: 100%'
                 "
               >
                 <el-col :span="24">
@@ -233,25 +254,31 @@
                       >
                     </div>
                     <div class="card_body" style="" v-loading="isLoading">
-                      <span class="text">
-                        <template v-if="statusData[0]">
-                          <template v-if="statusData[0].status == 0">
-                            <div class="status_panel no_checked">未检查</div>
-                          </template>
-                          <template v-else-if="statusData[0].status == 1">
-                            <div class="status_panel good">优</div>
-                          </template>
-                          <template v-else-if="statusData[0].status == 2">
-                            <div style="" class="status_panel normal">良</div>
-                          </template>
-                          <template v-else-if="statusData[0].status == 3">
-                            <div class="status_panel bad">差</div>
-                          </template>
+                      <template v-if="statusData[0]">
+                        <template v-if="statusData[0].status == 0">
+                          <div class="status_panel no_checked">
+                            <span class="text"> 未检查 </span>
+                          </div>
                         </template>
-                        <div v-else class="status_panel" style="">
-                          无班级打扫
-                        </div>
-                      </span>
+                        <template v-else-if="statusData[0].status == 1">
+                          <div class="status_panel good">
+                            <span class="text"> 优 </span>
+                          </div>
+                        </template>
+                        <template v-else-if="statusData[0].status == 2">
+                          <div style="" class="status_panel normal">
+                            <span class="text"> 良 </span>
+                          </div>
+                        </template>
+                        <template v-else-if="statusData[0].status == 3">
+                          <div class="status_panel bad">
+                            <span class="text"> 差 </span>
+                          </div>
+                        </template>
+                      </template>
+                      <div v-else class="status_panel" style="">
+                        <span class="text"> 无班级打扫 </span>
+                      </div>
                     </div>
                   </div>
                 </el-col>
@@ -482,7 +509,7 @@ export default {
   margin: 0 auto;
 }
 .map-canvas .area {
-  border: 3px #aaa solid;
+  border: 4px transparent solid;
   background: #eee;
   font-style: italic;
   position: absolute;
@@ -490,7 +517,12 @@ export default {
   cursor: pointer;
   box-sizing: border-box;
 }
-
+.map-canvas .area:hover {
+  border-color: #aaa;
+}
+.map-canvas .area.ellipse {
+  border-radius: 999px;
+}
 .map-canvas .area.active {
   border-color: #dd5858;
   z-index: 100;
@@ -525,6 +557,12 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+.search-condition {
+  padding: 10px;
+  border-radius: 20px;
+  border: 10px solid rgb(255, 255, 255);
+  flex-direction: column;
+}
 .search-result {
   flex: 1 1 0%;
   display: flex;
@@ -534,19 +572,8 @@ export default {
   margin-top: 20px;
   flex-direction: column;
 }
-.search-result .card_body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-}
-.search-result .card_body .text {
-  font-size: 35px;
-  text-align: center;
-}
-
 // 给各个色块加深颜色
-.color_block:hover .color_block::after {
+.area:hover .area::after {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -559,6 +586,7 @@ export default {
   height: 100%;
   padding: 15px;
   box-sizing: border-box;
+  font-size: 40px;
 }
 .status_panel.good {
   background-image: linear-gradient(
@@ -611,5 +639,24 @@ export default {
     #c5c5c5,
     #9f9f9f
   );
+}
+.status_panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.status_panel .text {
+  font-size: 35px;
+  text-align: center;
+}
+.clean-class {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+.clean-class .text {
+  font-size: 30px;
+  text-align: center;
 }
 </style>

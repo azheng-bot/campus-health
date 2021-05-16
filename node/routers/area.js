@@ -6,21 +6,44 @@ let query = require('../utils/query')
 
 // 1.获取区域信息
 router.get("/", async (req, res) => {
+  console.log(`req.query`, req.query)
   try {
     // 执行添加语句
-    let res1 = await query("SELECT * FROM area where m_id = ?",req.query.m_id)
-    // 返回成功信息
-    res.send({
-      code: 200,
-      data: res1
-    })
+    if (req.query.m_id) {
+      let res1 = await query("SELECT * FROM area where m_id = ?", req.query.m_id)
+      // 返回成功信息
+      res.send({
+        code: 200,
+        data: res1
+      })
+    }
+    else if (req.query.s_id) {
+      let res1 = await query("SELECT id,name FROM map where s_id = ?", req.query.s_id)
+      let res2 = await query("SELECT id,area_name as name,m_id FROM area where m_id in (select id from map where s_id = ?)", req.query.s_id)
+      console.log(`res1`, res1)
+      console.log(`res2`, res2)
+
+      res1.forEach(mapItem => {
+        mapItem.areaList = res2.filter(areaItem => areaItem.m_id == mapItem.id)
+      })
+
+      // 返回成功信息
+      res.send({
+        code: 200,
+        data: res1
+      })
+    } else {
+      res.send({
+        code: 400,
+        msg: "获取失败"
+      })
+    }
   } catch {
     // 出现报错时，返回失败信息
     res.send({
       code: 400,
       msg: "获取失败"
     })
-
   }
 })
 

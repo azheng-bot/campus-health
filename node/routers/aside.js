@@ -64,8 +64,8 @@ router.get("/", async (req, res) => {
         data: [
           { id: "1", name: "首页", url: "/index" },
           { id: "2", name: "卫生分派", url: "/assign" },
-          { id: "3", name: "卫生情况", url: "/status" },
-          // { id: "4", name: "统计分析", url: "/count" },
+          { id: "3", name: "快速分派", url: "/quick_assign" },
+          { id: "4", name: "卫生情况", url: "/status" },
         ]
       })
     }

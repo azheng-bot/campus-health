@@ -4,18 +4,18 @@ import axios from "axios"
 export default createStore({
   state: {
     // 登录者信息
-    author:null,
+    userInfo:null,
     // 学校信息
     school:null
   },
   mutations: {
     setAuthorData(state,data) {
-      state.author = data;
-      console.log(`state.author`, state.author)
+      state.userInfo = data;
+      console.log(`state.user`, state.userInfo)
     },
     // 退出登录
     logout(state) {
-      state.author = null;
+      state.userInfo = null;
       window.sessionStorage.removeItem("token");
     },
     setSchoolData(state,data) {

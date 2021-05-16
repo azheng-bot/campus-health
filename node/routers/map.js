@@ -110,18 +110,18 @@ router.patch("/", async (req, res) => {
     let areaList = req.body.areaList;
     let m_id = req.body.id
 
-    
+
 
     for (var i = 0; i < areaList.length; i++) {
       // 有id则对其进行修改
       if (areaList[i].id) {
-        let { area_name, width, height, left, top, color, id } = areaList[i];
-        let res1 = await query("update area set area_name = ?,width = ?,height = ?,`left` =?,top = ?,color =?,m_id = ? where id = ?", [area_name, width, height, left, top, color, m_id, id])
+        let { area_name, width, height, left, top, color, id, shape } = areaList[i];
+        let res1 = await query("update area set area_name = ?,width = ?,height = ?,`left` =?,top = ?,color =?,m_id = ?,shape=? where id = ?", [area_name, width, height, left, top, color, m_id,  shape, id])
       }
       // 没有id则添加到数据库
       else {
-        let { area_name, width, height, left, top, color } = req.body.areaList[i];
-        let res1 = await query("insert into area (area_name, width, height, `left`, top, color,m_id) values(?)", [[area_name, width, height, left, top, color, m_id]]);
+        let { area_name, width, height, left, top, color, shape } = req.body.areaList[i];
+        let res1 = await query("insert into area (area_name, width, height, `left`, top, color,m_id,shape) values(?)", [[area_name, width, height, left, top, color, m_id, shape]]);
       }
     }
 
@@ -159,7 +159,25 @@ router.delete("/", async (req, res) => {
   }
 })
 
+// 7.获取map + area_num
+router.get("/area_num", async (req, res) => {
+  try {
+    // 根据学校id，获取学校所有的map
+    let res1 = await query("SELECT map.id,map.name,count(*) as area_num from map,area where map.id = area.m_id group by map.id", [req.query.s_id])
+    // 返回成功信息
+    res.send({
+      code: 200,
+      data: res1
+    })
+  } catch {
+    // 出现报错时，返回失败信息
+    res.send({
+      code: 400,
+      msg: "获取失败"
+    })
 
+  }
+})
 
 
 

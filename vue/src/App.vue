@@ -29,7 +29,7 @@ export default {
   beforeCreate(e) {
     document.title = "校园卫生分派可视化系统";
     // 如果没有登录者信息，则登录
-    if (!this.$store.state.author) {
+    if (!this.$store.state.userInfo) {
       let token = window.sessionStorage.getItem("token");
       axios.get("/api/login", { params: { token } }).then((res) => {
         console.log(`res`, res);

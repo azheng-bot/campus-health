@@ -1,15 +1,18 @@
 <template>
   <div class="home">
-    <div v-if="$store.state.author" class="title">首页</div>
+    <div v-if="$store.state.userInfo" class="title">首页</div>
     <el-container>
       <el-main>
-        <el-row style="height: 100%" :gutter="24">
+        <div class="container">
           <!-- 地图 -->
-          <el-col :span="17">
+          <div class="c1">
             <div class="card" style="height: 100%">
               <!-- card_header -->
               <div class="card_header">
-                <span style="font-size: 30px; font-weight: 550">XX地图</span>
+                <span
+                  style="font-size: 30px; font-weight: 550; margin-left: 8px"
+                  >{{ mapName }}</span
+                >
                 <span
                   style="
                     font-size: 30px;
@@ -17,7 +20,7 @@
                     float: right;
                     color: #c9c9c9;
                   "
-                  >MAP</span
+                  >AREA</span
                 >
               </div>
               <!-- card_body -->
@@ -32,211 +35,163 @@
                   font-style: italic;
                 "
               >
-                <el-row class="map">
-                  <el-col
-                    :span="10"
-                    class="playground color_block"
-                    @click="switchRegion('playground')"
-                    style="font-size: 50px"
+                <div v-loading="isAreaLoading" class="map-canvas">
+                  <!-- area元素 -->
+                  <div
+                    v-for="item in areaList"
+                    :key="item.id"
+                    class="area"
+                    :style="{
+                      width: item.width + 'px',
+                      height: item.height + 'px',
+                      left: item.left + 'px',
+                      top: item.top + 'px',
+                      lineHeight: item.height + 'px',
+                      backgroundColor: item.color || '#eee',
+                      fontSize: item.width / 10 + 'px',
+                    }"
+                    :class="[item.shape, { active: item.id == areaId }]"
+                    @click="handleArea(item.id)"
                   >
-                    <span class="align_center">足球场</span>
-                  </el-col>
-                  <el-col
-                    :span="10"
-                    style="
-                      display: flex;
-                      flex-direction: column;
-                      justify-content: space-between;
-                    "
-                  >
-                    <div
-                      class="gym"
-                      style="position: relative"
-                      @click="switchRegion('gym')"
-                    >
-                      <span class="align_center">风雨操场</span>
-                    </div>
-                    <div
-                      class="basketball"
-                      style="position: relative"
-                      @click="switchRegion('basketball')"
-                    >
-                      <span class="align_center">篮球场</span>
-                    </div>
-                  </el-col>
-                </el-row>
-                <div class="road" style="color:#Fff">马<span>路</span></div>
-                <div class="teaching">
-                  <el-row style="height: 100%">
-                    <el-col
-                      :span="12"
-                      class="floorLeft"
-                      @click="switchRegion('floorLeft')"
-                    >
-                      <div
-                        class="align_center"
-                        style="
-                          font-size: 60px;
-                          font-weight: 200;
-                          color: #111;
-                          z-index: 200;
-                          white-space: nowrap;
-                          margin-top: -10px;
-                        "
-                      >
-                        教学楼 A区
-                      </div>
-                      <el-row class="parking">
-                        <el-col :span="10">停车位</el-col>
-                        <el-col :span="8" :offset="6">停车位</el-col>
-                      </el-row>
-                      <el-row>
-                        <el-col :span="10">草坪</el-col>
-                        <el-col :span="8" :offset="6">草坪</el-col>
-                      </el-row>
-                      <el-row class="parking">
-                        <el-col :span="10">走廊</el-col>
-                        <el-col :span="8" :offset="6">走廊</el-col>
-                      </el-row>
-                      <el-row class="studyFloor">
-                        <el-col :span="10"> A栋 <br />教学楼 </el-col>
-                        <el-col :span="6" style="border-top: 0px">
-                          <span class="trashLeft">垃圾桶</span>
-                          <span class="trashRight">垃圾桶</span>
-                        </el-col>
-                        <el-col :span="8">
-                          B栋 <br />教学楼
-                          <el-row class="door">
-                            <el-col :span="8"></el-col>
-                            <el-col :span="8"></el-col>
-                            <el-col :span="8">门</el-col>
-                          </el-row>
-                        </el-col>
-                      </el-row>
-                    </el-col>
-                    <el-col
-                      :span="12"
-                      class="floorRight"
-                      @click="switchRegion('floorRight')"
-                    >
-                      <div
-                        class="align_center"
-                        style="
-                          font-size: 60px;
-                          font-weight: 200;
-                          color: #111;
-                          z-index: 200;
-                          white-space: nowrap;
-                          margin-top: -10px;
-                        "
-                      >
-                        教学楼 B区
-                      </div>
-                      <el-row class="parking">
-                        <el-col :span="8">停车位</el-col>
-                        <el-col :span="10" :offset="6">停车位</el-col>
-                      </el-row>
-                      <el-row>
-                        <el-col :span="8">草坪</el-col>
-                        <el-col :span="10" :offset="6">草坪</el-col>
-                      </el-row>
-                      <el-row class="parking">
-                        <el-col :span="8">走廊</el-col>
-                        <el-col :span="10" :offset="6">走廊</el-col>
-                      </el-row>
-                      <el-row class="studyFloor">
-                        <el-col :span="8">
-                          B栋 <br />教学楼
-                          <el-row class="door">
-                            <el-col :span="8"></el-col>
-                            <el-col :span="8"></el-col>
-                            <el-col :span="8">门</el-col>
-                          </el-row>
-                        </el-col>
-                        <el-col :span="6" style="border-top: 0px">
-                          <span class="trashLeft">垃圾桶</span>
-                          <span class="trashRight">垃圾桶</span>
-                        </el-col>
-                        <el-col :span="10"> C栋 <br />教学楼 </el-col>
-                      </el-row>
-                    </el-col>
-                  </el-row>
+                    {{ item.area_name }}
+                  </div>
                 </div>
               </div>
             </div>
-          </el-col>
-          <el-col style="display: flex; flex-direction: column" :span="7">
-            <!-- 选择日期 -->
-            <el-row>
-              <el-col :span="24">
-                <div class="card">
-                  <div class="card_header">
-                    <span style="font-size: 20px; font-weight: 550">地图 </span>
-                    <span
-                      style="
-                        font-size: 20px;
-                        font-weight: 500;
-                        float: right;
-                        color: #c9c9c9;
-                      "
-                      >DATE</span
+          </div>
+          <div class="c2" style="display: flex; flex-direction: column">
+            <!-- 查询条件 -->
+            <div class="search-condition" style="">
+              <!-- 查询方式 - 班级/日期 -->
+              <el-row>
+                <div class="search-mode">
+                  <div class="label">查询方式</div>
+                  <el-select
+                    v-model="searchMode"
+                    style="width: 100%; font-size: 18px"
+                  >
+                    <el-option
+                      v-for="item in searchModeList"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
                     >
-                  </div>
-                  <div class="card_body" style="padding: 15px">
-                    <el-date-picker
-                      v-model="cleanTime"
-                      type="date"
-                      placeholder="选择日期"
-                      @change="formatDate"
-                      style="font-size: 20px; width: 100%"
-                    >
-                    </el-date-picker>
-                  </div>
+                    </el-option>
+                  </el-select>
                 </div>
-              </el-col>
-            </el-row>
-            <!-- 选择日期 -->
-            <el-row style="margin-top:20px">
-              <el-col :span="24">
-                <div class="card">
-                  <div class="card_header">
-                    <span style="font-size: 20px; font-weight: 550">日期 </span>
-                    <span
-                      style="
-                        font-size: 20px;
-                        font-weight: 500;
-                        float: right;
-                        color: #c9c9c9;
-                      "
-                      >DATE</span
-                    >
+              </el-row>
+              <!-- 选择日期 -->
+              <el-row style="margin-top: 15px">
+                <el-col :span="24">
+                  <div class="card">
+                    <div class="card_header">
+                      <span style="font-size: 20px; font-weight: 550"
+                        >日期
+                      </span>
+                      <span
+                        style="
+                          font-size: 20px;
+                          font-weight: 500;
+                          float: right;
+                          color: #c9c9c9;
+                        "
+                        >DATE</span
+                      >
+                    </div>
+                    <div class="card_body" style="padding: 15px">
+                      <el-date-picker
+                        v-model="cleanTime"
+                        type="date"
+                        placeholder="选择日期"
+                        @change="dateChange"
+                        style="width: 100%"
+                      >
+                      </el-date-picker>
+                    </div>
                   </div>
-                  <div class="card_body" style="padding: 15px">
-                    <el-date-picker
-                      v-model="cleanTime"
-                      type="date"
-                      placeholder="选择日期"
-                      @change="formatDate"
-                      style="font-size: 20px; width: 100%"
-                    >
-                    </el-date-picker>
+                </el-col>
+              </el-row>
+              <!-- 选择班级 -->
+              <el-row v-if="searchMode == 'class'" style="margin-top: 15px">
+                <el-col :span="24">
+                  <div class="card">
+                    <div class="card_header">
+                      <span style="font-size: 20px; font-weight: 550"
+                        >班级
+                      </span>
+                      <span
+                        style="
+                          font-size: 20px;
+                          font-weight: 500;
+                          float: right;
+                          color: #c9c9c9;
+                        "
+                        >CLASS</span
+                      >
+                    </div>
+                    <div class="card_body" style="padding: 15px">
+                      <el-select
+                        v-if="classId"
+                        v-model="classId"
+                        style="font-size: 20px; width: 100%"
+                        placeholder="请选择"
+                        @change="classChange"
+                      >
+                        <el-option
+                          v-for="item in classList"
+                          :key="item.id"
+                          :label="item.class_name"
+                          :value="item.id"
+                        >
+                        </el-option>
+                      </el-select>
+                    </div>
                   </div>
-                </div>
-              </el-col>
-            </el-row>
-            <div
-              style="
-                flex: 1 1 0%;
-                display: flex;
-                padding: 10px;
-                border-radius: 20px;
-                border: 10px solid rgb(255, 255, 255);
-                margin-top: 20px;
-                flex-direction: column;
-              "
-            >
+                </el-col>
+              </el-row>
+              <!-- 选择地图 -->
+              <el-row v-if="searchMode == 'area'" style="margin-top: 15px">
+                <el-col :span="24">
+                  <div class="card">
+                    <div class="card_header">
+                      <span style="font-size: 20px; font-weight: 550"
+                        >地图
+                      </span>
+                      <span
+                        style="
+                          font-size: 20px;
+                          font-weight: 500;
+                          float: right;
+                          color: #c9c9c9;
+                        "
+                        >MAP</span
+                      >
+                    </div>
+                    <div class="card_body" style="padding: 15px">
+                      <el-select
+                        v-if="mapId"
+                        v-model="mapId"
+                        placeholder="请选择"
+                        style="width: 100%"
+                        @change="mapChange"
+                      >
+                        <el-option
+                          v-for="item in mapList"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id"
+                        >
+                        </el-option>
+                      </el-select>
+                    </div>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
+            <!-- 查询结果 -->
+            <div class="search-result" style="">
               <!-- 班级 -->
-              <el-row style="height: 50%">
+              <el-row v-if="searchMode != 'class'" >
                 <el-col :span="24">
                   <div class="card" style="height: 100%">
                     <div class="card_header">
@@ -253,21 +208,23 @@
                         >CLASS</span
                       >
                     </div>
-                    <div
-                      class="card_body"
-                      style="padding: 15px; font-size: 35px"
-                      v-loading="isLoading"
-                    >
-                      <span v-if="dataHygiene[0]">{{
-                        dataHygiene[0].class_name
+                    <div class="card_body clean-class" v-loading="isLoading">
+                      <span v-if="statusData[0]" class="text">{{
+                        statusData[0].class_name
                       }}</span>
-                      <span v-else>无班级打扫</span>
+                      <span v-else class="text">无班级打扫</span>
                     </div>
                   </div>
                 </el-col>
               </el-row>
               <!-- 情况 -->
-              <el-row style="margin-top: 10px; height: 50%">
+              <el-row
+                :style="
+                  searchMode == 'class'
+                    ? 'height:100%;'
+                    : 'margin-top: 10px; height: 100%'
+                "
+              >
                 <el-col :span="24">
                   <div class="card" style="height: 100%">
                     <div class="card_header">
@@ -284,33 +241,39 @@
                         >STATUS</span
                       >
                     </div>
-                    <div
-                      class="card_body"
-                      style="font-size: 35px; font-weight: 500"
-                      v-loading="isLoading"
-                    >
-                      <template v-if="dataHygiene[0]">
-                        <template v-if="dataHygiene[0].status == 0">
-                          <div class="status_panel no_checked">未检查</div>
+                    <div class="card_body" style="" v-loading="isLoading">
+                      <template v-if="statusData[0]">
+                        <template v-if="statusData[0].status == 0">
+                          <div class="status_panel no_checked">
+                            <span class="text"> 未检查 </span>
+                          </div>
                         </template>
-                        <template v-else-if="dataHygiene[0].status == 1">
-                          <div class="status_panel good">优</div>
+                        <template v-else-if="statusData[0].status == 1">
+                          <div class="status_panel good">
+                            <span class="text"> 优 </span>
+                          </div>
                         </template>
-                        <template v-else-if="dataHygiene[0].status == 2">
-                          <div style="" class="status_panel normal">良</div>
+                        <template v-else-if="statusData[0].status == 2">
+                          <div style="" class="status_panel normal">
+                            <span class="text"> 良 </span>
+                          </div>
                         </template>
-                        <template v-else-if="dataHygiene[0].status == 3">
-                          <div class="status_panel bad">差</div>
+                        <template v-else-if="statusData[0].status == 3">
+                          <div class="status_panel bad">
+                            <span class="text"> 差 </span>
+                          </div>
                         </template>
                       </template>
-                      <div v-else class="status_panel" style="">无班级打扫</div>
+                      <div v-else class="status_panel" style="">
+                        <span class="text"> 无班级打扫 </span>
+                      </div>
                     </div>
                   </div>
                 </el-col>
               </el-row>
             </div>
-          </el-col>
-        </el-row>
+          </div>
+        </div>
       </el-main>
     </el-container>
   </div>
@@ -323,39 +286,82 @@ export default {
   name: "Home",
   data() {
     return {
+      // 搜索方式 -
+      searchMode: "class",
+      searchModeList: [
+        { label: "通过班级查询", value: "class" },
+        { label: "通过区域查询", value: "area" },
+      ],
       // 时间
       cleanTime: this.todayDate(),
-      // 选择的那块区域
-      region: 1,
-      // 各个区域背景颜色
-      regionColor: {
-        playground: ["#d9f8c1", "#a9ee7b", 1],
-        gym: ["#b5e4f5", " #08b3f1", 2],
-        basketball: ["#f3ccb4", "#f87320", 3],
-        floorLeft: ["#fdebb8", "#faca47", 4],
-        floorRight: ["#c0d2f7", "#4c85f8", 5],
-      },
-      dataHygiene: "",
+      statusData: "",
       isLoading: true,
+      // 地图列表
+      mapList: [],
+      mapId: "",
+      mapName: "",
+      // 班级列表
+      classList: [],
+      classId: "",
+      // 区域列表
+      areaList: [],
+      areaId: "",
+      isAreaLoading: true,
     };
   },
-  created() {
-    this.hygieneData();
+  watch: {},
+  async created() {
+    // 获取所有地图
+    await this.getMapList();
+    // 获取所有班级
+    await this.getClassList();
+    // 获取地图对应的区域信息
+    await this.getAreaList();
+
+    // 获取初始信息对应的卫生状态
+    await this.getStatus();
   },
   mounted() {
-    this.switchRegion("playground");
+    // this.handleArea("playground");
   },
-
   methods: {
-    // aaa() {
-    //   this.hygieneData();
-    //   this.cleanTime = this.cleanTime.toLocaleDateString().replaceAll("/", "-");
-    // },
-    formatDate(time) {
-      this.cleanTime =
-        time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
-      this.hygieneData();
+    // 获取所有地图
+    async getMapList() {
+      let res = await this.$axios.get("/map", {
+        params: { s_id: this.$route.params.s_id },
+      });
+      this.mapList = res.data.data;
+      this.mapId = this.mapList[0].id;
+      this.mapName = this.mapList[0].name;
     },
+    // 获取所有班级
+    async getClassList() {
+      let res = await this.$axios.get("/class", {
+        params: { s_id: this.$route.params.s_id },
+      });
+      this.classList = res.data.data;
+      this.classId = this.classList[0].id;
+    },
+    // 获取地图对应的区域信息
+    async getAreaList() {
+      let res = await this.$axios.get("/area", {
+        params: { m_id: this.mapId },
+      });
+      this.areaList = res.data.data;
+      if (this.areaList[0]) {
+        this.areaId = this.areaList[0].id;
+      } else {
+        this.areaId = "";
+      }
+      this.isAreaLoading = false;
+    },
+    // 格式化日期选择器的信息
+    // formatDate(time) {
+    //   this.cleanTime =
+    //     time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
+    //   this.getStatus();
+    // },
+    // 把时间调到今天
     todayDate() {
       let time = new Date();
       return (
@@ -363,43 +369,53 @@ export default {
       );
     },
     // 点击区域的事件
-    switchRegion(param) {
-      let _this = this;
-      this.region = this.regionColor[param][2];
-      this.hygieneData();
-      Object.keys(this.regionColor).forEach(function (key) {
-        // 恢复默认颜色
-        document.getElementsByClassName(key)[0].style.backgroundColor = "";
-        // 取消框选
-        document.getElementsByClassName(key)[0].style.border =
-          "5px solid transparent";
-
-        if (key == param) {
-          // 颜色加重
-          document.getElementsByClassName(param)[0].style.backgroundColor =
-            _this.regionColor[param][1];
-          // 框选
-          document.getElementsByClassName(key)[0].style.border =
-            "5px solid #5e5e5e";
-        }
-      });
+    handleArea(id) {
+      if (this.areaId == id) return false;
+      this.areaId = id;
+      this.getStatus();
     },
-    hygieneData() {
+    // 获取卫生情况
+    async getStatus() {
       this.isLoading = true;
-      axios({
-        method: "get",
-        // ?time=2021-1-20&area_id=1
-        url: "/api/status?" + `time=${this.cleanTime}&area_id=${this.region}`,
-        headers: {
-          Authorization: window.sessionStorage.getItem("token"),
-        },
-      }).then((res) => {
-        if (res.data.code == 200) {
-          this.dataHygiene = res.data.data.statusData;
-          console.log("res", res);
-          this.isLoading = false;
-        }
+      // 根据查询模式配置参数
+      let params;
+      if (this.searchMode == "class") {
+        params = {
+          time: this.cleanTime,
+          area_id: this.areaId,
+          class_id: this.classId,
+        };
+      } else {
+        params = {
+          time: this.cleanTime,
+          area_id: this.areaId,
+        };
+      }
+      let res = await this.$axios.get("/status", {
+        params,
       });
+      if (res.data.code == 200) {
+        this.statusData = res.data.data.statusData;
+        this.isLoading = false;
+      }
+    },
+    // 日期发生改变
+    dateChange(time) {
+      // 格式化日期选择器的信息
+      this.cleanTime =
+        time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
+      this.getStatus();
+    },
+    // 地图发生改变
+    async mapChange(mapId) {
+      this.isAreaLoading = true;
+      this.mapName = this.mapList.find((item) => item.id == mapId).name;
+      await this.getAreaList();
+      this.getStatus();
+    },
+    // 班级发生改变
+    classChange(classId) {
+      this.getStatus();
     },
   },
 };
@@ -408,7 +424,8 @@ export default {
 <style lang="less" scoped>
 .home {
   height: 100%;
-  // min-width: 1400px;
+  width: 100%;
+  overflow: auto;
   min-height: 700px;
 }
 .home .title {
@@ -442,137 +459,6 @@ export default {
   border-bottom: 1px solid #000;
   line-height: 60px;
 }
-.bg-purple {
-  height: 100px;
-  background-color: aqua;
-}
-.bg-purples {
-  height: 100px;
-  background-color: saddlebrown;
-}
-.map {
-  text-align: center;
-  font-size: 30px;
-  font-weight: 200;
-  height: 35%;
-}
-.playground {
-  background-color: #f0ffe6;
-  height: 100%;
-  margin-right: 30px;
-  border-radius: 999px;
-  cursor: pointer;
-}
-.playground:hover {
-  background-color: #a9ee7b;
-}
-.gym {
-  background-color: #ecfaff;
-  height: 45%;
-  line-height: 60px;
-  cursor: pointer;
-}
-.gym:hover {
-  background-color: #08b3f1;
-}
-.basketball {
-  background-color: #ffeee3;
-  height: 55%;
-  line-height: 90px;
-  margin-top: 10px;
-  cursor: pointer;
-}
-.basketball:hover {
-  background-color: #f87320;
-}
-.tennis {
-  background-color: #ffecf1;
-  height: 75px;
-  line-height: 75px;
-  cursor: pointer;
-}
-.tennis:hover {
-  background-color: #f184a5;
-}
-.badminton {
-  background-color: #f5bfb8;
-  height: 75px;
-  line-height: 75px;
-  margin-top: 10px;
-  cursor: pointer;
-}
-.badminton:hover {
-  background-color: #f2543f;
-}
-.road {
-  height: 30px;
-  line-height: 30px;
-  margin-top: 30px;
-  background-color: #727272;
-  text-align: center;
-}
-.road span {
-  margin-left: 50px;
-}
-.teaching {
-  border: 1px solid #e1e1e1;
-  height: 50%;
-  color: #5e5e5e;
-  .floorLeft {
-    padding-left: 16px;
-    padding-bottom: 16px;
-    background-color: #fff7e3;
-  }
-  .floorLeft:hover {
-    background-color: #faca47;
-  }
-  .floorRight {
-    padding-right: 16px;
-    padding-bottom: 16px;
-    background-color: #e7efff;
-  }
-  .floorRight:hover {
-    background-color: #4c85f8;
-  }
-  .el-col {
-    border: 1px solid #e1e1e1;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .parking {
-    margin-top: 16px;
-  }
-
-  .studyFloor {
-    flex: 1;
-    .el-col {
-      height: 100%;
-      box-sizing: border-box;
-      padding-top: 40px;
-      .door {
-        // margin-top: 19px;
-        position: absolute;
-        bottom: 0px;
-        width: 100%;
-        .el-col {
-          height: 18px;
-          line-height: 18px;
-          padding: 0;
-        }
-      }
-      .trashLeft {
-        float: left;
-        font-size: 12px;
-      }
-      .trashRight {
-        float: right;
-        font-size: 12px;
-      }
-    }
-  }
-}
 
 .card {
   border-radius: 3px;
@@ -590,7 +476,64 @@ export default {
 .card_body {
   flex: 1;
 }
+.container {
+  width: max-content;
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+}
+.container .c1 {
+  width: 1200px;
+  margin-right: 20px;
+}
+.container .c1 .card_header .map-select {
+  float: right;
+}
+.container .c1 .map-canvas {
+  width: 900px;
+  height: 600px;
+  position: relative;
+  margin: 0 auto;
+}
+.map-canvas .area {
+  border: 4px #aaa solid;
+  background: #eee;
+  font-style: italic;
+  position: absolute;
+  text-align: center;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.map-canvas .area.ellipse {
+  border-radius: 999px;
+}
+.map-canvas .area.active {
+  border-color: #dd5858;
+  z-index: 100;
+}
+.container .c2 {
+  width: 400px;
+}
+.search-mode {
+  width: 100%;
+  border-radius: 3px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  padding: 15px;
+  box-sizing: border-box;
 
+  display: flex;
+  flex-direction: row;
+}
+
+.search-mode .label {
+  margin-right: 3px;
+  font-size: 20px;
+  width: 120px;
+  line-height: 40px;
+  font-weight: 550;
+}
 // 水平垂直居中（父元素需相对定位）
 .align_center {
   display: block;
@@ -599,9 +542,23 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-
+.search-condition {
+  padding: 10px;
+  border-radius: 20px;
+  border: 10px solid rgb(255, 255, 255);
+  flex-direction: column;
+}
+.search-result {
+  flex: 1 1 0%;
+  display: flex;
+  padding: 10px;
+  border-radius: 20px;
+  border: 10px solid rgb(255, 255, 255);
+  margin-top: 20px;
+  flex-direction: column;
+}
 // 给各个色块加深颜色
-.color_block:hover .color_block::after {
+.area:hover .area::after {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -609,13 +566,12 @@ export default {
   top: 0;
   background-color: #0000000a;
 }
-.active::after {
-}
 // 情况面板
 .status_panel {
   height: 100%;
   padding: 15px;
   box-sizing: border-box;
+  font-size: 40px;
 }
 .status_panel.good {
   background-image: linear-gradient(
@@ -668,5 +624,24 @@ export default {
     #c5c5c5,
     #9f9f9f
   );
+}
+.status_panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.status_panel .text {
+  font-size: 35px;
+  text-align: center;
+}
+.clean-class {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+.clean-class .text {
+  font-size: 30px;
+  text-align: center;
 }
 </style>

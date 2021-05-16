@@ -18,7 +18,7 @@
             </el-col>
             <el-col :span="5" :offset="0">
               <el-select
-                v-model="classValue"
+                v-model="classId"
                 placeholder="请选择班级"
                 style="width: 100%"
                 clearable
@@ -33,23 +33,28 @@
               </el-select>
             </el-col>
             <el-col :span="5">
-              <el-select
-                v-model="regionValue"
-                placeholder="请选择区域"
-                style="width: 100%"
+              
+              <el-cascader
+                v-if="areaData.length"
+                v-model="areaId"
+                :options="areaData"
+                :props="{
+                  label:'name',
+                  value:'id',
+                  children:'areaList',
+                  emitPath:false
+                }"
                 clearable
-              >
-                <el-option
-                  v-for="item in areaData"
-                  :key="item.id"
-                  :label="item.area_name"
-                  :value="item.id"
-                >
-                </el-option>
-              </el-select>
+              ></el-cascader>
             </el-col>
             <div
-              style="position:absolute;right:10px;width:20%;display:flex;justify-content:space-between"
+              style="
+                position: absolute;
+                right: 10px;
+                width: 20%;
+                display: flex;
+                justify-content: space-between;
+              "
             >
               <el-button
                 type="primary"
@@ -64,8 +69,8 @@
                 @click="handleReset"
                 style="width: 48%"
                 >重置</el-button
-              ></div
-            >
+              >
+            </div>
           </el-row></el-card
         >
       </el-header>
@@ -116,7 +121,7 @@
           <el-pagination
             :current-page="page_num"
             :page-size="page_size"
-            :page-sizes="[5,10, 20, 50]"
+            :page-sizes="[5, 10, 20, 50]"
             layout="total, sizes, prev, pager, next, jumper"
             :total="total"
             @size-change="handleSizeChange"
@@ -137,20 +142,23 @@
             ref="ruleForm"
           >
             <el-form-item label="区域" prop="area_id">
-              <el-select v-model="formLabelAlign.area_id" placeholder="请选择">
-                <el-option
-                  v-for="item in areaData"
-                  :key="item.id"
-                  :label="item.area_name"
-                  :value="item.id"
-                >
-                </el-option>
-              </el-select>
+              <el-cascader
+                v-if="areaData.length"
+                v-model="formLabelAlign.area_id"
+                :options="areaData"
+                :props="{
+                  label:'name',
+                  value:'id',
+                  children:'areaList',
+                  emitPath:false
+                }"
+              ></el-cascader>
             </el-form-item>
             <el-form-item label="负责人" prop="principal_id">
               <el-select
                 v-model="formLabelAlign.principal_id"
                 placeholder="请选择"
+                :disabled="true"
               >
                 <el-option
                   v-for="item in principalData"
@@ -246,8 +254,8 @@ export default {
         { value: "2", label: "良" },
         { value: "3", label: "差" },
       ],
-      classValue: "",
-      regionValue: "",
+      classId: "",
+      areaId: "",
       page_size: 10,
       page_num: 1,
       total: 0,
@@ -263,30 +271,21 @@ export default {
     // 初始化获取基本信息
     async init() {
       // 获取区域信息
-      let res = await axios({
-        method: "get",
-        url: "/api/area",
-        headers: {
-          Authorization: window.sessionStorage.getItem("token"),
-        },
+      let res = await this.$axios.get("/area", {
+        params: { s_id: this.$route.params.s_id },
       });
       this.areaData = res.data.data;
+      console.log(`res`, res);
+
       // 获取班级信息
-      let res2 = await axios({
-        method: "get",
-        url: "/api/class",
-        headers: {
-          Authorization: window.sessionStorage.getItem("token"),
-        },
+      let res2 = await this.$axios.get("/class", {
+        params: { s_id: this.$route.params.s_id },
       });
       this.classData = res2.data.data;
+
       // 获取负责人信息
-      let res3 = await axios({
-        method: "get",
-        url: "/api/principal",
-        headers: {
-          Authorization: window.sessionStorage.getItem("token"),
-        },
+      let res3 = await this.$axios.get("/principal", {
+        params: { s_id: this.$route.params.s_id },
       });
       this.principalData = res3.data.data;
     },
@@ -300,6 +299,7 @@ export default {
       this.formLabelAlign.time =
         time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
     },
+    // 点击搜索
     handleSearch() {
       this.getStatus();
     },
@@ -358,7 +358,7 @@ export default {
 
                 this.$message.success("修改成功");
               } else {
-                this.$message.error(res.data.msg)
+                this.$message.error(res.data.msg);
                 this.editLoading = false;
               }
             })
@@ -373,22 +373,43 @@ export default {
     // 重置搜索信息
     handleReset() {
       this.time = "";
-      this.classValue = "";
-      this.regionValue = "";
-      // ElMessage.success({
-      //   message: "重置成功",
-      //   type: "success",
-      // });
+      this.classId = "";
+      this.areaId = "";
+      this.getStatus();
+      ElMessage.success({
+        message: "重置成功",
+        type: "success",
+      });
     },
     // 获取卫生情况数据
     getStatus() {
       // 加载状态
       this.tableLoading = true;
+      let url, params;
+      if (this.$store.state.userInfo.role == "principal") {
+        url = "/api/status/principal";
+        params = {
+          time: this.time,
+          area_id: this.areaId,
+          class_id: this.classId,
+          page_num: this.page_num,
+          page_size: this.page_size,
+          principal_id: this.$store.state.userInfo.id,
+        };
+      } else {
+        url = "/api/status";
+        params = {
+          time: this.time,
+          area_id: this.areaId,
+          class_id: this.classId,
+          page_num: this.page_num,
+          page_size: this.page_size,
+        };
+      }
       axios({
         method: "get",
-        url:
-          "/api/status?" +
-          `time=${this.time}&area_id=${this.regionValue}&class_id=${this.classValue}&page_num=${this.page_num}&page_size=${this.page_size}`,
+        url,
+        params,
         headers: {
           Authorization: window.sessionStorage.getItem("token"),
         },

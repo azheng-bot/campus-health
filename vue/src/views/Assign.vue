@@ -25,7 +25,11 @@
               >负责人:</el-col
             >
             <el-col :span="17">
-              <el-input readonly v-if="$store.state.author " v-model=" $store.state.author.username "></el-input>
+              <el-input
+                readonly
+                v-if="$store.state.userInfo"
+                v-model="$store.state.userInfo.username"
+              ></el-input>
             </el-col>
           </el-row>
           <el-row>
@@ -33,7 +37,7 @@
               >区域:</el-col
             >
             <el-col :span="19">
-              <el-select v-model="item.area_id" placeholder="请选择">
+              <!-- <el-select v-model="item.area_id" placeholder="请选择">
                 <el-option
                   v-for="item2 in areaData"
                   :key="item2.id"
@@ -41,7 +45,18 @@
                   :value="item2.id"
                 >
                 </el-option>
-              </el-select>
+              </el-select> -->
+              <el-cascader
+                v-if="areaData.length"
+                v-model="item.area_id"
+                :options="areaData"
+                :props="{
+                  label:'name',
+                  value:'id',
+                  children:'areaList',
+                  emitPath:false
+                }"
+              ></el-cascader>
             </el-col>
           </el-row>
           <el-row>
@@ -96,7 +111,7 @@ export default {
           time: new Date(),
           class_id: "",
           class_name: "",
-          area_id: "",
+          area_id: "", 
           area_name: "",
         },
       ],
@@ -134,49 +149,37 @@ export default {
   },
   created() {
     this.init();
-    // this.username = this.$store.state.author.username;
+    // this.username = this.$store.state.userInfo.username;
   },
   methods: {
     // 初始化获取基本信息
     async init() {
       // 获取区域信息
-      let res = await axios({
-        method: "get",
-        url: "/api/area",
-        headers: {
-          Authorization: window.sessionStorage.getItem("token"),
-        },
+      let res = await this.$axios.get("/area", {
+        params: { s_id: this.$route.params.s_id },
       });
       this.areaData = res.data.data;
+      console.log(`res`, res);
+
       // 获取班级信息
-      let res2 = await axios({
-        method: "get",
-        url: "/api/class",
-        headers: {
-          Authorization: window.sessionStorage.getItem("token"),
-        },
+      let res2 = await this.$axios.get("/class", {
+        params: { s_id: this.$route.params.s_id },
       });
       this.classData = res2.data.data;
+
       // 获取负责人信息
-      let res3 = await axios({
-        method: "get",
-        url: "/api/principal",
-        headers: {
-          Authorization: window.sessionStorage.getItem("token"),
-        },
+      let res3 = await this.$axios.get("/principal", {
+        params: { s_id: this.$route.params.s_id },
       });
       this.principalData = res3.data.data;
-      console.log(this.areaData);
-      console.log(this.classData);
-      console.log(this.principalData);
     },
 
     // 新增分派任务
     addAssignBox() {
       // 当已经创建的分派任务超过五个时，返回错误信息
-      if (this.assignForm.length >= 5) {
-        return this.$message.info("单次最多创建五个卫生分派任务");
-      }
+      // if (this.assignForm.length >= 5) {
+      //   return this.$message.info("单次最多创建五个卫生分派任务");
+      // }
       this.assignForm.push({
         id: ++this.defaultId,
         time: this.defaultTime,
@@ -200,17 +203,24 @@ export default {
     completeForm() {
       // 根据area_id、class_id选中area_name、class_name
       this.assignForm.forEach((item, index) => {
-      // 根据area_id选中area_name
+        // 根据area_id选中area_name
         if (item.area_id) {
-          item.area_name = this.areaData.find(
-            (item2) => (item2.id == item.area_id)
-          ).area_name;
+          console.log(`item.area_id`, item.area_id)
+          this.areaData.forEach(mapItem => {
+            mapItem.areaList.forEach(areaItem => {
+              if (areaItem.id == item.area_id) {
+                return item.area_name = areaItem.name;
+              }
+            })
+          })
+          console.log(`item`, item)
         }
 
-      // 根据class_id选中class_name
+
+        // 根据class_id选中class_name
         if (item.class_id) {
           item.class_name = this.classData.find(
-            (item2) => (item2.id == item.class_id)
+            (item2) => item2.id == item.class_id
           ).class_name;
         }
       });
@@ -234,7 +244,7 @@ export default {
     async submitForm() {
       // 完善表单
       this.completeForm();
-      console.log('this.', this.assignForm)
+      console.log("this.", this.assignForm);
       // 校验表单
       let valid = this.validForm();
       if (!valid) {
@@ -249,8 +259,8 @@ export default {
           method: "post",
           url: "/api/status",
           data: {
-            principal_id: this.$store.state.author.id,
-            principal_name: this.$store.state.author.username,
+            principal_id: this.$store.state.userInfo.id,
+            principal_name: this.$store.state.userInfo.username,
             time: this.formatDate(item.time),
             area_id: item.area_id,
             area_name: item.area_name,

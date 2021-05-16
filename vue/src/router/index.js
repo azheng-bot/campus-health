@@ -33,6 +33,12 @@ const routes = [
     name: "Assign",
     component: () => import("../views/Assign.vue"),
   },
+  // 快速分派
+  {
+    path: "/:s_id/quick_assign",
+    name: "QuickAssign",
+    component: () => import("../views/QuickAssign.vue"),
+  },
   // 统计
   {
     path: "/:s_id/count",

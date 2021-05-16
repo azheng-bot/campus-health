@@ -2,11 +2,11 @@
   <div class="layout">
     <header class="header">
       <img class="logo" :src="logo" alt="logo" />
-      <span class="hero">{{ name }}校园卫生</span>
+      <span class="hero">{{ name }}校园卫生{{$store.state.userInfo ? '后台系统':'公示'}}</span>
       <dataTime class="datatime"></dataTime>
       <!-- 登录按钮 -->
       <div
-        v-if="!$store.state.author"
+        v-if="!$store.state.userInfo"
         class="login"
         @click="login"
         title="登录"
@@ -55,7 +55,7 @@
       </div>
     </header>
     <div class="container">
-      <aside v-if="$store.state.author" class="aside">
+      <aside v-if="$store.state.userInfo" class="aside">
         <el-menu
           :uniqueOpened="true"
           default-active="1"
