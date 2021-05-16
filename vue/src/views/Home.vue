@@ -36,18 +36,6 @@
                 "
               >
                 <div v-loading="isAreaLoading" class="map-canvas">
-                  <div class="area test"
-                    :style="{
-                      width: 100 + 'px',
-                      height: 100 + 'px',
-                      left: 10 + 'px',
-                      top: 10 + 'px',
-                      lineHeight: 100 + 'px',
-                      backgroundColor: '#e1e1e1' || '#eee',
-                      fontSize: 20 + 'px',
-                    }">
-                    哈哈哈
-                  </div>
                   <!-- area元素 -->
                   <div
                     v-for="item in areaList"
@@ -509,16 +497,13 @@ export default {
   margin: 0 auto;
 }
 .map-canvas .area {
-  border: 4px transparent solid;
+  border: 4px #aaa solid;
   background: #eee;
   font-style: italic;
   position: absolute;
   text-align: center;
   cursor: pointer;
   box-sizing: border-box;
-}
-.map-canvas .area:hover {
-  border-color: #aaa;
 }
 .map-canvas .area.ellipse {
   border-radius: 999px;
