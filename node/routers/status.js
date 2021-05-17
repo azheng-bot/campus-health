@@ -80,14 +80,16 @@ router.get("/principal", async (req, res) => {
 
   // 查询status总数
   // 查询语句
-  let totalSql = "SELECT * FROM status WHERE principal_id = " + principal_id + " AND ";
+  let totalSql = "SELECT count(*) as total FROM status WHERE principal_id = " + principal_id + " AND ";
   if (time) totalSql += ` TIME = '${time}' AND `;
   if (area_id) totalSql += ` AREA_ID = ${area_id} AND `;
   if (class_id) totalSql += ` CLASS_ID = ${class_id} AND `;
   // 如果末尾有AND,去掉末尾的AND
   if (totalSql.substr(totalSql.length - 4) == "AND ") totalSql = totalSql.substr(0, totalSql.length - 5)
 
+  console.log(`totalSql`, totalSql)
   let res2 = await query(totalSql)
+  console.log(`res2`, res2)
 
   // 返回正确信息
   res.send({
@@ -198,7 +200,6 @@ router.patch('/', async (req, res) => {
 
 // 4.快速分派
 router.post("/quick", async (req, res) => {
-  console.log(`req.body`, req.body)
   try {
     let assignData = req.body.assignData;
     let classList = await query("select *from class where s_id =" + req.body.s_id)
@@ -245,15 +246,12 @@ router.post("/quick", async (req, res) => {
       }
     }
 
-    console.log(`repeatList`, repeatList)
     if (repeatList.length) {
-      console.log(`201`, 201)
       return res.json({
         code:201,
         repeatList
       })
     } else {
-      console.log(`200`, 200)
       return res.json({
         code:200,
         msg:"分派成功"

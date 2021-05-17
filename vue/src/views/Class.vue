@@ -1,16 +1,82 @@
 <template>
-<div class="class">
+  <div class="class">
     <div class="title">班级管理</div>
 
-  <el-container>
-    <el-header>
-      <el-button type="primary" style="margin-top: 20px" @click="openClass"
-        >添加班级</el-button
+    <el-container>
+      <el-header>
+        <el-button type="primary" style="margin-top: 20px" @click="openClass"
+          >添加班级</el-button
+        >
+        <el-dialog
+          title="添加"
+          v-model="dialogVisible"
+          width="30%"
+          @close="guan"
+        >
+          <el-form
+            :model="numberValidateForm"
+            ref="numberValidateForm"
+            label-width="80px"
+            class="demo-ruleForm"
+          >
+            <el-form-item
+              label="班级"
+              prop="class"
+              :rules="[{ required: true, message: '班级名不能为空' }]"
+            >
+              <el-input
+                type="class"
+                v-model="numberValidateForm.class"
+              ></el-input>
+            </el-form-item>
+          </el-form>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="dialogVisible = false">取 消</el-button>
+              <el-button
+                type="primary"
+                @click="submitForm('numberValidateForm')"
+                >确 定</el-button
+              >
+            </span>
+          </template>
+        </el-dialog>
+      </el-header>
+      <el-main>
+        <el-table
+          v-loading="isLoading"
+          :data="principalData"
+          style="width: 100%; box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 12px 0px"
+          border
+        >
+          <!-- <el-table-column prop="date" label="日期" width="180">
+        </el-table-column> -->
+          <el-table-column type="index"> </el-table-column>
+          <el-table-column prop="class_name" label="班级" align="center">
+          </el-table-column>
+          <el-table-column label="操作" align="center">
+            <template #default="scope">
+              <el-button size="mini" @click="handleEdit(scope.row)"
+                >编辑</el-button
+              >
+              <el-popconfirm title="您确定要删除吗？" @confirm="del(scope.row)">
+                <template #reference>
+                  <el-button size="mini" type="danger">删除</el-button>
+                </template>
+              </el-popconfirm>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-main>
+      <el-dialog
+        title="编辑"
+        v-model="editVisible"
+        width="30%"
+        @close="editGuan"
       >
-      <el-dialog title="添加" v-model="dialogVisible" width="30%" @close="guan">
         <el-form
-          :model="numberValidateForm"
-          ref="numberValidateForm"
+          :model="edit"
+          ref="edit"
           label-width="80px"
           class="demo-ruleForm"
         >
@@ -19,67 +85,20 @@
             prop="class"
             :rules="[{ required: true, message: '班级名不能为空' }]"
           >
-            <el-input
-              type="class"
-              v-model="numberValidateForm.class"
-            ></el-input>
+            <el-input type="class" v-model="edit.class"></el-input>
           </el-form-item>
         </el-form>
         <template #footer>
           <span class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="submitForm('numberValidateForm')"
+            <el-button @click="editVisible = false">取 消</el-button>
+            <el-button type="primary" @click="editForm('edit')"
               >确 定</el-button
             >
           </span>
         </template>
       </el-dialog>
-    </el-header>
-    <el-main>
-      <el-table  v-loading="isLoading" :data="principalData" style="width: 100%;    box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 12px 0px;" border>
-        <!-- <el-table-column prop="date" label="日期" width="180">
-        </el-table-column> -->
-        <el-table-column type="index"> </el-table-column>
-        <el-table-column prop="class_name" label="班级" align="center">
-        </el-table-column>
-        <el-table-column label="操作" align="center">
-          <template #default="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)"
-              >编辑</el-button
-            >
-            <el-popconfirm title="您确定要删除吗？" @confirm="del(scope.row)">
-              <template #reference>
-                <el-button size="mini" type="danger">删除</el-button>
-              </template>
-            </el-popconfirm>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-main>
-    <el-dialog title="编辑" v-model="editVisible" width="30%" @close="editGuan">
-      <el-form
-        :model="edit"
-        ref="edit"
-        label-width="80px"
-        class="demo-ruleForm"
-      >
-        <el-form-item
-          label="班级"
-          prop="class"
-          :rules="[{ required: true, message: '班级名不能为空' }]"
-        >
-          <el-input type="class" v-model="edit.class"></el-input>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="editVisible = false">取 消</el-button>
-          <el-button type="primary" @click="editForm('edit')">确 定</el-button>
-        </span>
-      </template>
-    </el-dialog>
-  </el-container>
-</div>
+    </el-container>
+  </div>
 </template>
 
 <script>
@@ -98,7 +117,7 @@ export default {
         class: "",
       },
       id: "",
-      isLoading:true,
+      isLoading: true,
     };
   },
   created() {
@@ -110,13 +129,16 @@ export default {
       axios({
         method: "get",
         url: "/api/class",
+        params: {
+          s_id: this.$route.params.s_id,
+        },
         headers: {
           Authorization: window.sessionStorage.getItem("token"),
         },
       }).then((res) => {
         if (res.data.code == 200) {
           this.principalData = res.data.data;
-      this.isLoading = false;
+          this.isLoading = false;
           console.log(res);
         }
       });
@@ -168,7 +190,11 @@ export default {
       //   console.log(id);
       axios({
         method: "delete",
-        url: "/api/class?" + `id=${id.id}`,
+        url: "/api/class",
+        params: {
+          id:id.id,
+          s_id: this.$route.params.s_id,
+        },
         headers: {
           Authorization: window.sessionStorage.getItem("token"),
         },
@@ -176,7 +202,7 @@ export default {
         if (res.data.code == 200) {
           console.log(res);
           this.getPrincipal();
-          this.$message.success("删除成功")
+          this.$message.success("删除成功");
         }
       });
     },
@@ -225,7 +251,6 @@ export default {
 </script>
 
 <style scoped>
-
 .class .title {
   font-size: 24px;
   font-weight: 500;

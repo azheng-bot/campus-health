@@ -8,7 +8,7 @@ let query = require('../utils/query')
 router.get("/", async (req, res) => {
   try {
     // 执行添加语句
-    let res1 = await query("SELECT * FROM USER")
+    let res1 = await query("SELECT * FROM USER where s_id = "+req.query.s_id)
 
     // 删除查询结果中的admin超级管理员
     let index = res1.findIndex(item => item.username == "admin")

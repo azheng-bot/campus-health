@@ -183,6 +183,8 @@ export default {
       if (index != -1) {
         this.assignList.splice(index, 1);
         this.updateFinished();
+        // 删除已分派班级列表信息
+        this.selectedClassId = newValue;
         return;
       }
       // 如果当前地图已经添加满，则取消添加并返回报错信息

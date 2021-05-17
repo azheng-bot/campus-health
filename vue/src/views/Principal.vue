@@ -180,6 +180,7 @@ export default {
             data: {
               principal_name: this.numberValidateForm.principal_name,
               password: this.numberValidateForm.password,
+              s_id:this.$route.params.s_id
             },
             headers: {
               Authorization: window.sessionStorage.getItem("token"),

@@ -33,16 +33,17 @@
               </el-select>
             </el-col>
             <el-col :span="5">
-              
               <el-cascader
                 v-if="areaData.length"
                 v-model="areaId"
+                placeholder="请选择区域"
+                style="width: 100%"
                 :options="areaData"
                 :props="{
-                  label:'name',
-                  value:'id',
-                  children:'areaList',
-                  emitPath:false
+                  label: 'name',
+                  value: 'id',
+                  children: 'areaList',
+                  emitPath: false,
                 }"
                 clearable
               ></el-cascader>
@@ -137,26 +138,26 @@
         >
           <el-form
             label-width="80px"
-            :model="formLabelAlign"
+            :model="editForm"
             :rules="rules"
             ref="ruleForm"
           >
             <el-form-item label="区域" prop="area_id">
               <el-cascader
                 v-if="areaData.length"
-                v-model="formLabelAlign.area_id"
+                v-model="editForm.area_id"
                 :options="areaData"
                 :props="{
-                  label:'name',
-                  value:'id',
-                  children:'areaList',
-                  emitPath:false
+                  label: 'name',
+                  value: 'id',
+                  children: 'areaList',
+                  emitPath: false,
                 }"
               ></el-cascader>
             </el-form-item>
             <el-form-item label="负责人" prop="principal_id">
               <el-select
-                v-model="formLabelAlign.principal_id"
+                v-model="editForm.principal_id"
                 placeholder="请选择"
                 :disabled="true"
               >
@@ -170,7 +171,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="班级" prop="class_id">
-              <el-select v-model="formLabelAlign.class_id" placeholder="请选择">
+              <el-select v-model="editForm.class_id" placeholder="请选择">
                 <el-option
                   v-for="item in classData"
                   :key="item.id"
@@ -181,7 +182,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="情况" prop="status">
-              <el-select v-model="formLabelAlign.status" placeholder="请选择">
+              <el-select v-model="editForm.status" placeholder="请选择">
                 <el-option
                   v-for="item in statusData"
                   :key="item.value"
@@ -193,7 +194,7 @@
             </el-form-item>
             <el-form-item label="时间" prop="time">
               <el-date-picker
-                v-model="formLabelAlign.time"
+                v-model="editForm.time"
                 type="date"
                 placeholder="选择日期"
                 @change="formatDate2"
@@ -230,11 +231,11 @@ export default {
       areaData: [],
       principalData: [],
       tableData: [],
-      formLabelAlign: {
+      editForm: {
         time: "",
-        class: "",
-        area: "",
-        principal: "",
+        class_id: "",
+        area_id: "",
+        principal_id: "",
         status: "",
       },
       rules: {
@@ -295,8 +296,8 @@ export default {
         time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
     },
     formatDate2(time) {
-      if (!time) return (this.formLabelAlign.time = "");
-      this.formLabelAlign.time =
+      if (!time) return (this.editForm.time = "");
+      this.editForm.time =
         time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
     },
     // 点击搜索
@@ -304,7 +305,7 @@ export default {
       this.getStatus();
     },
     handleClose() {
-      // this.formLabelAlign = {};
+      // this.editForm = {};
       // location.reload();
     },
     // 分页器发生改变时
@@ -323,31 +324,40 @@ export default {
     handleEdit(row) {
       this.dialogVisible = true;
       // 深拷贝
-      this.formLabelAlign = JSON.parse(JSON.stringify(row));
+      this.editForm = JSON.parse(JSON.stringify(row));
     },
     // 确认提交修改
     handleOk(formName) {
-      this.editLoading = true;
       this.$refs[formName].validate((valid) => {
         // 根据id确定各个参数的name
-        this.formLabelAlign.class_name = this.classData.find(
-          (item) => item.id == this.formLabelAlign.class_id
+        this.editForm.class_name = this.classData.find(
+          (item) => item.id == this.editForm.class_id
         ).class_name;
-        this.formLabelAlign.area_name = this.areaData.find(
-          (item) => item.id == this.formLabelAlign.area_id
-        ).area_name;
-        this.formLabelAlign.principal_name = this.principalData.find(
-          (item) => item.id == this.formLabelAlign.principal_id
+        console.log(`this.editForm`,this.editForm)
+        // this.areaData.forEach((item) => {
+        //   console.log(`item`, item)
+        //   item.areaList.forEach((item2) => {
+        //     console.log(`item2`, item2)
+        //     if (item2.id == this.editForm.area_id) {
+        //       this.editForm.area_name = item2.name;
+        //     }
+        //   });
+        // }).area_name;
+        console.log(`111`, 111);
+        this.editForm.principal_name = this.principalData.find(
+          (item) => item.id == this.editForm.principal_id
         ).principal_name;
+        console.log(`111`, 111);
 
         if (valid) {
+          this.editLoading = true;
           axios({
             method: "patch",
             url: "/api/status",
             headers: {
               Authorization: window.sessionStorage.getItem("token"),
             },
-            data: this.formLabelAlign,
+            data: this.editForm,
           })
             .then((res) => {
               if (res.data.code == 200) {
@@ -386,6 +396,7 @@ export default {
       // 加载状态
       this.tableLoading = true;
       let url, params;
+      console.log(`this.`, this.$store.state)
       if (this.$store.state.userInfo.role == "principal") {
         url = "/api/status/principal";
         params = {
@@ -420,7 +431,7 @@ export default {
           // 取消加载状态
           this.tableLoading = false;
 
-          this.formLabelAlign = {
+          this.editForm = {
             time: "",
             class: "",
             area: "",
