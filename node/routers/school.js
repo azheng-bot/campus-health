@@ -52,7 +52,8 @@ router.post("/logo", uploader.single("logo"), async (req, res) => {
     if (err) return console.log(`err`, err)
     res.json({
       code: 200,
-      imageUrl: "http://localhost:3000/school/logo?imageUrl=" + file.filename + extname
+      // imageUrl: "http://localhost:3000/school/logo?imageUrl=" + file.filename + extname
+      imageUrl: "/api/school/logo?imageUrl=" + file.filename + extname
     })
   })
 

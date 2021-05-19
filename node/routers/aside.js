@@ -46,13 +46,13 @@ router.get("/", async (req, res) => {
               { id: "7", name: "班级", url: "/class" }
             ]
           },
-          { id: "8", name: "操作记录", url: "/operation" },
           {
             id: "9", name: "系统设置", children: [
               { id: "10", name: "基础设置", url: "/setting/info" },
               { id: "11", name: "地图设置", url: "/setting/maps" },
             ]
           },
+          { id: "8", name: "操作记录", url: "/operation" },
 
         ]
       })

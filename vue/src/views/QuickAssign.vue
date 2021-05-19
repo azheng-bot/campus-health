@@ -1,7 +1,7 @@
 <template>
   <div class="assign">
     <div class="title">快速分派</div>
-    <div class="lists">
+    <div class="lists" v-loading="(!mapData.length) || (!classData.length)">
       <!-- 选择日期 -->
       <list
         class="list"
@@ -167,7 +167,7 @@ export default {
     },
     // 选择班级 - 班级id更改时
     classId(newValue) {
-      if (!this.date && this.mapId) return false;
+      if (!(this.date && this.mapId)) return false;
       if (newValue == "") return false;
       if (!this.mapId && this.date)
         return this.$message.info("请选择日期和区域后再进行操作");

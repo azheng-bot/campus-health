@@ -1,43 +1,48 @@
 <template>
   <div class="assign">
-    <div class="title">卫生分派</div>
-    <div class="assign-boxs">
-      <div v-for="(item, index) in assignForm" :key="index" class="assign-box">
-        <div class="wrapper">
-          <el-row>
-            <el-col :span="5" style="line-height: 40px; font-size: 18px"
-              >日期:</el-col
-            >
-            <el-col :span="19">
-              <el-date-picker
-                v-model="item.time"
-                type="date"
-                placeholder="选择日期"
-                style="width: 100%"
-                @change="timeChange"
-                clearable
+    <div class="wrapper">
+      <div class="title">卫生分派</div>
+      <div class="assign-boxs">
+        <div
+          v-for="(item, index) in assignForm"
+          :key="index"
+          class="assign-box"
+        >
+          <div class="wrapper">
+            <el-row>
+              <el-col :span="5" style="line-height: 40px; font-size: 18px"
+                >日期:</el-col
               >
-              </el-date-picker>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="7" style="line-height: 40px; font-size: 18px"
-              >负责人:</el-col
-            >
-            <el-col :span="17">
-              <el-input
-                readonly
-                v-if="$store.state.userInfo"
-                v-model="$store.state.userInfo.username"
-              ></el-input>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="5" style="line-height: 40px; font-size: 18px"
-              >区域:</el-col
-            >
-            <el-col :span="19">
-              <!-- <el-select v-model="item.area_id" placeholder="请选择">
+              <el-col :span="19">
+                <el-date-picker
+                  v-model="item.time"
+                  type="date"
+                  placeholder="选择日期"
+                  style="width: 100%"
+                  @change="timeChange"
+                  clearable
+                >
+                </el-date-picker>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="7" style="line-height: 40px; font-size: 18px"
+                >负责人:</el-col
+              >
+              <el-col :span="17">
+                <el-input
+                  readonly
+                  v-if="$store.state.userInfo"
+                  v-model="$store.state.userInfo.username"
+                ></el-input>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="5" style="line-height: 40px; font-size: 18px"
+                >区域:</el-col
+              >
+              <el-col :span="19">
+                <!-- <el-select v-model="item.area_id" placeholder="请选择">
                 <el-option
                   v-for="item2 in areaData"
                   :key="item2.id"
@@ -46,55 +51,57 @@
                 >
                 </el-option>
               </el-select> -->
-              <el-cascader
-                v-if="areaData.length"
-                v-model="item.area_id"
-                :options="areaData"
-                :props="{
-                  label:'name',
-                  value:'id',
-                  children:'areaList',
-                  emitPath:false
-                }"
-              ></el-cascader>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="5" style="line-height: 40px; font-size: 18px"
-              >班级:</el-col
-            >
-            <el-col :span="19">
-              <el-select
-                v-model="item.class_id"
-                placeholder="请选择"
-                style="width: 100%"
+                <el-cascader
+                  v-if="areaData.length"
+                  v-model="item.area_id"
+                  style="width: 100%"
+                  :options="areaData"
+                  :props="{
+                    label: 'name',
+                    value: 'id',
+                    children: 'areaList',
+                    emitPath: false,
+                  }"
+                ></el-cascader>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="5" style="line-height: 40px; font-size: 18px"
+                >班级:</el-col
               >
-                <el-option
-                  v-for="item2 in classData"
-                  :key="item2.id"
-                  :label="item2.class_name"
-                  :value="item2.id"
+              <el-col :span="19">
+                <el-select
+                  v-model="item.class_id"
+                  placeholder="请选择"
+                  style="width: 100%"
                 >
-                </el-option>
-              </el-select>
-            </el-col>
-          </el-row>
+                  <el-option
+                    v-for="item2 in classData"
+                    :key="item2.id"
+                    :label="item2.class_name"
+                    :value="item2.id"
+                  >
+                  </el-option>
+                </el-select>
+              </el-col>
+            </el-row>
+          </div>
+        </div>
+        <div class="assign-box add-box">
+          <div class="wrapper" @click="addAssignBox">
+            <div class="align_center">+</div>
+          </div>
         </div>
       </div>
-      <div class="assign-box add-box">
-        <div class="wrapper" @click="addAssignBox">
-          <div class="align_center">+</div>
-        </div>
+      <div class="submit_btn">
+        <el-button
+          style="font-size: 18px; width: 100px"
+          type="primary"
+          @click="submitForm"
+          :loading="isLoading"
+          >提交</el-button
+        >
       </div>
-    </div>
-    <div class="submit_btn">
-      <el-button
-        style="font-size: 18px; width: 100px"
-        type="primary"
-        @click="submitForm"
-        :loading="isLoading"
-        >提交</el-button
-      >
     </div>
   </div>
 </template>
@@ -111,7 +118,7 @@ export default {
           time: new Date(),
           class_id: "",
           class_name: "",
-          area_id: "", 
+          area_id: "",
           area_name: "",
         },
       ],
@@ -205,17 +212,16 @@ export default {
       this.assignForm.forEach((item, index) => {
         // 根据area_id选中area_name
         if (item.area_id) {
-          console.log(`item.area_id`, item.area_id)
-          this.areaData.forEach(mapItem => {
-            mapItem.areaList.forEach(areaItem => {
+          console.log(`item.area_id`, item.area_id);
+          this.areaData.forEach((mapItem) => {
+            mapItem.areaList.forEach((areaItem) => {
               if (areaItem.id == item.area_id) {
-                return item.area_name = areaItem.name;
+                return (item.area_name = areaItem.name);
               }
-            })
-          })
-          console.log(`item`, item)
+            });
+          });
+          console.log(`item`, item);
         }
-
 
         // 根据class_id选中class_name
         if (item.class_id) {
@@ -333,7 +339,11 @@ export default {
 .assign {
   padding: 25px;
   min-width: 1600px;
+  height: 100%;
   box-sizing: border-box;
+  overflow: auto;
+}
+.assign .wrapper {
 }
 .assign .title {
   font-size: 28px;

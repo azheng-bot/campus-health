@@ -8,6 +8,10 @@ const routes = [
     path: "/:s_id",
     redirect:{name:"Index"}
   },
+  {
+    path: "/",
+    redirect:{ path: "/1/index"}
+  },
   // 登录页
   {
     path: "/:s_id/login",

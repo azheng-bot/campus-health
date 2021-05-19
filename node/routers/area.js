@@ -49,4 +49,30 @@ router.get("/", async (req, res) => {
 
 
 
+// 2.删除区域
+router.delete("/", async (req, res) => {
+  try {
+    if (!req.query.id) {
+      // 返回失败信息
+      return res.send({
+        code: 400,
+        msg: "缺失参数"
+      })
+    }
+    let res1 = query("delete from area where id = " + req.query.id);
+    res.send({
+      code: 200,
+      msg: "删除成功"
+    })
+  } catch {
+    // 出现报错时，返回失败信息
+    res.send({
+      code: 400,
+      msg: "删除失败"
+    })
+  }
+
+})
+
+
 module.exports = router;

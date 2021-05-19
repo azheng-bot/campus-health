@@ -11,7 +11,7 @@
               <div class="card_header">
                 <span
                   style="font-size: 30px; font-weight: 550; margin-left: 8px"
-                  >{{ mapName }}</span
+                  >地图 - {{ mapName }}</span
                 >
                 <span
                   style="
@@ -28,32 +28,45 @@
               <div
                 class="card_body"
                 style="
-                  padding: 15px;
                   display: flex;
                   flex-direction: column;
                   justify-content: center;
                   font-style: italic;
                 "
               >
-                <div v-loading="isAreaLoading" class="map-canvas">
+                <div
+                  v-loading="isAreaLoading"
+                  ref="canvas"
+                  style=""
+                  class="map-canvas"
+                >
                   <!-- area元素 -->
                   <div
                     v-for="item in areaList"
                     :key="item.id"
                     class="area"
                     :style="{
-                      width: item.width + 'px',
-                      height: item.height + 'px',
-                      left: item.left + 'px',
-                      top: item.top + 'px',
-                      lineHeight: item.height + 'px',
+                      width: item.width + 'em',
+                      height: item.height + 'em',
+                      left: item.left + 'em',
+                      top: item.top + 'em',
+                      lineHeight: item.height + 'em',
                       backgroundColor: item.color || '#eee',
-                      fontSize: item.width / 10 + 'px',
                     }"
                     :class="[item.shape, { active: item.id == areaId }]"
                     @click="handleArea(item.id)"
                   >
-                    {{ item.area_name }}
+                    <span
+                      :style="{
+                        fontSize:
+                          Math.min(
+                            item.width / 1.2 / item.area_name.length,
+                            30
+                          ) + 'px',
+                      }"
+                    >
+                      {{ item.area_name }}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -191,7 +204,7 @@
             <!-- 查询结果 -->
             <div class="search-result" style="">
               <!-- 班级 -->
-              <el-row v-if="searchMode != 'class'" >
+              <el-row v-if="searchMode != 'class'" style="height: 100%">
                 <el-col :span="24">
                   <div class="card" style="height: 100%">
                     <div class="card_header">
@@ -222,7 +235,7 @@
                 :style="
                   searchMode == 'class'
                     ? 'height:100%;'
-                    : 'margin-top: 10px; height: 100%'
+                    : 'margin-top: 15px; height: 100%'
                 "
               >
                 <el-col :span="24">
@@ -265,7 +278,7 @@
                         </template>
                       </template>
                       <div v-else class="status_panel" style="">
-                        <span class="text"> 无班级打扫 </span>
+                        <span class="text"> 无卫生任务 </span>
                       </div>
                     </div>
                   </div>
@@ -323,13 +336,23 @@ export default {
   },
   mounted() {
     // this.handleArea("playground");
+    this.setCanvasSize();
   },
   methods: {
+    setCanvasSize() {
+      // 获取canvas父元素大小
+      let parentWidth = this.$refs.canvas.parentNode.offsetWidth;
+      this.$refs.canvas.style.fontSize =
+        Math.round((this.$refs.canvas.parentNode.offsetWidth / 900) * 100) /
+          100 +
+        "px";
+    },
     // 获取所有地图
     async getMapList() {
       let res = await this.$axios.get("/map", {
         params: { s_id: this.$route.params.s_id },
       });
+      console.log(`mapList`, res);
       this.mapList = res.data.data;
       this.mapId = this.mapList[0].id;
       this.mapName = this.mapList[0].name;
@@ -344,6 +367,7 @@ export default {
     },
     // 获取地图对应的区域信息
     async getAreaList() {
+      this.isAreaLoading = true;
       let res = await this.$axios.get("/area", {
         params: { m_id: this.mapId },
       });
@@ -370,7 +394,7 @@ export default {
     },
     // 点击区域的事件
     handleArea(id) {
-      if (this.areaId == id) return false;
+      if (this.areaId == id || this.searchMode == "class") return false;
       this.areaId = id;
       this.getStatus();
     },
@@ -382,7 +406,6 @@ export default {
       if (this.searchMode == "class") {
         params = {
           time: this.cleanTime,
-          area_id: this.areaId,
           class_id: this.classId,
         };
       } else {
@@ -395,7 +418,26 @@ export default {
         params,
       });
       if (res.data.code == 200) {
+        console.log(`res`, res);
+        console.log(`11`, 11);
+        let statusData = res.data.data.statusData[0];
         this.statusData = res.data.data.statusData;
+        // 如果是通过班级查找且有找到statusData 则找到当前地图
+        if (this.searchMode == "class" && statusData) {
+          // 如果该区域不在当前地图中则改变地图
+          if (!this.areaList.find((item) => item.id == statusData.area_id)) {
+            this.areaList = [];
+            let res = await this.$axios.get("/map/by_area_id", {
+              params: { area_id: statusData.area_id },
+            });
+            console.log(`res`, res);
+            this.mapId = res.data.data.id;
+            this.mapName = res.data.data.name
+            await this.getAreaList();
+          }
+          // 然后再改变当前区域
+          this.areaId = res.data.data.statusData[0].area_id;
+        }
         this.isLoading = false;
       }
     },
@@ -491,25 +533,30 @@ export default {
   float: right;
 }
 .container .c1 .map-canvas {
-  width: 900px;
-  height: 600px;
+  font-size: 1px;
+  width: 900em;
+  height: 600em;
   position: relative;
   margin: 0 auto;
 }
 .map-canvas .area {
-  border: 4px #aaa solid;
+  border: 7px #fafafa solid;
   background: #eee;
   font-style: italic;
   position: absolute;
   text-align: center;
   cursor: pointer;
   box-sizing: border-box;
+  transition: 0.15s;
+}
+.map-canvas .area:hover {
+  border-color:#ee9191;
 }
 .map-canvas .area.ellipse {
   border-radius: 999px;
 }
 .map-canvas .area.active {
-  border-color: #dd5858;
+  border-color: #d63535;
   z-index: 100;
 }
 .container .c2 {
@@ -636,9 +683,12 @@ export default {
   text-align: center;
 }
 .clean-class {
+  width: 100%;
   display: flex;
   align-items: center;
-  padding: 20px;
+  justify-content: center;
+  // padding:30px 20px;
+  // text-align: center;
 }
 .clean-class .text {
   font-size: 30px;

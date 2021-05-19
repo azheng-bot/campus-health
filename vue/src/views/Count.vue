@@ -120,12 +120,11 @@ export default {
       }
       if (this.wheelTimes <= -3) {
         this.$refs.countRef.style.top = "0%"
-
       }
     };
   },
   destroyed() {
-    window.onresize;
+    // window.onresize;
   },
   methods: {
     // 初始化信息
@@ -317,8 +316,8 @@ export default {
         ],
       });
       // 页面长度宽度改变时echarts自适应
-      // window.onresize = echartsAtaption;
-      document.addEventListener("onresize", echartsAtaption);
+      window.onresize = echartsAtaption;
+      // document.addEventListener("onresize", echartsAtaption);
       // echarts自适应
       function echartsAtaption() {
         echartArr.forEach((item) => {
@@ -354,6 +353,7 @@ export default {
   height: 100%;
   color: #111;
   position: relative;
+  top: 0;
   transition: 0.7s cubic-bezier(0, 0, 0.34, 0.99);
   /* overflow: auto; */
 }

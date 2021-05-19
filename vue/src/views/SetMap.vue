@@ -107,6 +107,7 @@
           <div class="input">
             <el-input
               v-model="movingAreaInfo.area_name"
+              required="true"
               placeholder="区域名"
             ></el-input>
           </div>
@@ -117,6 +118,7 @@
             <el-input
               type="number"
               v-model="movingAreaInfo.width"
+              required="true"
               placeholder="长度"
             ></el-input>
           </div>
@@ -127,6 +129,7 @@
             <el-input
               type="number"
               v-model="movingAreaInfo.height"
+              required="true"
               placeholder="宽度"
             ></el-input>
           </div>
@@ -137,6 +140,7 @@
             <el-input
               type="number"
               v-model="movingAreaInfo.left"
+              required="true"
               placeholder="X轴坐标"
             ></el-input>
           </div>
@@ -147,6 +151,7 @@
             <el-input
               type="number"
               v-model="movingAreaInfo.top"
+              required="true"
               placeholder="Y轴坐标"
             ></el-input>
           </div>
@@ -156,6 +161,7 @@
           <div class="input">
             <el-input
               v-model="movingAreaInfo.color"
+              required="true"
               placeholder="颜色"
             ></el-input>
           </div>
@@ -182,6 +188,7 @@
 </template>
 
 <script>
+import { number } from "echarts";
 export default {
   props: ["id"],
   data() {
@@ -255,6 +262,18 @@ export default {
       toDeleteAreaId: -1,
     };
   },
+  watch: {
+    // 当movingAreaInfo改变时其对应的元素跟着改变
+    movingAreaInfo(newValue) {
+      console.log(`newValue`, newValue);
+      //   if (!newValue.left) return false;
+      //   this.areaList[this.selectedAreaIndex].left = newValue.left;
+      //   this.areaList[this.selectedAreaIndex].width = newValue.width;
+      //   this.areaList[this.selectedAreaIndex].height = newValue.height;
+      //   this.areaList[this.selectedAreaIndex].top = newValue.top;
+      //   this.areaList[this.selectedAreaIndex].color = newValue.color;
+    },
+  },
   async created() {
     // 初始确定当前页面是 修改地图 还是 新增地图
     if (this.id) this.isEdit = true;
@@ -285,7 +304,7 @@ export default {
   methods: {
     // 返回maps页面
     backToMaps() {
-      this.$router.push('/'+this.$route.params.s_id+"/setting/maps");
+      this.$router.push("/" + this.$route.params.s_id + "/setting/maps");
     },
     // 选择图形
     selectShape(shape) {
@@ -306,18 +325,11 @@ export default {
       // 点击canvas，取消选择area
       if (this.selectedShape == -1) {
         this.selectedAreaIndex = -1;
-        this.movingAreaInfo = {
-          name: "",
-          width: "",
-          height: "",
-          left: "",
-          top: "",
-          color: "",
-          shape: "square",
-        };
+        this.movingAreaInfo = {};
         return;
       }
 
+      console.log(`e.layerX`, e.layerX);
       this.drawingArea.is_show = true;
       this.drawingArea.left = e.layerX;
       this.drawingArea.top = e.layerY;
@@ -336,17 +348,10 @@ export default {
           this.drawingArea.is_show = false;
           // 取消选择area
           this.selectedAreaIndex = -1;
-          this.movingAreaInfo = {
-            name: "",
-            width: "",
-            height: "",
-            left: "",
-            top: "",
-            color: "",
-            shape: "square",
-          };
+          this.movingAreaInfo = {};
           return false;
         }
+
         // 添加到area数组
         this.areaList.push({
           a_id: ++this.lastId,
@@ -358,6 +363,7 @@ export default {
           color: "",
           shape: this.drawingArea.shape,
         });
+        console.log(`this.areaList`, this.areaList);
         // 重置drawingarea
         this.drawingArea = {
           is_show: false,
@@ -388,13 +394,8 @@ export default {
           e.clientY - this.beforeDrawMouseSite.y,
           0
         );
-        // this.drawingArea.width = e.layerX - this.drawingArea.left;
-        // this.drawingArea.height = e.layerY - this.drawingArea.top;
-        // } else if (e.target.className == "drawing-area") {
-        //   this.drawingArea.width = e.layerX;
-        //   this.drawingArea.height = e.layerY;
-        // }
       }
+
       // area的mousemove事件
       if (this.isMoving) {
         // 当超出画布时return
@@ -406,11 +407,11 @@ export default {
         if (e.clientX >= canvasLeft + canvasWidth) return false;
 
         this.areaList[this.selectedAreaIndex].left =
-          this.beforeMoveAreaSite.left +
-          (e.clientX - this.beforeMoveMouseSite.x);
+          Number(this.beforeMoveAreaSite.left) +
+          (e.clientX - Number(this.beforeMoveMouseSite.x));
         this.areaList[this.selectedAreaIndex].top =
-          this.beforeMoveAreaSite.top +
-          (e.clientY - this.beforeMoveMouseSite.y);
+          Number(this.beforeMoveAreaSite.top) +
+          (e.clientY - Number(this.beforeMoveMouseSite.y));
       }
     },
     getElementLeft(element) {
@@ -445,27 +446,16 @@ export default {
         left: this.areaList[this.selectedAreaIndex].left,
         top: this.areaList[this.selectedAreaIndex].top,
       };
+
+      // mousemove事件在canvas的mousemove中实现
     },
     // area的mouseup事件
     areaMouseup(e) {
       this.isMoving = false;
     },
     // area的mousemove事件
-    areaMousemove(e) {
-      // if (!e.target.classList.contains("area")) return false;
-      // if (this.isMoving) {
-      //   this.areaList[this.selectedAreaIndex].left = Math.max(
-      //     this.beforeMoveAreaSite.left +
-      //       (e.clientX - this.beforeMoveMouseSite.x),
-      //     0
-      //   );
-      //   this.areaList[this.selectedAreaIndex].top = Math.max(
-      //     this.beforeMoveAreaSite.top +
-      //       (e.clientY - this.beforeMoveMouseSite.y),
-      //     0
-      //   );
-      // }
-    },
+    // mousemove事件在canvas的mousemove中实现
+    areaMousemove(e) {},
     // 右键area
     rightClickArea(e, a_id) {
       this.areaRcMenuSite.left = e.pageX;
@@ -474,11 +464,28 @@ export default {
       this.toDeleteAreaId = a_id;
     },
     // 点击删除area
-    deleteArea() {
+    async deleteArea() {
+      let deleteItem = this.areaList.find(
+        (item) => (item.a_id == this.toDeleteAreaId)
+      );
+      // 如果有id则发起请求删除该区域
+      if (deleteItem.id) {
+        let res = await this.$axios.delete("/area", {
+          params: { id: deleteItem.id },
+        });
+        if (res.data.code != 200) return this.$message.error("删除失败");
+        console.log(`res`, res);
+      }
+      // 删除元素
       let index = this.areaList.findIndex(
         (item) => item.a_id == this.toDeleteAreaId
       );
       this.areaList.splice(index, 1);
+      console.log(`this.areaList`, this.areaList);
+      console.log(`index`, index);
+      // 清空所选信息
+      this.selectedAreaIndex = -1;
+      this.movingAreaInfo = {};
       this.$message.success("删除区域成功");
       this.areaRcMenuSite.is_show = false;
     },
@@ -517,7 +524,9 @@ export default {
       });
       if (res.data.code == 200) {
         this.$message.success("添加成功");
-        this.$router.push('/'+this.$route.params.s_id+"/setting/set_map/" + res.data.id);
+        this.$router.push(
+          "/" + this.$route.params.s_id + "/setting/set_map/" + res.data.id
+        );
       } else {
         this.$message.error("添加失败");
       }

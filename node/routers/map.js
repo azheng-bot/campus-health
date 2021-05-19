@@ -28,11 +28,8 @@ router.get("/", async (req, res) => {
 
 // 2.获取某一地图的区域信息
 router.get("/areas", async (req, res) => {
-  console.log(`req.query`, req.query)
   let res1 = await query("select * from map where id = ?", [req.query.id]);
   let res2 = await query("select * from area where m_id = ?", [req.query.id]);
-  console.log(`res1`, res1)
-  console.log(`res2`, res2)
 
   res.json({
     code: 200,
@@ -88,7 +85,6 @@ router.patch("/name", async (req, res) => {
   console.log(`req`, req.body)
   try {
     let res1 = await query("update map set name = ? where id = ?", [req.body.name, req.body.id])
-    console.log(`res1`, res1)
 
     res.json({
       code: 200,
@@ -106,20 +102,19 @@ router.patch("/name", async (req, res) => {
 // 5.修改地图区域
 router.patch("/", async (req, res) => {
   try {
-    console.log(`req`, req.body)
+    console.log(`req`, req.body.id)
     let areaList = req.body.areaList;
     let m_id = req.body.id
 
 
-
+    // 先删除元素
+    // let res0 = query("delete from area where m_id = ?", [m_id]);
+    // 然后再添加
     for (var i = 0; i < areaList.length; i++) {
-      // 有id则对其进行修改
-      if (areaList[i].id) {
-        let { area_name, width, height, left, top, color, id, shape } = areaList[i];
-        let res1 = await query("update area set area_name = ?,width = ?,height = ?,`left` =?,top = ?,color =?,m_id = ?,shape=? where id = ?", [area_name, width, height, left, top, color, m_id,  shape, id])
-      }
-      // 没有id则添加到数据库
-      else {
+      if (req.body.areaList[i].id) {
+        let { id, area_name, width, height, left, top, color, shape } = req.body.areaList[i];
+        let res1 = await query("update area (area_name, width, height, `left`, top, color,m_id,shape) = (?) where id = ?", [[area_name, width, height, left, top, color, m_id, shape], id]);
+      } else {
         let { area_name, width, height, left, top, color, shape } = req.body.areaList[i];
         let res1 = await query("insert into area (area_name, width, height, `left`, top, color,m_id,shape) values(?)", [[area_name, width, height, left, top, color, m_id, shape]]);
       }
@@ -141,10 +136,8 @@ router.patch("/", async (req, res) => {
 
 // 6.删除地图
 router.delete("/", async (req, res) => {
-  console.log(`req`, req.query)
   try {
     let res1 = await query("delete from map where id = ?", [req.query.id])
-    console.log(`res1`, res1)
 
     res.json({
       code: 200,
@@ -170,6 +163,27 @@ router.get("/area_num", async (req, res) => {
       data: res1
     })
   } catch {
+    // 出现报错时，返回失败信息
+    res.send({
+      code: 400,
+      msg: "获取失败"
+    })
+
+  }
+})
+
+// 8.通过area id获取对应map id
+router.get("/by_area_id", async (req, res) => {
+  try {
+    // 根据学校id，获取学校所有的map
+    let res1 = await query("select * from map where id = (select m_id from area where id = ?)", [req.query.area_id])
+    // 返回成功信息
+    res.send({
+      code: 200,
+      data: res1[0]
+    })
+  } catch (err) {
+    console.log(`err`, err)
     // 出现报错时，返回失败信息
     res.send({
       code: 400,

@@ -1,7 +1,7 @@
 <template>
   <div class="maps">
     <div class="title">地图设置</div>
-    <div class="main">
+    <div class="main" v-loading="!mapList.length">
       <div class="wrapper">
         <div
           v-for="(item, index) in mapList"
