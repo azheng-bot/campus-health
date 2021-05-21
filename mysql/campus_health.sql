@@ -11,7 +11,7 @@
  Target Server Version : 50725
  File Encoding         : 65001
 
- Date: 17/05/2021 10:00:00
+ Date: 19/05/2021 17:55:22
 */
 
 SET NAMES utf8mb4;
@@ -32,12 +32,11 @@ CREATE TABLE `area`  (
   `color` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '颜色',
   `shape` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '形状',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 26 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 244 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of area
 -- ----------------------------
-INSERT INTO `area` VALUES (1, '足球场', '0', 0, 0, 0, 0, '', '');
 INSERT INTO `area` VALUES (2, '风雨操场', '0', 0, 0, 0, 0, '', '');
 INSERT INTO `area` VALUES (3, '篮球场', '0', 0, 0, 0, 0, '', '');
 INSERT INTO `area` VALUES (4, '教学楼A区', '0', 0, 0, 0, 0, '', '');
@@ -59,9 +58,20 @@ INSERT INTO `area` VALUES (19, '发发发', '6798218401471926272', 223, 132, 11,
 INSERT INTO `area` VALUES (20, '发发发', '6798218401471926272', 223, 132, 548, 163, '', '');
 INSERT INTO `area` VALUES (21, 'fd ', '6798218401471926272', 331, 173, 192, 242, '', '');
 INSERT INTO `area` VALUES (22, 'ac', '6798218401471926272', 122, 73, 618, 426, '', '');
-INSERT INTO `area` VALUES (23, 'az', '6798070331761364992', 290, 160, 154, 104, '', '');
-INSERT INTO `area` VALUES (24, '赵瑞轩的宿舍', '6798070331761364992', 326, 166, 142, 299, '#fff', '');
-INSERT INTO `area` VALUES (25, '赵瑞轩的区域', '6798070331761364992', 293, 170, 498, 107, '', 'ellipse');
+INSERT INTO `area` VALUES (221, '操场', '6798070331761364992', 173, 289, 52, 35, '#f1ffe6', 'ellipse');
+INSERT INTO `area` VALUES (222, '风雨操场', '6798070331761364992', 351, 124, 242, 41, '#ecf9ff', 'square');
+INSERT INTO `area` VALUES (223, '篮球场', '6798070331761364992', 161, 144, 241, 179, '#ffeee4', 'square');
+INSERT INTO `area` VALUES (224, '网球场', '6798070331761364992', 185, 145, 408, 179, '#f2ffee', 'square');
+INSERT INTO `area` VALUES (225, '教学楼（西侧）', '6798070331761364992', 294, 173, 52, 367, '#fff7e4', 'square');
+INSERT INTO `area` VALUES (226, '教学楼（东侧）', '6798070331761364992', 283, 174, 357, 367, '#ffeee4', 'square');
+INSERT INTO `area` VALUES (227, '宿舍楼B', '6798070331761364992', 162, 253, 702, 289, '#d9ffff', 'square');
+INSERT INTO `area` VALUES (228, '宿舍楼A', '6798070331761364992', 162, 241, 702, 40, '#ddeeee', 'square');
+INSERT INTO `area` VALUES (229, '教学楼', '6800427896952459264', 261, 163, 170, 88, '', 'square');
+INSERT INTO `area` VALUES (239, 'B', '6800251585772523520', 267, 158, 258, 236, '', 'square');
+INSERT INTO `area` VALUES (240, 'C', '6800251585772523520', 284, 136, 255, 433, '', 'square');
+INSERT INTO `area` VALUES (241, '教学楼', '6800657164672307200', 354, 200, 91, 114, '', 'ellipse');
+INSERT INTO `area` VALUES (242, '教学楼', '6800665510708121600', 345, 204, 188, 111, '', 'square');
+INSERT INTO `area` VALUES (243, '教学楼', '6800670956407885824', 260, 148, 141, 117, '', 'square');
 
 -- ----------------------------
 -- Table structure for class
@@ -77,7 +87,6 @@ CREATE TABLE `class`  (
 -- ----------------------------
 -- Records of class
 -- ----------------------------
-INSERT INTO `class` VALUES (10, '19级全栈12班', 1);
 INSERT INTO `class` VALUES (11, '19级Java12班', 1);
 INSERT INTO `class` VALUES (12, '19级数媒12班', 1);
 INSERT INTO `class` VALUES (13, '19级Java34班', 1);
@@ -101,17 +110,9 @@ CREATE TABLE `map`  (
 -- ----------------------------
 -- Records of map
 -- ----------------------------
-INSERT INTO `map` VALUES ('6798070331761364992', '方法d', 1);
-INSERT INTO `map` VALUES ('6798070756812132352', '方法fdsafdsa', 1);
-INSERT INTO `map` VALUES ('6798218401471926272', '阿正2', 1);
-INSERT INTO `map` VALUES ('6798218772697190400', '阿正', 1);
-INSERT INTO `map` VALUES ('6798219526539448320', 'ac', 1);
-INSERT INTO `map` VALUES ('6798219688028540928', 'acc', 1);
-INSERT INTO `map` VALUES ('6798219733591265280', 'acc', 1);
-INSERT INTO `map` VALUES ('6798219784585613312', 'acc', 1);
-INSERT INTO `map` VALUES ('6798219814356783104', 'acc', 1);
-INSERT INTO `map` VALUES ('6798220074432991232', 'acc', 1);
-INSERT INTO `map` VALUES ('6798238246225711104', '范德萨', 1);
+INSERT INTO `map` VALUES ('6798070331761364992', '东校区', 1);
+INSERT INTO `map` VALUES ('6800251585772523520', '西校区', 1);
+INSERT INTO `map` VALUES ('6800670956407885824', '新校区', 1);
 
 -- ----------------------------
 -- Table structure for operation
@@ -126,7 +127,7 @@ CREATE TABLE `operation`  (
   `time` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '操作时间',
   `s_id` int(11) NOT NULL DEFAULT 1 COMMENT '学校id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 380 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 491 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of operation
@@ -471,6 +472,117 @@ INSERT INTO `operation` VALUES (376, 'POST', '/status/quick', '毛娇娇', 6, 'S
 INSERT INTO `operation` VALUES (377, 'POST', '/status/quick', '毛娇娇', 6, 'Sun May 16 2021 19:07:19 GMT+0800 (中国标准时间)', 1);
 INSERT INTO `operation` VALUES (378, 'POST', '/status/quick', '毛娇娇', 6, 'Sun May 16 2021 19:09:00 GMT+0800 (中国标准时间)', 1);
 INSERT INTO `operation` VALUES (379, 'POST', '/status/quick', '毛娇娇', 6, 'Sun May 16 2021 19:10:54 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (380, 'PATCH', '/status', '毛娇娇', 6, 'Mon May 17 2021 18:02:03 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (381, 'PATCH', '/status', '毛娇娇', 6, 'Mon May 17 2021 18:09:40 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (382, 'PATCH', '/status', '毛娇娇', 6, 'Mon May 17 2021 18:11:43 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (383, 'PATCH', '/map/name', 'admin', 1, 'Mon May 17 2021 20:49:10 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (384, 'POST', '/principal', 'admin', 1, 'Mon May 17 2021 22:17:17 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (385, 'DELETE', '/map?id=6798219733591265280', 'admin', 1, 'Tue May 18 2021 08:44:22 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (386, 'DELETE', '/map?id=6798219784585613312', 'admin', 1, 'Tue May 18 2021 08:44:24 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (387, 'DELETE', '/map?id=6798070756812132352', 'admin', 1, 'Tue May 18 2021 10:51:32 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (388, 'DELETE', '/map?id=6798218401471926272', 'admin', 1, 'Tue May 18 2021 10:51:33 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (389, 'DELETE', '/map?id=6798218772697190400', 'admin', 1, 'Tue May 18 2021 10:51:35 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (390, 'DELETE', '/map?id=6798219526539448320', 'admin', 1, 'Tue May 18 2021 10:51:36 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (391, 'DELETE', '/map?id=6798219688028540928', 'admin', 1, 'Tue May 18 2021 10:51:38 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (392, 'DELETE', '/map?id=6798219814356783104', 'admin', 1, 'Tue May 18 2021 10:51:39 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (393, 'DELETE', '/map?id=6798220074432991232', 'admin', 1, 'Tue May 18 2021 10:51:43 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (394, 'DELETE', '/map?id=6798238246225711104', 'admin', 1, 'Tue May 18 2021 10:51:45 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (395, 'POST', '/map', 'admin', 1, 'Tue May 18 2021 10:52:00 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (396, 'PATCH', '/status', 'admin', 1, 'Tue May 18 2021 16:02:48 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (397, 'PATCH', '/status', 'admin', 1, 'Tue May 18 2021 16:02:57 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (398, 'PATCH', '/status', 'admin', 1, 'Tue May 18 2021 16:03:23 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (399, 'PATCH', '/status', 'admin', 1, 'Tue May 18 2021 16:03:58 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (400, 'PATCH', '/principal', 'admin', 1, 'Tue May 18 2021 16:04:49 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (401, 'DELETE', '/principal?id=2', 'admin', 1, 'Tue May 18 2021 16:04:58 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (402, 'PATCH', '/class', 'admin', 1, 'Tue May 18 2021 16:05:21 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (403, 'DELETE', '/class?id=10&s_id=1', 'admin', 1, 'Tue May 18 2021 16:05:25 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (404, 'POST', '/status', '毛娇娇', 6, 'Tue May 18 2021 16:08:25 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (405, 'POST', '/status', '毛娇娇', 6, 'Tue May 18 2021 16:08:25 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (406, 'POST', '/status', '毛娇娇', 6, 'Tue May 18 2021 16:08:46 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (407, 'POST', '/status', '毛娇娇', 6, 'Tue May 18 2021 16:08:59 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (408, 'POST', '/status/quick', '毛娇娇', 6, 'Tue May 18 2021 16:10:03 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (409, 'POST', '/status', '毛娇娇', 6, 'Tue May 18 2021 16:13:25 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (410, 'POST', '/status', '毛娇娇', 6, 'Tue May 18 2021 16:13:25 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (411, 'POST', '/status', '毛娇娇', 6, 'Tue May 18 2021 16:13:25 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (412, 'POST', '/status', '毛娇娇', 6, 'Tue May 18 2021 16:13:25 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (413, 'PATCH', '/map', 'admin', 1, 'Tue May 18 2021 17:18:51 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (414, 'PATCH', '/map', 'admin', 1, 'Tue May 18 2021 17:20:29 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (415, 'PATCH', '/map', 'admin', 1, 'Tue May 18 2021 17:20:36 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (416, 'PATCH', '/map', 'admin', 1, 'Tue May 18 2021 17:25:37 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (417, 'PATCH', '/map', 'admin', 1, 'Tue May 18 2021 17:25:44 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (418, 'PATCH', '/map', 'admin', 1, 'Tue May 18 2021 17:26:49 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (419, 'PATCH', '/map', 'admin', 1, 'Tue May 18 2021 17:27:31 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (420, 'PATCH', '/map', 'admin', 1, 'Tue May 18 2021 17:28:19 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (421, 'PATCH', '/map', 'admin', 1, 'Tue May 18 2021 17:31:58 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (422, 'PATCH', '/map', 'admin', 1, 'Tue May 18 2021 17:32:13 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (423, 'PATCH', '/map', 'admin', 1, 'Tue May 18 2021 17:37:26 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (424, 'PATCH', '/map', 'admin', 1, 'Tue May 18 2021 17:37:53 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (425, 'PATCH', '/map', 'admin', 1, 'Tue May 18 2021 17:38:05 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (426, 'PATCH', '/map', 'admin', 1, 'Tue May 18 2021 17:38:09 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (427, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 20:38:12 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (428, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 20:38:17 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (429, 'POST', '/status/quick', '毛娇娇', 6, 'Tue May 18 2021 20:38:34 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (430, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 20:38:48 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (431, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 20:38:52 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (432, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 20:38:55 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (433, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 20:38:59 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (434, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 20:39:04 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (435, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 20:39:08 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (436, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 20:39:11 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (437, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 20:39:15 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (438, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 20:39:18 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (439, 'PATCH', '/map', 'admin', 1, 'Tue May 18 2021 21:18:10 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (440, 'PATCH', '/map', 'admin', 1, 'Tue May 18 2021 21:18:21 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (441, 'PATCH', '/map', 'admin', 1, 'Tue May 18 2021 21:21:31 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (442, 'POST', '/status/quick', '毛娇娇', 6, 'Tue May 18 2021 21:32:06 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (443, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 21:32:20 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (444, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 21:32:28 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (445, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 21:32:31 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (446, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 21:32:35 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (447, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 21:32:38 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (448, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 21:32:42 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (449, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 21:32:45 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (450, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 21:32:48 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (451, 'POST', '/status/quick', '毛娇娇', 6, 'Tue May 18 2021 21:42:56 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (452, 'POST', '/status', '毛娇娇', 6, 'Tue May 18 2021 22:28:25 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (453, 'POST', '/status/quick', '毛娇娇', 6, 'Tue May 18 2021 22:29:03 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (454, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 22:29:21 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (455, 'PATCH', '/status', '毛娇娇', 6, 'Tue May 18 2021 22:29:30 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (456, 'POST', '/principal', 'admin', 1, 'Tue May 18 2021 22:30:59 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (457, 'DELETE', '/principal?id=11', 'admin', 1, 'Tue May 18 2021 22:31:03 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (458, 'PATCH', '/map', 'admin', 1, 'Tue May 18 2021 22:32:17 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (459, 'POST', '/map', 'admin', 1, 'Tue May 18 2021 22:32:36 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (460, 'POST', '/status', '毛娇娇', 6, 'Tue May 18 2021 23:19:05 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (461, 'DELETE', '/area?id=1', 'admin', 1, 'Tue May 18 2021 23:37:37 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (462, 'DELETE', '/area?id=1', 'admin', 1, 'Tue May 18 2021 23:37:53 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (463, 'DELETE', '/area?id=1', 'admin', 1, 'Tue May 18 2021 23:40:20 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (464, 'DELETE', '/area?id=1', 'admin', 1, 'Tue May 18 2021 23:40:29 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (465, 'DELETE', '/area?id=1', 'admin', 1, 'Tue May 18 2021 23:40:45 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (466, 'DELETE', '/area?id=218', 'admin', 1, 'Tue May 18 2021 23:41:10 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (467, 'DELETE', '/area?id=219', 'admin', 1, 'Tue May 18 2021 23:41:17 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (468, 'DELETE', '/area?id=220', 'admin', 1, 'Tue May 18 2021 23:41:32 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (469, 'PATCH', '/map', 'admin', 1, 'Tue May 18 2021 23:41:55 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (470, 'DELETE', '/area?id=238', 'admin', 1, 'Tue May 18 2021 23:42:06 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (471, 'POST', '/status', '毛娇娇', 6, 'Wed May 19 2021 09:36:12 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (472, 'POST', '/status', '毛娇娇', 6, 'Wed May 19 2021 13:40:00 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (473, 'POST', '/status', '毛娇娇', 6, 'Wed May 19 2021 13:40:09 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (474, 'POST', '/status/quick', '毛娇娇', 6, 'Wed May 19 2021 13:40:45 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (475, 'PATCH', '/status', '毛娇娇', 6, 'Wed May 19 2021 13:41:23 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (476, 'DELETE', '/map?id=6800427896952459264', 'admin', 1, 'Wed May 19 2021 13:43:07 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (477, 'POST', '/map', 'admin', 1, 'Wed May 19 2021 13:43:38 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (478, 'POST', '/status', '毛娇娇', 6, 'Wed May 19 2021 14:12:11 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (479, 'POST', '/status', '毛娇娇', 6, 'Wed May 19 2021 14:12:19 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (480, 'POST', '/status/quick', '毛娇娇', 6, 'Wed May 19 2021 14:13:11 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (481, 'POST', '/status/quick', '毛娇娇', 6, 'Wed May 19 2021 14:13:31 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (482, 'PATCH', '/status', '毛娇娇', 6, 'Wed May 19 2021 14:13:54 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (483, 'DELETE', '/map?id=6800657164672307200', 'admin', 1, 'Wed May 19 2021 14:16:15 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (484, 'POST', '/map', 'admin', 1, 'Wed May 19 2021 14:16:47 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (485, 'POST', '/status', '毛娇娇', 6, 'Wed May 19 2021 14:33:38 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (486, 'POST', '/status', '毛娇娇', 6, 'Wed May 19 2021 14:33:46 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (487, 'POST', '/status/quick', '毛娇娇', 6, 'Wed May 19 2021 14:34:34 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (488, 'PATCH', '/status', '毛娇娇', 6, 'Wed May 19 2021 14:35:02 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (489, 'DELETE', '/map?id=6800665510708121600', 'admin', 1, 'Wed May 19 2021 14:37:38 GMT+0800 (中国标准时间)', 1);
+INSERT INTO `operation` VALUES (490, 'POST', '/map', 'admin', 1, 'Wed May 19 2021 14:38:26 GMT+0800 (中国标准时间)', 1);
 
 -- ----------------------------
 -- Table structure for school
@@ -486,7 +598,7 @@ CREATE TABLE `school`  (
 -- ----------------------------
 -- Records of school
 -- ----------------------------
-INSERT INTO `school` VALUES (1, '上海开放大学', 'http://localhost:3000/school/logo?imageUrl=ef875e2f3b72ec030871797aa19facff.png');
+INSERT INTO `school` VALUES (1, '理工大学', '/api/school/logo?imageUrl=aa5d5f303569b456d8d2953e465926dd.jpeg');
 
 -- ----------------------------
 -- Table structure for status
@@ -508,52 +620,49 @@ CREATE TABLE `status`  (
 -- ----------------------------
 -- Records of status
 -- ----------------------------
-INSERT INTO `status` VALUES ('6798784453255761920', 10, '19级全栈12班', 23, 'az', '2021-5-14', '0', 2, '李闯闯');
-INSERT INTO `status` VALUES ('6798803284929941504', 10, '19级全栈12班', 20, '发发发', '2021-5-14', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799642677689323520', 10, '19级全栈12班', 19, '发发发', '2021-5-15', '0', 6, 'undefined');
-INSERT INTO `status` VALUES ('6799642677693517824', 11, '19级java12班', 20, '发发发', '2021-5-15', '0', 6, 'undefined');
-INSERT INTO `status` VALUES ('6799642677697712128', 15, '20级java34班', 22, 'ac', '2021-5-15', '0', 6, 'undefined');
-INSERT INTO `status` VALUES ('6799648179445960704', 11, '19级java12班', 23, 'az', '2021-5-13', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799648179584372736', 10, '19级全栈12班', 24, '赵瑞轩的宿舍', '2021-5-13', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799648179731173376', 12, '19级数媒12班', 25, '赵瑞轩的区域', '2021-5-13', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799650045558919168', 10, '19级全栈12班', 23, 'az', '2021-5-6', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799650045743468544', 11, '19级java12班', 24, '赵瑞轩的宿舍', '2021-5-6', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799650046053847040', 13, '19级java34班', 25, '赵瑞轩的区域', '2021-5-6', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799650250580692992', 12, '19级数媒12班', 6, '教学楼1', '2021-5-16', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799650250744270848', 13, '19级java34班', 7, '范德萨', '2021-5-16', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799650251029483520', 14, '20级java12班', 8, '的范德萨', '2021-5-16', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799650251331473408', 15, '20级java34班', 9, 'fds', '2021-5-16', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799650251495051264', 16, '20级全栈python班', 10, 'fdsafdsafdsa', '2021-5-16', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799650251683794944', 17, '20级数媒班', 11, '阿德订单', '2021-5-16', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799650983631785984', 11, '19级java12班', 24, '赵瑞轩的宿舍', '2021-5-14', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799650983828918272', 14, '20级java12班', 25, '赵瑞轩的区域', '2021-5-14', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799651052368039936', 12, '19级数媒12班', 19, '发发发', '2021-5-14', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799651052502257664', 15, '20级java34班', 21, 'fd ', '2021-5-14', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799651052640669696', 16, '20级全栈python班', 22, 'ac', '2021-5-14', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799651361559547904', 11, '19级java12班', 23, 'az', '2021-5-7', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799651361689571328', 12, '19级数媒12班', 24, '赵瑞轩的宿舍', '2021-5-7', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799651361827983360', 15, '20级java34班', 25, '赵瑞轩的区域', '2021-5-7', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799651882177531904', 11, '19级java12班', 23, 'az', '2021-5-5', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799651882332721152', 13, '19级java34班', 24, '赵瑞轩的宿舍', '2021-5-5', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799651882500493312', 15, '20级java34班', 25, '赵瑞轩的区域', '2021-5-5', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799652364874813440', 12, '19级数媒12班', 13, '教学楼1', '2021-5-14', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799652365030002688', 17, '20级数媒班', 14, '教学楼2', '2021-5-14', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799652365315215360', 13, '19级java34班', 15, '教学楼1', '2021-5-14', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799652365587845120', 12, '19级数媒12班', 16, '教学楼2', '2021-5-14', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799652365730451456', 17, '20级数媒班', 18, 'as', '2021-5-14', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799652365902417920', 14, '20级java12班', 12, '教学楼1', '2021-5-14', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799652366078578688', 12, '19级数媒12班', 6, '教学楼1', '2021-5-14', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799652366263128064', 13, '19级java34班', 7, '范德萨', '2021-5-14', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799652366544146432', 14, '20级java12班', 8, '的范德萨', '2021-5-14', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799652366703529984', 15, '20级java34班', 9, 'fds', '2021-5-14', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799652366841942016', 16, '20级全栈python班', 10, 'fdsafdsafdsa', '2021-5-14', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799652366984548352', 17, '20级数媒班', 11, '阿德订单', '2021-5-14', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799652367160709120', 12, '19级数媒12班', 6, '教学楼1', '2021-5-21', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799652367362035712', 11, '19级java12班', 7, '范德萨', '2021-5-21', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799652367517224960', 10, '19级全栈12班', 8, '的范德萨', '2021-5-21', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799652367701774336', 13, '19级java34班', 9, 'fds', '2021-5-21', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799652367882129408', 14, '20级java12班', 10, 'fdsafdsafdsa', '2021-5-21', '0', 6, '毛娇娇');
-INSERT INTO `status` VALUES ('6799652368020541440', 15, '20级java34班', 11, '阿德订单', '2021-5-21', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800412672564269056', 11, '19级java12班', 221, '操场', '2021-5-18', '1', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800412672723652608', 12, '19级数媒12班', 222, '风雨操场', '2021-5-18', '1', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800412672857870336', 13, '19级java34班', 223, '篮球场', '2021-5-18', '3', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800412673004670976', 14, '20级java12班', 224, '网球场', '2021-5-18', '3', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800412673134694400', 15, '20级java34班', 225, '教学楼（西侧）', '2021-5-18', '2', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800412673281495040', 16, '20级全栈python班', 226, '教学楼（东侧）', '2021-5-18', '2', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800412673419907072', 17, '20级数媒班', 227, '宿舍楼b', '2021-5-18', '1', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800412673562513408', 20, '21级java12班', 228, '宿舍楼a', '2021-5-18', '1', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800415401663664128', 12, '19级数媒12班', 226, '教学楼a', '2021-5-18', '1', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800415401823047680', 14, '20级java12班', 227, '教学楼b', '2021-5-18', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800415401957265408', 15, '20级java34班', 228, '教学楼c', '2021-5-18', '1', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800426844194738176', 11, '19级java12班', 221, '操场', '2021-5-19', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800427002877841408', 12, '19级数媒12班', 222, '风雨操场', '2021-5-19', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800427003016253440', 13, '19级java34班', 223, '篮球场', '2021-5-19', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800427003163054080', 14, '20级java12班', 224, '网球场', '2021-5-19', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800427003439878144', 15, '20级java34班', 225, '教学楼（西侧）', '2021-5-19', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800427003720896512', 16, '20级全栈python班', 226, '教学楼（东侧）', '2021-5-19', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800427003850919936', 17, '20级数媒班', 227, '宿舍楼b', '2021-5-19', '2', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800427004001914880', 20, '21级java12班', 228, '宿舍楼a', '2021-5-19', '1', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800656291653095424', 11, '19级java12班', 221, '操场', '2021-5-20', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800656440487972864', 12, '19级数媒12班', 222, '风雨操场', '2021-5-20', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800656440630579200', 13, '19级java34班', 223, '篮球场', '2021-5-20', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800656440773185536', 14, '20级java12班', 224, '网球场', '2021-5-20', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800656440949346304', 15, '20级java34班', 225, '教学楼（西侧）', '2021-5-20', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800656441142284288', 16, '20级全栈python班', 226, '教学楼（东侧）', '2021-5-20', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800656441322639360', 17, '20级数媒班', 227, '宿舍楼b', '2021-5-20', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800656441515577344', 20, '21级java12班', 228, '宿舍楼a', '2021-5-20', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800664385489604608', 11, '19级java12班', 221, '操场', '2021-5-21', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800664688255438848', 12, '19级数媒12班', 222, '风雨操场', '2021-5-21', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800664688456765440', 13, '19级java34班', 223, '篮球场', '2021-5-21', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800664688700035072', 14, '20级java12班', 224, '网球场', '2021-5-21', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800664689140436992', 15, '20级java34班', 225, '教学楼（西侧）', '2021-5-21', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800664689417261056', 16, '20级全栈python班', 226, '教学楼（东侧）', '2021-5-21', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800664689580838912', 17, '20级数媒班', 227, '宿舍楼b', '2021-5-21', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800664689815719936', 20, '21级java12班', 228, '宿舍楼a', '2021-5-21', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800669782183120896', 11, '19级java12班', 221, '操场', '2021-5-22', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800669983111254016', 12, '19级数媒12班', 222, '风雨操场', '2021-5-22', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800669983266443264', 13, '19级java34班', 223, '篮球场', '2021-5-22', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800669983400660992', 14, '20级java12班', 224, '网球场', '2021-5-22', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800669983547461632', 16, '20级全栈python班', 225, '教学楼（西侧）', '2021-5-22', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800669983677485056', 15, '20级java34班', 226, '教学楼（东侧）', '2021-5-22', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800669983824285696', 17, '20级数媒班', 227, '宿舍楼b', '2021-5-22', '0', 6, '毛娇娇');
+INSERT INTO `status` VALUES ('6800669984101109760', 20, '21级java12班', 228, '宿舍楼a', '2021-5-22', '0', 6, '毛娇娇');
 
 -- ----------------------------
 -- Table structure for user
@@ -566,15 +675,16 @@ CREATE TABLE `user`  (
   `role` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '角色',
   `s_id` int(11) NOT NULL DEFAULT 1 COMMENT '学校id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
 INSERT INTO `user` VALUES (1, 'admin', '123456', 'admin', 1);
-INSERT INTO `user` VALUES (2, '李闯闯', '123456', 'principal', 1);
 INSERT INTO `user` VALUES (6, '毛娇娇', '123456', 'principal', 1);
 INSERT INTO `user` VALUES (7, '徐丹丹', '123456', 'principal', 1);
 INSERT INTO `user` VALUES (9, '肖威', '123456', 'principal', 1);
+INSERT INTO `user` VALUES (10, '我呸', '54188', 'principal', 1);
+INSERT INTO `user` VALUES (11, '张三', '123456', 'principal', 1);
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -1,7 +1,7 @@
 <template>
   <div class="assign">
     <div class="title">快速分派</div>
-    <div class="lists" v-loading="(!mapData.length) || (!classData.length)">
+    <div class="lists" v-loading="!mapData.length || !classData.length">
       <!-- 选择日期 -->
       <list
         class="list"
@@ -52,7 +52,7 @@
         <img v-if="mapId && date" src="/images/right-turn.png" alt="" />
         <img v-else src="/images/right-turn-ready.png" alt="" />
         <img
-          :style="{ opacity: date ? 1 : 0, zIndex: 10 }"
+          :style="{ opacity: date && mapId ? 1 : 0, zIndex: 10 }"
           src="/images/right-turn.png"
           alt=""
         />
@@ -148,7 +148,7 @@ export default {
         });
       }
       // 更改当前mapId
-      this.mapId = this.mapData[0].id;
+      // this.mapId = this.mapData[0].id;
       // 更新selectedClassList
       this.getSelectedClassList();
       // datePicker数据清空
@@ -185,11 +185,16 @@ export default {
         this.updateFinished();
         // 删除已分派班级列表信息
         this.selectedClassId = newValue;
+        this.classId = "";
         return;
       }
+
       // 如果当前地图已经添加满，则取消添加并返回报错信息
-      if (this.mapData.find((item) => item.id == this.mapId).finished)
+      if (this.mapData.find((item) => item.id == this.mapId).finished) {
+        this.classId = "";
+
         return this.$message.info("当前地图已添加满");
+      }
       // 如果没有，则添加
       let className = this.classData.find((item) => item.id == this.classId)
         .class_name;
@@ -204,6 +209,7 @@ export default {
       this.getSelectedClassList();
       // 更新数据finished状态
       this.updateFinished();
+      this.classId = "";
     },
     // selectedClassId信息改变时，删除该被选中的分派班级
     selectedClassId(newValue) {

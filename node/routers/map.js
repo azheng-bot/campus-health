@@ -107,13 +107,11 @@ router.patch("/", async (req, res) => {
     let m_id = req.body.id
 
 
-    // 先删除元素
-    // let res0 = query("delete from area where m_id = ?", [m_id]);
     // 然后再添加
     for (var i = 0; i < areaList.length; i++) {
       if (req.body.areaList[i].id) {
         let { id, area_name, width, height, left, top, color, shape } = req.body.areaList[i];
-        let res1 = await query("update area (area_name, width, height, `left`, top, color,m_id,shape) = (?) where id = ?", [[area_name, width, height, left, top, color, m_id, shape], id]);
+        let res1 = await query("update area set area_name = ?, width = ?, height = ?, `left` = ?, top = ?, color = ?,m_id = ?,shape = ?  where id = ?", [area_name, width, height, left, top, color, m_id, shape, id]);
       } else {
         let { area_name, width, height, left, top, color, shape } = req.body.areaList[i];
         let res1 = await query("insert into area (area_name, width, height, `left`, top, color,m_id,shape) values(?)", [[area_name, width, height, left, top, color, m_id, shape]]);

@@ -57,7 +57,7 @@ body {
 }
 
 #app {
-  min-width: 1220px;
+  // min-width: 1220px;
   height: 100%;
 }
 

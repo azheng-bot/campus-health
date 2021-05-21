@@ -115,45 +115,37 @@
         <div class="set-block-width">
           <div class="label">W：</div>
           <div class="input">
-            <el-input
+            <!-- <el-input
               type="number"
               v-model="movingAreaInfo.width"
               required="true"
               placeholder="长度"
-            ></el-input>
+            ></el-input> -->
+            <el-slider v-model="movingAreaInfo.width" :min="0" :max="900" show-input> </el-slider>
           </div>
         </div>
         <div class="set-block-height">
           <div class="label">H：</div>
           <div class="input">
-            <el-input
-              type="number"
-              v-model="movingAreaInfo.height"
-              required="true"
-              placeholder="宽度"
-            ></el-input>
+            <el-slider v-model="movingAreaInfo.height" :min="0" :max="600" show-input> </el-slider>
           </div>
         </div>
         <div class="set-block-x">
           <div class="label">X：</div>
           <div class="input">
-            <el-input
-              type="number"
-              v-model="movingAreaInfo.left"
-              required="true"
-              placeholder="X轴坐标"
-            ></el-input>
+            <el-slider v-model="movingAreaInfo.left" :min="0" :max="900" show-input> </el-slider>
           </div>
         </div>
         <div class="set-block-y">
           <div class="label">Y：</div>
           <div class="input">
-            <el-input
+            <!-- <el-input
               type="number"
               v-model="movingAreaInfo.top"
               required="true"
               placeholder="Y轴坐标"
-            ></el-input>
+            ></el-input> -->
+            <el-slider v-model="movingAreaInfo.top" :min="0" :max="600" show-input> </el-slider>
           </div>
         </div>
         <div class="set-block-color">
@@ -466,7 +458,7 @@ export default {
     // 点击删除area
     async deleteArea() {
       let deleteItem = this.areaList.find(
-        (item) => (item.a_id == this.toDeleteAreaId)
+        (item) => item.a_id == this.toDeleteAreaId
       );
       // 如果有id则发起请求删除该区域
       if (deleteItem.id) {
